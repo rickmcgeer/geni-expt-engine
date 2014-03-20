@@ -1,0 +1,13 @@
+{
+  "name": "gee-master",
+  "description": "GENI Experiment Engine Slicelet Allocation Website",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x",
+    "jade": "latest",
+    "passport": "latest",
+    "passport-google": "latest",
+    "passport-google-oauth": "latest"
+  }
+}

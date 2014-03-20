@@ -1,0 +1,9 @@
+doctype html
+html
+head 
+  title Test for Login
+body
+  p Sorry, #{user}, during the demo period only authorized users may use the GEE.  Please check in again soon!
+  form(method="get", action="/auth/google")
+    button(type="submit") Login
+  img(src="/images/GEELogo.png")
