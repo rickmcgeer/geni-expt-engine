@@ -1,9 +1,10 @@
 doctype html
 html
 head 
-  title Test for Login
+  title Unauthorized User
 body
   p Sorry, #{user}, during the demo period only authorized users may use the GEE.  Please check in again soon!
-  form(method="get", action="/auth/google")
-    button(type="submit") Login
+  form(method="post", action="/auth/openid")
+    input(type="hidden", name="openid_identifier", value="https://portal.geni.net/server/server.php")
+    button(type="submit") Submit
   img(src="/images/GEELogo.png")

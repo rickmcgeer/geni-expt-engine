@@ -7,6 +7,7 @@
     "express": "3.x",
     "jade": "latest",
     "passport": "latest",
+    "passport-openid":"latest",
     "passport-google": "latest",
     "passport-google-oauth": "latest"
   }
