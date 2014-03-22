@@ -61,6 +61,7 @@ app.configure(function() {
   app.use(express.static(__dirname + '/public'));
   app.use(express.logger());
   app.use(express.cookieParser());
+  // app.use(express.cookieSession);
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.session({ secret: 'keyboard cat' }));
@@ -159,13 +160,16 @@ var authorized_users = ["rick@mcgeer.com", "acb@cs.princeton.edu"];
 //    ...what else?
 
 app.get('/logged_in', function(req, res) {
-    var i = authorized_users.indexOf(user_email);
+    console.log(JSON.stringify(req.session));
+    console.log(JSON.stringify(req.session.passport.user.emails[0].value));
+    req.session.user = req.session.passport.user.emails[0].value;
+    var i = authorized_users.indexOf(req.session.user);
     if (i == -1) {
-      res.render('unauthorized_user', {user:user_email});
+      res.render('unauthorized_user', {user:req.session.user});
     } else {
-      var get_slicelet_url = application_url + "/get_slicelet?user=" + user_email;
-      var free_slicelet_url = application_url + "/free_slicelet?user=" + user_email;
-      res.render('logged_in', {user:user_email, get_url:get_slicelet_url, free_url:free_slicelet_url});
+      var get_slicelet_url = application_url + "/get_slicelet";
+      var free_slicelet_url = application_url + "/free_slicelet";
+      res.render('logged_in', {user:req.session.user, get_url:get_slicelet_url, free_url:free_slicelet_url});
     }
 });
 
@@ -179,10 +183,10 @@ app.get('/get_slicelet', function(req, res) {
     console.log(req.url);
     var query = url.parse(req.url, true).query;
     console.log(JSON.stringify(query));
-    var user_email = query.user;
-    console.log(user_email);
+    var user = req.session.user;
+    console.log(user);
     var spawn = require('child_process').spawn;
-    var cmd = spawn('/home/service_instageni/allocate-gee-slice.plcsh', ["--", "-e", user_email]);
+    var cmd = spawn('/home/service_instageni/allocate-gee-slice.plcsh', ["--", "-e", user]);
     /* var cmd = spawn('./gee-slicelet.py', [user_email]); */
     var returned_user = null;
     var download_file = null;
@@ -217,10 +221,10 @@ app.get('/free_slicelet', function(req, res) {
     console.log(req.url);
     var query = url.parse(req.url, true).query;
     console.log(JSON.stringify(query));
-    var user_email = query.user;
-    console.log(user_email);
+    var user = req.session.user;
+    console.log(user);
     var spawn = require('child_process').spawn;
-    var cmd = spawn('/home/service_instageni/free-gee-slice.plcsh', ["--", "-e", user_email]);
+    var cmd = spawn('/home/service_instageni/free-gee-slice.plcsh', ["--", "-e", user]);
     /* var cmd = spawn('./gee-slicelet.py', [user_email]); */
     var error = "";
     var result = "";

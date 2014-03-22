@@ -2,9 +2,9 @@ doctype html
 body
 center
   p User #{user} logged in.
-  p
-    a(href=get_url) Get a Slicelet!
-  p
-    a(href=free_url) Free a Slicelet!
+  form(method="get", action='/get_slicelet')
+    button(type="submit") Get a Slicelet!
+  form(method="get", action='/free_slicelet')
+    button(type="submit") Free a Slicelet!
   img(src="/images/GEELogo.png")
 
