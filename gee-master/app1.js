@@ -49,10 +49,19 @@ passport.deserializeUser(function(obj, done) {
 var url = require('url');
 var http = require('http');
 var app = express();
+var mongo = require('mongodb');
+var mongoose = require('mongoose');
+
 // the host and port we are running on, and the URL for people to request
 var host_name = 'igplc.cs.princeton.edu'
 application_port = 8080
 var application_url = 'http://' + host_name + ':' + application_port;
+mongoose.connect('mongodb://localhost/gee_master');
+var gee_master_db = mongoose.connection;
+gee_master_db.on('error', console.error.bind(console, 'Mongoose connection error to gee-master'));
+gee_master_db.once('open', function callback() {
+  console.log("Connection to db done");
+});
 // configure node.  We'll use Jade for templating and put the templates in view.
 // We will parse cookies and query bodies, and route queries
 app.configure(function() {
@@ -253,3 +262,43 @@ app.get('/download', function(req, res) {
     res.download(filename);
 });
 
+// database schema:
+// users: {email, role [list, currently just "admin"], "slice"}
+// slices: {name, allocated (true/false), expiry_date}
+// users.slice is null if the user has no slice
+// slices.expiry_date is null if slices.allocated = false
+
+var user_schema = mongoose.Schema({
+  email: String,
+  role: [String],
+  slice: { type: String, default: null }
+});
+
+var Users = mongoose.model('users', user_schema);
+
+var slice_schema = mongoose.Schema({
+  name: String,
+  allocated: { type: Boolean, default: false},
+  slice: { type: Date, default: null }
+});
+
+var slices = mongoose.model('slices', slice_schema);
+
+
+// Will be replaced, just here to look at the db
+
+app.get('/users', function(req, res) {
+  Users.find(function(err, users) {
+    if (err) return console.error(err);
+    console.log(users);
+    res.render('users', {"userlist": users});
+  });
+});
+
+app.get('/slices', function(req, res) {
+  slices.find(function(err, slices) {
+    if (err) return console.error(err);
+    console.log(slices);
+    res.render('slices', {"slices": slices});
+  });
+});

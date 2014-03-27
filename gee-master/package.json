@@ -9,6 +9,8 @@
     "passport": "latest",
     "passport-openid":"latest",
     "passport-google": "latest",
-    "passport-google-oauth": "latest"
+    "passport-google-oauth": "latest",
+    "mongodb": "latest",
+    "mongoose":"latest"
   }
 }
