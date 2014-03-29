@@ -1,0 +1,9 @@
+doctype html
+body
+center
+  h1 Dashboard for User #{user}
+  p User #{user} logged in, currently has slicelet #{slice}.
+  form(method="get", action='/free_slicelet')
+    button(type="submit") Free Slicelet #{slice}
+  img(src="/images/GEELogo.png")
+

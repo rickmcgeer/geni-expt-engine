@@ -158,6 +158,50 @@ app.get('/login_failure', function(req, res) {
 
 var authorized_users = ["rick@mcgeer.com", "acb@cs.princeton.edu"];
 
+// Database code.  The database currently holds the users and slice data.
+// To add an authorized user or a slice, do it from the console on bilby.
+// The slice/user data ought to migrate to the MyPLC DB -- this is a hack to
+// try stuff out...will ask Andy about moving authorized users to the MyPLC DB,
+// but we can do it here...
+
+
+// database schema:
+// users: {email, role [list, currently just "admin"], "slice"}
+// slices: {name, allocated (true/false), expiry_date}
+// users.slice is null if the user has no slice
+// slices.expiry_date is null if slices.allocated = false
+
+var user_schema = mongoose.Schema({
+  email: String,
+  role: [String],
+  slice: { type: String, default: null }
+});
+
+// get the users out of the database
+var Users = mongoose.model('users', user_schema);
+
+var slice_schema = mongoose.Schema({
+  name: String,
+  allocated: { type: Boolean, default: false},
+  expiry_date: { type: Date, default: null }
+});
+
+var slices = mongoose.model('slices', slice_schema);
+
+app.get('/test_mongoose', function(req, res) {
+  Users.find({ email: 'foo@bar.com' }, function(err, users) {
+    if(err) {
+      res.send("Error in lookup " + err);
+    } else {
+      if (users.length == 0) {
+        res.send("No users found!");
+      } else {
+        res.send("users found:" + JSON.stringify(users));
+      }
+    }
+  });
+});
+
 // Successful login page.  Should be extensively modified.  Right now, shows a
 // check-back-later page if the user isn't authorized, and if it is
 // shows the user two options: get a slicelet or free a slicelet, as URLs.
@@ -172,14 +216,35 @@ app.get('/logged_in', function(req, res) {
     console.log(JSON.stringify(req.session));
     console.log(JSON.stringify(req.session.passport.user.emails[0].value));
     req.session.user = req.session.passport.user.emails[0].value;
-    var i = authorized_users.indexOf(req.session.user);
-    if (i == -1) {
-      res.render('unauthorized_user', {user:req.session.user});
-    } else {
-      var get_slicelet_url = application_url + "/get_slicelet";
-      var free_slicelet_url = application_url + "/free_slicelet";
-      res.render('logged_in', {user:req.session.user, get_url:get_slicelet_url, free_url:free_slicelet_url});
-    }
+    // See if the user is in the database
+    Users.find({ email: req.session.user }, function(err, users) {
+      if (err) {
+        console.log("Error in authorized user lookup: " + err);
+        res.render("login_error", {user:req.session.user, error:err});
+      } else if (users.length == 0) {
+        res.render('unauthorized_user', {user:req.session.user});
+      } else {
+        var get_slicelet_url = application_url + "/get_slicelet";
+        var free_slicelet_url = application_url + "/free_slicelet";
+        if (users[0].slice == null) {
+          req.session.slice = null;
+          res.render('logged_in_no_slice', {user:req.session.user, get_url:get_slicelet_url});
+        } else {
+          req.session.slice = users[0].slice;
+          // Need to make this more elaborate...
+          res.render('logged_in_with_slice', {user:req.session.user, free_url:free_slicelet_url, slice:req.session.slice});
+          
+        }
+      }
+    });
+    //var i = authorized_users.indexOf(req.session.user);
+    //if (i == -1) {
+    //  res.render('unauthorized_user', {user:req.session.user});
+    //} else {
+    //  var get_slicelet_url = application_url + "/get_slicelet";
+    //  var free_slicelet_url = application_url + "/free_slicelet";
+    //  res.render('logged_in', {user:req.session.user, get_url:get_slicelet_url, free_url:free_slicelet_url});
+    //}
 });
 
 // get a slicelet.  This just calls $ allocate-gee-slice.plcsh -- -e <user>.  This
@@ -205,6 +270,7 @@ app.get('/get_slicelet', function(req, res) {
         result = JSON.parse(data);
         returned_user = result.user;
         download_file = result.slicelet_file;
+        req.session.slice = result.slice;
     });
     cmd.stderr.on('data', function (data) {
         console.log('stderr: ' + data);
@@ -215,7 +281,12 @@ app.get('/get_slicelet', function(req, res) {
         // res.send("Completed with result: " + result + " error: " + error);
         if (download_file != null) {
             var download_url = application_url + '/download?file=' + download_file;
-            res.render('download_template', {fields:{user:returned_user, download_url:download_url}});
+            Users.update({email: req.session.user}, {slice: req.session.slice}, {multi:false}, function(err, numAffected) {
+              if (err) {
+                console.log('Error in updating database for slicelet ' + req.sesson.slice);                
+              }
+              res.render('download_template', {fields:{user:returned_user, download_url:download_url, slice:req.session.slice}});
+            });
         } else {
             res.send('Slicelet Allocation Failed for' + returned_user);
         }
@@ -247,7 +318,17 @@ app.get('/free_slicelet', function(req, res) {
     });
     cmd.on('close', function (code) {
         console.log('child process exited with code ' + code);
-        res.send("Completed with result: " + result + " error: " + error);
+        if (error) {
+          res.send("Error in freeing slicelet " + req.session.slice + ": " + error);
+        } else {
+          Users.update({email: req.session.user}, {slice: null}, {multi:false}, function(err, numAffected) {
+              if (err) {
+                console.log('Error in updating database when freeing  slicelet ' + req.sesson.slice);                
+              }
+              req.session.slice = null;
+              res.send("Completed with result: " + result);
+          });
+        }
     });
 });
 
@@ -262,27 +343,6 @@ app.get('/download', function(req, res) {
     res.download(filename);
 });
 
-// database schema:
-// users: {email, role [list, currently just "admin"], "slice"}
-// slices: {name, allocated (true/false), expiry_date}
-// users.slice is null if the user has no slice
-// slices.expiry_date is null if slices.allocated = false
-
-var user_schema = mongoose.Schema({
-  email: String,
-  role: [String],
-  slice: { type: String, default: null }
-});
-
-var Users = mongoose.model('users', user_schema);
-
-var slice_schema = mongoose.Schema({
-  name: String,
-  allocated: { type: Boolean, default: false},
-  slice: { type: Date, default: null }
-});
-
-var slices = mongoose.model('slices', slice_schema);
 
 
 // Will be replaced, just here to look at the db
