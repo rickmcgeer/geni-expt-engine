@@ -3,7 +3,13 @@ body
 center
   h1 Dashboard for User #{user}
   p User #{user} logged in, and has no current slicelets.
-  form(method="get", action='/get_slicelet')
-    button(type="submit") Get a Slicelet!
+  table(border="0")
+    tr
+       td
+         form(method="get", action='/get_slicelet')
+             button(type="submit") Get a Slicelet!
+       td
+         form(method="get", action='/send_feedback')
+             button(type="submit") Send us feedback
   img(src="/images/GEELogo.png")
 

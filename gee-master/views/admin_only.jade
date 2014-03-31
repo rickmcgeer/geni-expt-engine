@@ -1,13 +1,14 @@
 doctype html
 html
 head 
-  title Unauthorized User
+  title Unauthorized Admin
 body
   center
-    h1 User #{user} Not Registered For GEE Beta
-  p Sorry, #{user}, during the beta period only registered users may use the GEE.
-  p If you would like to use the GEE for the beta period, please use this form to contact us.
-  - var subject="Please add " + user + " to the GEE Beta program";
+    h1 User #{user} Not A GEE Admin
+  p Sorry, #{user}, you have requested a page only visible to GEE Administrators.
+  p If you are interested in becoming a GEE Administrator, please use this form to contact us.
+  em Be warned: sign up for this and we're going to ask you to do some work.
+  - var subject="Please add " + user + " as a GEE Administrator";
   center
     form(method="get", action="mailto:rick.mcgeer@us-ignite.org, acb@cs.princeton.edu")
       table

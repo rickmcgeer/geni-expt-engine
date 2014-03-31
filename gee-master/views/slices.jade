@@ -3,7 +3,17 @@ html
 head 
   title Slice List
 body
-   h1 GEE Slice List
-   ul
+  center
+    h1 GEE Slices
+    table(border=1)
+      tr
+        th Slice
+        th Allocated
+        th File
+        th Expires
       each slice, i in slices
-           li Slice: #{slice.name}
+        tr
+          td #{slice.name}
+          td #{slice.allocated}
+          td #{slice.file}
+          td #{slice.expiry_date}
