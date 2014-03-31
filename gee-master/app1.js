@@ -237,7 +237,8 @@ function render_slice_dashboard(req, res) {
       // Danger, Will Robinson! Danger!  I'm assuming any update (/renew-slicelet, /get_slicelet) has already happened here.  Given that the db
       // is small, this should be no problem, but just so we know...
       req.session.filename = slices[0].file;
-      res.render('logged_in_with_slice', {user: req.session.user, free_url:free_slicelet_url, slice:req.session.slicename, download:download_url, renew_url:renew_slicelet_url, date:slices[0].expiry_date});
+      // note req.session.admin = true or false (not null), since if we get here we know the user has logged in
+      res.render('logged_in_with_slice', {user: req.session.user, admin:req.session.admin, free_url:free_slicelet_url, slice:req.session.slicename, download:download_url, renew_url:renew_slicelet_url, date:slices[0].expiry_date});
     }
     
   });
@@ -266,7 +267,7 @@ app.get('/logged_in', function(req, res) {
         req.session.admin = users[0].admin;
         if (users[0].slice == null) {
           req.session.slicename = null;
-          res.render('logged_in_no_slice', {user:req.session.user, get_url:get_slicelet_url});
+          res.render('logged_in_no_slice', {user:req.session.user, admin:req.session.admin, get_url:get_slicelet_url});
         } else {
           req.session.slicename = users[0].slice;
           render_slice_dashboard(req, res);

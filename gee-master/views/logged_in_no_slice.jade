@@ -11,5 +11,9 @@ center
        td
          form(method="get", action='/send_feedback')
              button(type="submit") Send us feedback
+        if admin
+           td
+              form(method="get", action="/admin")
+                  button(type="submit") Admin Console
   img(src="/images/GEELogo.png")
 
