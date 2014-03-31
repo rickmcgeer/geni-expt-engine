@@ -442,6 +442,16 @@ app.get('/send_feedback', function(req, res) {
   res.render('feedback');
 });
 
+// Administrator actions and options.  Only available
+// through the admin console
+app.get('/admin', function(req, res) {
+  if (!req.session.admin) {
+    res.render('admin_only', {user:req.session.user});
+  } else {
+    res.render('admin_console', {user:req.session.user});
+  }
+});
+
 
 // Admin-only access to look at the DB.  Note that the admin must be logged in first
 // to access these pages
@@ -530,9 +540,35 @@ app.get('/add_user', function(req, res) {
     }
   }
 });
+
+// dump the logfile
+
+app.get('/dump_logfile', function(req, res) {
+  if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+    res.render('admin_only', {user:req.session.user});
+  } else {
+    res.sendfile('gee_console.log');
+  }
+  
+});
+
+// dump the error logs
+// dump the logfile
+
+app.get('/dump_error_logs', function(req, res) {
+  if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+    res.render('admin_only', {user:req.session.user});
+  } else {
+    res.sendfile('gee_console_error.log');
+  }
+});
+
+
+
 // Just a test to see if the bug report functionality works
 
 app.get('/test_bug_report', function(req, res) {
   render_error_page(req, res, "Bug Report Test", "This is a test of bug reporting functionality");
 });
+
 
