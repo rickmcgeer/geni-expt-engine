@@ -1,0 +1,47 @@
+#!/usr/bin/plcsh
+# Run as ./free-gee-slice.plcsh -- <args>
+
+import sys
+import os
+import re
+import tarfile
+import argparse
+from django.core.validators import validate_email
+
+parser = argparse.ArgumentParser(description='Release a GEE slice')
+parser.add_argument('-e','--email',
+                    help='Email address of the user for this slice', 
+		    required=True)
+
+args = parser.parse_args()
+
+# Check that the email address looks valid
+try:
+    validate_email(args.email)
+except:
+    sys.exit("ERROR: %s is not a valid email address!" % args.email)
+
+# Disallow the fake email addresses that mark the account as unused
+if re.match("instageni.*@gmail.com", args.email):
+    sys.exit("ERROR: email address %s is not allowed!" % args.email)
+
+alloc = GetPersons({'email':args.email, 'last_name':'IGPL'})
+if not alloc:
+    sys.exit("ERROR: no GEE slice allocated to %s!" % args.email)
+
+"""
+Currently, to "free" a slice, we just erase the user's email address from the 
+slice record and return it to the pool.  Obviously this is not a safe method 
+of freeing the slice, for a couple of reasons:
+
+1) The old user still retains the private key and can still login
+2) The slice is in whatever state the old user left it
+
+TODO: We should destroy and recreate the slice instead.
+"""
+
+acct = alloc[0]
+UpdatePerson(acct['person_id'], {'email':'instagenipl+%s@gmail.com' % acct['first_name']})
+print 'Freed slice ig_%s' % acct['first_name']
+
+

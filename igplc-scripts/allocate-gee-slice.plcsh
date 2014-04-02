@@ -1,0 +1,90 @@
+#!/usr/bin/plcsh
+# Run as ./get-gee-tarball.plcsh -- <args>
+
+
+import sys
+import os
+import re
+import tarfile
+import argparse
+import json
+import time
+from StringIO import StringIO
+from django.core.validators import validate_email
+
+keydir='/usr/share/keydir'
+tardir='/tmp/GEE'
+fabfile='/usr/share/gee/fabfile.py'
+readme='/usr/share/gee/README.txt'
+network='/usr/share/gee/network.py'
+
+parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')
+parser.add_argument('-e','--email',
+                    help='Email address of the user for this slice', 
+		    required=True)
+
+args = parser.parse_args()
+
+# Check that the email address looks valid
+try:
+    validate_email(args.email)
+except:
+    sys.exit("ERROR: %s is not a valid email address!" % args.email)
+
+# Disallow the fake email addresses that mark the account as unused
+if re.match("instagenipl.*@gmail.com", args.email):
+    sys.exit("ERROR: email address %s is not allowed!" % args.email)
+
+# Make sure the email address is not already in use for GEE
+inuse = GetPersons({'email':args.email})
+if inuse:
+    sys.exit("ERROR: email address %s already in use on InstaGENI-PlanetLab" % args.email)
+
+# Choose a free user account and mark it as allocated
+# A free account will have an instagenipl*@gmail.com address
+free = GetPersons({'email':'instagenipl*@gmail.com'})
+if not free:
+    sys.exit("ERROR: no GEE slices available!")
+
+# Associate the email address with the slice's user
+alloc = free[0]
+# print ("Using person %s" % alloc['email'])
+# print alloc
+UpdatePerson(alloc['person_id'], {'email':args.email})
+
+# Create the tarball
+slice = GetSlices(alloc['slice_ids'])[0]
+# print slice
+keyfile = keydir + '/%s.pem' % slice['name']
+tarball = tardir + '/%s.tar' % slice['name']
+
+if not os.path.exists(tardir):
+    os.makedirs(tardir)
+
+try:
+    os.remove(tarball)
+except OSError:
+    pass
+
+tar = tarfile.open(tarball, 'w')
+for name in [keyfile, readme, network]:
+    arcname = os.path.split(name)[1]
+    tar.add(name, arcname=arcname)
+
+# Fix up fabfile.py template
+with open(fabfile, "r") as f:
+     tmpl = f.read()
+fab = re.sub("%SLICE%", slice['name'], tmpl)
+
+ti = tarfile.TarInfo("fabfile.py")
+ti.size = len(fab)
+ti.mtime = time.time()
+tar.addfile(ti, StringIO(fab))
+
+tar.close()
+
+# Return the email and the tarball, in JSON format
+print json.dumps({'user': args.email, 'slicelet_file': tarball, 'slice':slice['name']})
+#print tarball
+
+
