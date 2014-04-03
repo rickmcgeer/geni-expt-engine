@@ -29,19 +29,23 @@ alloc = GetPersons({'email':args.email, 'last_name':'IGPL'})
 if not alloc:
     sys.exit("ERROR: no GEE slice allocated to %s!" % args.email)
 
-"""
-Currently, to "free" a slice, we just erase the user's email address from the 
-slice record and return it to the pool.  Obviously this is not a safe method 
-of freeing the slice, for a couple of reasons:
-
-1) The old user still retains the private key and can still login
-2) The slice is in whatever state the old user left it
-
-TODO: We should destroy and recreate the slice instead.
-"""
+# Destroy the slice
 
 acct = alloc[0]
-UpdatePerson(acct['person_id'], {'email':'instagenipl+%s@gmail.com' % acct['first_name']})
-print 'Freed slice ig_%s' % acct['first_name']
+
+try:
+    for id in acct['slice_ids']:
+        DeleteSlice(id)
+        print "Deleting slice ID %s" % id
+except:
+    print "*** Error deleting slice! ***" 
+    pass
+    
+try:
+    DeletePerson(email)
+    print "Deleted user %s" % email
+except:
+    print "*** Could not delete user %s" % email
+
 
 
