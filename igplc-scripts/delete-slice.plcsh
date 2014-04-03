@@ -1,24 +1,11 @@
 #!/usr/bin/plcsh
-# Run as ./create-slice.plcsh -- <args>
+# Run as ./delete-slice.plcsh -- <args>
 
 import sys
 import os
 import argparse
-from M2Crypto import RSA
-from base64 import b64encode
 
-slice_nodes = [
-    'pc4.utah.geniracks.net',
-    'pc4.instageni.gpolab.bbn.com',
-    'pc30.utahddc.geniracks.net',
-    'pc4.instageni.wisc.edu',
-    ]
-
-keydir='/usr/share/keydir'
-
-parser = argparse.ArgumentParser(description='Creates a new slice for the GENI Experiment Engine')
-parser.add_argument('-k','--keydir',default=keydir,
-                    help='Directory for storing generated keypairs\n(default: %s)'%keydir)
+parser = argparse.ArgumentParser(description='Deletes a GENI Experiment Engine slice')
 parser.add_argument('-n','--name', help='Unique user name',required=True)
 
 args = parser.parse_args()
