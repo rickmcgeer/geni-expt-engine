@@ -1,0 +1,31 @@
+#!/usr/bin/plcsh
+# Run as ./find-slicelets.plcsh -- <args>
+import json
+import re
+#
+# is a particular slice a gee slicelet?
+# this returns true if it is, false if not;
+# a gee slicelet is a "person" with last_name 'IGPL',
+#
+def is_gee_slicelet(person):
+    return person['last_name'] == 'IGPL'
+    
+def get_all_info(gee_slicelet_person):
+    return (person, GetSlices(person['slice_ids'])[0])
+    
+tardir='/tmp/GEE'
+    
+def make_slice_dictionary(person, slice):
+    result = {'name':slice['name'], 'allocated':None, 'file': None, 'expiry_date': slice['expires']}
+    if re.match("instagenipl.*@gmail.com", person['email']):
+        # slice is unallocated, return
+        return result
+    result['allocated'] = person['email']
+    result['expiry_date'] = slice['expires']
+    result['file'] = tardir + '/%s.tar' % slice['name']
+    return result
+
+all_persons = GetPersons()
+gee_slicelets = [get_all_info(person) for person in all_persons if is_gee_slicelet(person)]
+result = [make_slice_dictionary(person, slice) for (person, slice) in gee_slicelets]
+print json.dumps(result)

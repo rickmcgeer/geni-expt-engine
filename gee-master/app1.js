@@ -241,12 +241,6 @@ app.get('/logged_in', function(req, res) {
     });
 });
 
-// A little function to set the expiration date of a slice two weeks into the future.
-function expiry_date() {
-  var myDate=new Date();
-  myDate.setDate(myDate.getDate()+14);
-  return myDate;
-}
 
 // get a slicelet.  This just calls $ allocate-gee-slice.plcsh -- -e <user>.  This
 // script returns a JSON object with two fields, user (the user email) and slicelet_file
@@ -278,7 +272,6 @@ app.get('/get_slicelet', function(req, res) {
         returned_user = result.user;
         download_file = result.slicelet_file;
         req.session.slicename = result.slice;
-        expiration_date = expiry_date(); // two weeks?
     });
     // when data is received on stderr, we have a problem and log it.  Should do something more
     // intelligent on exit...
@@ -476,12 +469,35 @@ app.get('/slices', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
     res.render('admin_only', {user:req.session.user});
   } else {
-    //Slices.find(function(err, slices) {
-    //  if (err) return console.error(err);
-    //  console.log(slices);
-    //  res.render('slices', {"slices": slices});
-    //});
-    res.send("This function is coming!")
+    console.log("Getting all slices " + req.session.slicename)
+    var spawn = require('child_process').spawn;
+    var cmd = spawn('/home/service_instageni/find-slicelets.plcsh', []);
+    var error = "";
+    var result = "";
+    var slices = []
+    cmd.stdout.on('data', function (data) {
+        console.log('stdout: ' + data);
+        result = result + data;
+        slices = JSON.parse(data)
+        
+    });
+    cmd.stderr.on('data', function (data) {
+        console.log('Error in find-slicelets: ' + data);
+        error = error + data;
+    });
+    cmd.on('close', function (code) {
+        console.log('child process exited with code ' + code);
+        if (error) {
+          render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
+        } else {
+          for (var i = 0; i < slices.length; i++) {
+            slices[i].expiry_date = new Date(slices[i].expiry_date*1000).toString()
+          }
+          console.log(slices);
+          res.render('slices', {slices:slices});
+        }
+        
+    }); 
   }
 });
 
