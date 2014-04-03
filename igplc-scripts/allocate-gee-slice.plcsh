@@ -9,6 +9,7 @@ import tarfile
 import argparse
 import json
 import time
+import datetime
 from StringIO import StringIO
 from django.core.validators import validate_email
 
@@ -83,8 +84,16 @@ tar.addfile(ti, StringIO(fab))
 
 tar.close()
 
-# Return the email and the tarball, in JSON format
-print json.dumps({'user': args.email, 'slicelet_file': tarball, 'slice':slice['name']})
+#
+# Set the expiry time of the slice.  Warning!  Warning! Warning!  Not Tested!
+#
+now = int(time.time()) # right now, in seconds
+two_weeks = 3600 * 24 * 7 * 2 # 3600 s/h * 24 h/d * 7 d/w * 2 w
+expires = now + two_weeks
+UpdateSlice(slice['slice_id'], {'expires':expires})
+
+# Return the email, expiry time, slice name, and the tarball, in JSON format
+print json.dumps({'user': args.email, 'slicelet_file': tarball, 'expires': expires, 'slice':slice['name']})
 #print tarball
 
 

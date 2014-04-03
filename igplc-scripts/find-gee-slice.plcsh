@@ -57,7 +57,7 @@ keyfile = keydir + '/%s.pem' % slice['name']
 tarball = tardir + '/%s.tar' % slice['name']
 
 if os.path.exists(tarball):
-    print json.dumps({'user': args.email, 'has_slicelet': True, 'slicelet_file': tarball, 'slice':slice['name']})
+    print json.dumps({'user': args.email, 'has_slicelet': True, 'slicelet_file': tarball, 'slice':slice['name'], 'expires': slice['expires']})
     exit(0)
     
 
@@ -87,5 +87,5 @@ tar.addfile(ti, StringIO(fab))
 tar.close()
 
 # Return the email and the tarball, in JSON format
-print json.dumps({'user': args.email, 'has_slicelet': True, 'slicelet_file': tarball, 'slice':slice['name']})
+print json.dumps({'user': args.email, 'has_slicelet': True,  'expires': slice['expires'], 'slicelet_file': tarball, 'slice':slice['name']})
 

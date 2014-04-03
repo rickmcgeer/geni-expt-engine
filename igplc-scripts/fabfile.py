@@ -7,7 +7,7 @@ remote_dir = '/home/service_instageni/'
 #
 keyfile = '/Users/rick/.ssh/id_dsa'
 def deploy():
-    local('scp -i %s -r *.plcsh' % (keyfile, user, host, remote_dir))
+    local('scp -i %s -r *.plcsh %s@%s:%s' % (keyfile, user, host, remote_dir))
 
 def deploy_file(file):
     local('scp -i %s -r %s %s@%s:%s/%s' % (keyfile, file, user, host, remote_dir, file))

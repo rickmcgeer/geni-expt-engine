@@ -207,7 +207,7 @@ function render_slice_dashboard(req, res, slice_dictionary) {
     slice: slice_dictionary.slice,
     user: req.session.user,
     admin: req.session.admin,
-    date: expiry_date()
+    date: new Date(slice_dictionary.expires*1000).toString()
   };
   
   
@@ -393,7 +393,28 @@ app.get('/renew_slicelet', function(req, res) {
   if(req.session.slicename == null) {
     render_error_page(req, res, "req.session.slicename null in call to renew_slicelet", "");
   } else {
-    get_user_dashboard(req, res);
+    console.log("Renewing slice " + req.session.slicename)
+    var spawn = require('child_process').spawn;
+    var cmd = spawn('/home/service_instageni/renew-gee-slice.plcsh', ["--", "-s", req.session.slicename]);
+    var error = "";
+    var result = "";
+    cmd.stdout.on('data', function (data) {
+        console.log('stdout: ' + data);
+        result = result + data;
+    });
+    cmd.stderr.on('data', function (data) {
+        console.log('Error in renew-gee-slice: ' + data);
+        error = error + data;
+    });
+    cmd.on('close', function (code) {
+        console.log('child process exited with code ' + code);
+        if (error) {
+          render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
+        } else {
+          get_user_dashboard(req, res);
+        }
+        
+    }); 
   }
 });
 
