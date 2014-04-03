@@ -1,0 +1,81 @@
+#!/usr/bin/plcsh
+# Run as ./create-slice.plcsh -- <args>
+
+import sys
+import os
+import argparse
+from M2Crypto import RSA
+from base64 import b64encode
+
+slice_nodes = [
+    'pc4.utah.geniracks.net',
+    'pc4.instageni.gpolab.bbn.com',
+    'pc30.utahddc.geniracks.net',
+    'pc4.instageni.wisc.edu',
+    ]
+
+slice_links = [
+    ('pc4.utah.geniracks.net','pc30.utahddc.geniracks.net'),
+    ('pc4.instageni.gpolab.bbn.com','pc30.utahddc.geniracks.net'),
+    ('pc4.instageni.wisc.edu','pc30.utahddc.geniracks.net'),
+    ]
+
+slice_tags = [
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.1', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.utah.geniracks.net'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.2', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc30.utahddc.geniracks.net'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.3', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.instageni.wisc.edu'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.4', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.instageni.gpolab.bbn.com'),
+    ]
+
+keydir='/usr/share/keydir'
+
+parser = argparse.ArgumentParser(description='Creates a new slice for the GENI Experiment Engine')
+parser.add_argument('-k','--keydir',default=keydir,
+                    help='Directory for storing generated keypairs\n(default: %s)'%keydir)
+parser.add_argument('-u','--userid', help='Unique user ID (an integer)',type=int,required=True)
+
+args = parser.parse_args()
+
+# Add and enable user
+email = 'instagenipl+%s@gmail.com' % args.userid
+userid = AddPerson({'bio': None, 'phone': None, 'last_name': u'IGPL', 
+                    'first_name': str(args.userid), 'title': None, 'url': None, 
+                    'email': email})
+UpdatePerson(userid, {'enabled':True})
+    
+slicename = "ig_%s" % args.userid
+
+# Generate a private key for the user
+key = RSA.gen_key(1024, 65337)
+if not os.access(keydir, os.F_OK): os.mkdir(keydir)
+keyfile = os.path.join(keydir, "%s.pem" % slicename)
+key.save_key(keyfile, cipher=None)
+os.chmod(keyfile, 0600)
+
+# Save the public key
+pubkey = "ssh-rsa %s" % b64encode('\x00\x00\x00\x07ssh-rsa%s%s' % (key.pub()[0], key.pub()[1]))
+# print pubkey
+
+# Add the key to the account
+keyid = AddPersonKey(email, {'key_type':'ssh', 'key':pubkey})
+
+# Create a slice for the user
+sliceid = AddSlice({'name':slicename, 'description':'GEE slice for user %s' % args.userid,
+                    'url':'http://null.com'})
+
+UpdateSlice(sliceid, {'expires':2147397247L})
+
+# Add the user to the slice 
+AddPersonToSlice(userid, sliceid)
+
+# Add the nodes to the slice
+AddSliceToNodes(sliceid, slice_nodes)
+slice = GetSlices(sliceid)
+# print slice
+
+# Set up GRE tunnels
+for (tagvalue, node) in slice_tags:
+    AddSliceTag(slicename, 'interface', tagvalue % args.userid, node)
+
+# We should be all set!    
+
