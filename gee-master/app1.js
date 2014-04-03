@@ -158,9 +158,8 @@ app.get('/login_failure', function(req, res) {
 
 // database schema:
 // users: {email, role [list, currently just "admin"], admin [a boolean], "slice"}
-// slices: {name, allocated (true/false), expiry_date}
 // users.slice is null if the user has no slice
-// slices.expiry_date is null if slices.allocated = false
+// users.slice and users.role are now obsolete and will probably be deleted
 
 var user_schema = mongoose.Schema({
   email: String,
@@ -172,31 +171,6 @@ var user_schema = mongoose.Schema({
 // get the users out of the database
 var Users = mongoose.model('users', user_schema);
 
-//var slice_schema = mongoose.Schema({
-//  name: String,
-//  allocated: { type: Boolean, default: false},
-//  file: { type: String, default: null },
-//  expiry_date: { type: Date, default: null }
-//});
-
-// Get the slices out of the database
-// var Slices = mongoose.model('slices', slice_schema);
-
-// Junk code to test mongoose.  Can be deleted.
-
-app.get('/test_mongoose', function(req, res) {
-  Users.find({ email: 'foo@bar.com' }, function(err, users) {
-    if(err) {
-      res.send("Error in lookup " + err);
-    } else {
-      if (users.length == 0) {
-        res.send("No users found!");
-      } else {
-        res.send("users found:" + JSON.stringify(users));
-      }
-    }
-  });
-});
 
 // URLs to get, renew, and free slicelets, and download the tarball
 var get_slicelet_url = application_url + "/get_slicelet";
@@ -228,24 +202,7 @@ function render_slice_dashboard(req, res, slice_dictionary) {
     render_error_page(req, res, "render_slice_dashboard called with slicename null","render_slice_dashboard called with slicename null");
     return;
   }
-  // lookup the slice, handle errors, and render...
   
-  //Slices.find({ name: req.session.slicename }, function(err, slices) {
-  //  if (err) {
-  //    var error_message = "Error finding slice record for slice " + req.session.slicename + ": " + err;
-  //    render_error_page(req, res, error_message, error_message);
-  //  } else if (slices.length == 0) {
-  //    var error_message = "No records found for slice " + req.session.slicename;
-  //    render_error_page(req, res, error_message, error_message);
-  //  } else {
-  //    // Danger, Will Robinson! Danger!  I'm assuming any update (/renew-slicelet, /get_slicelet) has already happened here.  Given that the db
-  //    // is small, this should be no problem, but just so we know...
-  //    req.session.filename = slices[0].file;
-  //    // note req.session.admin = true or false (not null), since if we get here we know the user has logged in
-  //    res.render('logged_in_with_slice', {user: req.session.user, admin:req.session.admin, free_url:free_slicelet_url, slice:req.session.slicename, download:download_url, renew_url:renew_slicelet_url, date:slices[0].expiry_date});
-  //  }
-    
-  //});
   page_dictionary = {
     slice: slice_dictionary.slice,
     user: req.session.user,
@@ -279,13 +236,7 @@ app.get('/logged_in', function(req, res) {
         // Also note whether he is admin
         req.session.admin = users[0].admin;
         get_user_dashboard(req, res);
-        //if (users[0].slice == null) {
-        //  req.session.slicename = null;
-        //  res.render('logged_in_no_slice', {user:req.session.user, admin:req.session.admin, get_url:get_slicelet_url});
-        //} else {
-        //  req.session.slicename = users[0].slice;
-        //  render_slice_dashboard(req, res);
-        //}
+       
       }
     });
 });
@@ -328,45 +279,17 @@ app.get('/get_slicelet', function(req, res) {
         download_file = result.slicelet_file;
         req.session.slicename = result.slice;
         expiration_date = expiry_date(); // two weeks?
-        // Update the slices database to show it's been 
-//        Slices.update({name: req.session.slicename}, {expiry_date:expiration_date, allocated:true, file:download_file}, {multi:false}, function(err, numAffected) {
-//	  if (err) {
-//	    var err_msg = "Error updating record for slice " + req.session.slicename + ": " + err;
-//            console.log(err_msg);
-//            error = error + err_msg;
-//	  } else if (numAffected == 0) {
-//	    var err_msg = "No records updated for slice " + req.session.slicename;
-//            error = error + err_msg;
-//            console.log(err_msg);
-//	  } else {
-//	    console.log("Succesful update for " + req.session.slicename);
-//	  }
-//	});
-        Users.update({email: req.session.user}, {slice: req.session.slicename}, {multi:false}, function(err, numAffected) {
-          if (err) {
-            var err_msg = "Error updating user record " + req.session.user + " with slice " + req.session.slicename + ": " + err;
-	    console.log(err_msg);
-            error = error + err_msg;
-	  } else if (numAffected == 0) {
-	    var err_msg = "No records updated for user " + req.session.user;
-            error = error + err_msg;
-            console.log(err_msg);
-	  } else {
-	    console.log("Succesful update for " + req.session.user);
-	  }
-	});
     });
     // when data is received on stderr, we have a problem and log it.  Should do something more
     // intelligent on exit...
     cmd.stderr.on('data', function (data) {
-        console.log('Error allocate-gee-slice: ' + data);
+        console.log('Error in allocate-gee-slice: ' + data);
         error = error + data;
     });
     // when the command finishes, render the dashboard
     cmd.on('close', function (code) {
         console.log('child process exited with code ' + code);
         if(req.session.slicename != null) {
-          // render_slice_dashboard(req, res)
           get_user_dashboard(req, res);
         } else {
           render_error_page(req, res, "Slicelet Allocation Failure", error)
@@ -455,15 +378,9 @@ app.get('/free_slicelet', function(req, res) {
         if (error) {
           render_error_page(req, res, "Error in freeing slicelet " + req.session.slicename, error);
         } else {
-          Users.update({email: req.session.user}, {slice: null}, {multi:false}, function(err, numAffected) {
-              if (err) {
-                console.log('Error in updating database when freeing  slicelet ' + req.sesson.slice);                
-              }
-              req.session.slicename = null;
-              req.session.filename = null;
-              res.render('logged_in_no_slice', {user:req.session.user, get_url:get_slicelet_url});
-              //res.send("Completed with result: " + result);
-          });
+          req.session.slicename = null;
+          req.session.filename = null;
+          res.render('logged_in_no_slice', {user:req.session.user, get_url:get_slicelet_url, admin:req.session.admin});
         }
     });
 });
@@ -477,13 +394,6 @@ app.get('/renew_slicelet', function(req, res) {
     render_error_page(req, res, "req.session.slicename null in call to renew_slicelet", "");
   } else {
     get_user_dashboard(req, res);
-    //Slices.update({ name: req.session.slicename }, {expiry_date: expiry_date()}, {multi:false}, function(err, numAffected) {
-    //  if(err) {
-    //    render_error_page(req, res, "Error in updating expiry date for slice " + req.session.slicename, err);
-    //  } else {
-    //    render_slice_dashboard(req, res);
-    //  }
-    //});
   }
 });
 
@@ -491,10 +401,6 @@ app.get('/renew_slicelet', function(req, res) {
 // download primitive.  We need to error-check this better.  In particular, we
 // need to check that the file actually exists!
 app.get('/download', function(req, res) {
-    //console.log(req.url);
-    //var query = url.parse(req.url, true).query;
-    //console.log(JSON.stringify(query));
-    //filename=query.file;
     if(req.session.filename == null) {
       var error_message = "No filename set on call to /download ";
       render_error_page(req, res, error_message, "");
