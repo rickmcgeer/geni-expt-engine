@@ -42,10 +42,10 @@ except:
     pass
     
 try:
-    DeletePerson(email)
-    print "Deleted user %s" % email
+    DeletePerson(args.email)
+    print "Deleted user %s" % args.email
 except:
-    print "*** Could not delete user %s" % email
+    print "*** Could not delete user %s" % args.email
 
 
 
