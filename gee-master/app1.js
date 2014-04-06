@@ -453,9 +453,54 @@ function render_users(req, res) {
   Users.find(function(err, users) {
     if (err) return console.error(err);
     console.log(users);
-    res.render('users', {"userlist": users});
+    req.userlist = users;
+    get_slicelet_data(req, res, function(req, res, error, slices) {
+      if (error) {
+        render_error_page(req, res, "Error in displaying users " + req.session.slicename, error);
+      } else {
+        var user_list = [];
+        var slice_dictionary = {};
+        for (var slice_index in slices) {
+          var slice = slices[slice_index];
+          slice_dictionary[slice.allocated] = slice.name;
+        }
+        // console.log(slice_dictionary);
+        for (var index in req.userlist) {
+          var user = req.userlist[index];
+          user_list.push({email:user['email'], admin:user['admin'], slice:slice_dictionary[user['email']]});
+        }
+        // console.log(user_list);
+        res.render('users', {"userlist": user_list});
+      }
+    });
   });
 }
+
+// A utility function that gets slice data, and passes it to next_function.
+// next_function is a function with signature
+// next_function(req, res, error, slices)
+
+function get_slicelet_data(req, res, next_function) {
+    var spawn = require('child_process').spawn;
+    var cmd = spawn('/home/service_instageni/find-slicelets.plcsh', []);
+    var error = "";
+    var result = "";
+    var slices = [];
+    cmd.stdout.on('data', function (data) {
+        console.log('stdout: ' + data);
+        result = result + data;
+        slices = JSON.parse(data)
+    });
+    cmd.stderr.on('data', function (data) {
+        console.log('Error in find-slicelets: ' + data);
+        error = error + data;
+    });
+    cmd.on('close', function (code) {
+        console.log('child process exited with code ' + code);
+        next_function(req, res, error, slices);
+    });
+}
+         
 
 app.get('/users', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
@@ -470,34 +515,17 @@ app.get('/slices', function(req, res) {
     res.render('admin_only', {user:req.session.user});
   } else {
     console.log("Getting all slices " + req.session.slicename)
-    var spawn = require('child_process').spawn;
-    var cmd = spawn('/home/service_instageni/find-slicelets.plcsh', []);
-    var error = "";
-    var result = "";
-    var slices = []
-    cmd.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
-        result = result + data;
-        slices = JSON.parse(data)
-        
-    });
-    cmd.stderr.on('data', function (data) {
-        console.log('Error in find-slicelets: ' + data);
-        error = error + data;
-    });
-    cmd.on('close', function (code) {
-        console.log('child process exited with code ' + code);
-        if (error) {
-          render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
-        } else {
-          for (var i = 0; i < slices.length; i++) {
-            slices[i].expiry_date = new Date(slices[i].expiry_date*1000).toString()
-          }
-          console.log(slices);
-          res.render('slices', {slices:slices});
+    get_slicelet_data(req, res, function(req, res, error, slices) {
+      if (error) {
+        render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
+      } else {
+        for (var i = 0; i < slices.length; i++) {
+          slices[i].expiry_date = new Date(slices[i].expiry_date*1000).toString()
         }
-        
-    }); 
+        console.log(slices);
+        res.render('slices', {slices:slices});
+      }  
+    });
   }
 });
 
