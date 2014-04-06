@@ -5,17 +5,21 @@ head
 body
   center 
     h1 GEE Users
-    table(border=1)
-      tr
-        th User
-        th Admin
-        th Slice
-      
-      each user, i in userlist
+    form(method="post", action="/update_users")
+      table(border=1)
         tr
-          td #{user.email}
-          td #{user.admin}
-          td #{user.slice}
+          th User
+          th Admin
+          th Slice
+        
+        each user, i in userlist
+          tr
+            td #{user.email}
+            td
+               input(type="checkbox", value=user.email, name="admin", checked=user.admin)
+            td #{user.slice}
+      br
+      button(type="submit") Update
     br
     br
     form(method="get", action="/add_user")

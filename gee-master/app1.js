@@ -510,6 +510,36 @@ app.get('/users', function(req, res) {
   }
 });
 
+function update_all_users(admins) {
+  Users.find({}, function(err, users) {
+    if(err) {
+      console.log("Error in finding user in update_all_users: " + err);
+      return;
+    }
+    for (var i in users) {
+      userid = users[i].email;
+      var is_admin = admins.indexOf(userid) != -1;
+      if (is_admin != users[i].admin) {
+        Users.update({email:userid}, {$set:{admin:is_admin}}, {multi:false}, function(err, numAffected) {
+          var updating_string = "updating admin bit for " + userid + " to " + is_admin;
+          if(err) {
+            console.log("Error in " + updating_string + ": " + err);
+          } else {
+            console.log("Success in " + updating_string);
+          }
+        });
+      }
+    }
+  });
+}
+
+app.post('/update_users', function(req, res) {
+  var admins = req.body.admin;
+  console.log("Updating users, admins = " + JSON.stringify(admins));
+  update_all_users(admins);
+  render_users(req, res);
+});
+
 app.get('/slices', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
     res.render('admin_only', {user:req.session.user});
