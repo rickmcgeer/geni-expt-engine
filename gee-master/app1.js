@@ -510,25 +510,44 @@ app.get('/users', function(req, res) {
   }
 });
 
-function update_all_users(admins) {
+function update_all_users(req, res, admins) {
   Users.find({}, function(err, users) {
     if(err) {
       console.log("Error in finding user in update_all_users: " + err);
       return;
     }
+    // have to do two passes to force the updates to happen before we show the
+    // user page -- which me must to have the updates reflected in the user page.
+    // loop 1: count the number of updates
+    var do_update = []; // array of indices to update;
     for (var i in users) {
-      userid = users[i].email;
+      var userid = users[i].email;
       var is_admin = admins.indexOf(userid) != -1;
-      if (is_admin != users[i].admin) {
-        Users.update({email:userid}, {$set:{admin:is_admin}}, {multi:false}, function(err, numAffected) {
-          var updating_string = "updating admin bit for " + userid + " to " + is_admin;
-          if(err) {
-            console.log("Error in " + updating_string + ": " + err);
-          } else {
-            console.log("Success in " + updating_string);
-          }
-        });
-      }
+      if (is_admin != users[i].admin) do_update.push({userid:userid, new_admin_value:is_admin}); // note that we will have to update i
+    }
+    updates_done = 0;
+    // Tricky.  These updates happen asyncrhonously due to the callback architecture of node, so
+    // we have to keep track of what's been done and only display after the LAST update has been done.
+    for(var i in do_update) {
+      var userid = do_update[i].userid;
+      var admin_value = do_update[i].new_admin_value;
+      Users.update({email:userid}, {$set:{admin:admin_value}}, {multi:false}, function(err, numAffected) {
+        var updating_string = "updating admin bit for " + userid + " to " + admin_value;
+        if(err) {
+          console.log("Error in " + updating_string + ": " + err);
+        } else {
+          console.log("Success in " + updating_string);
+        }
+        ++updates_done;
+        // This is thread-safe.  The invariant we want to maintain is that updates_done == do_updates.length
+        // exactly ONCE, independent of thread-interleaving.  No matter how the threads are interleaved in a
+        // multi-threaded execution environment, each update will increment updates_done by exactly one, and so
+        // after the last increment to updates_done updates_done == do_updates.length.  Moreover, the last test
+        // will follow the last update.  The worst that will happen is that we'll get an extra render...
+        if (updates_done == do_update.length) {
+          render_users(req, res);
+        }
+      });
     }
   });
 }
@@ -536,8 +555,7 @@ function update_all_users(admins) {
 app.post('/update_users', function(req, res) {
   var admins = req.body.admin;
   console.log("Updating users, admins = " + JSON.stringify(admins));
-  update_all_users(admins);
-  render_users(req, res);
+  update_all_users(req, res, admins);
 });
 
 app.get('/slices', function(req, res) {
