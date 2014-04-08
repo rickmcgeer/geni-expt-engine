@@ -161,6 +161,9 @@ app.get('/login_failure', function(req, res) {
 // users.slice is null if the user has no slice
 // users.slice and users.role are now obsolete and will probably be deleted
 
+// email is a unique index for both the collections users and user_requests in
+// mongo (done from the command line) so we don't have to worry about duplicate entries
+
 var user_schema = mongoose.Schema({
   email: String,
   role: {type: [String], default:["user"]},
@@ -171,6 +174,18 @@ var user_schema = mongoose.Schema({
 // get the users out of the database
 var Users = mongoose.model('users', user_schema);
 
+// user requests
+// These are requests that have come in from the form and are to be serviced
+
+var user_request_schema = mongoose.Schema({
+  email: String,
+  name: {type: String, default: null},
+  comments: {type: String, default: null},
+  created: {type: Date, default: Date.now}
+});
+
+// a variable for the user requests
+var UserRequests = mongoose.model('user_requests', user_request_schema);
 
 // URLs to get, renew, and free slicelets, and download the tarball
 var get_slicelet_url = application_url + "/get_slicelet";
@@ -209,8 +224,6 @@ function render_slice_dashboard(req, res, slice_dictionary) {
     admin: req.session.admin,
     date: new Date(slice_dictionary.expires*1000).toString()
   };
-  
-  
   res.render('logged_in_with_slice', page_dictionary);
 }
 
@@ -241,6 +254,30 @@ app.get('/logged_in', function(req, res) {
     });
 });
 
+// Put in an add-user request.  We're replacing an email here
+app.post('/add_user_request', function(req, res) {
+  // shouldn't happen, but there are weird timing things...
+  Users.find({email:req.body.email}, function(err, users) {
+    // we will log any error, but aside from that do nothing -- this was just a sanity check
+    if (err) {
+      console.log("Error " + err + " in sanity-check lookup of user " + req.body.email + " (which was not expected to succeed)");
+    } else if (users.length > 0) {
+      console.log("user " + req.body.email + " requested a login but already has an account!");
+      req.session.user = req.body.email;
+      get_user_dashboard(req, res);
+    } else {
+      // Add the user to the user_requests table and show a results page
+      UserRequests.create( { email: req.body.email, name: req.body.name, comments: req.body.comments}, function(err, addition) {
+        if (err) {
+          console.log("Error adding user request " + JSON.stringify(req.body) + ": " + err);
+          render_error_page(req, res, "Error adding user request " + err, JSON.stringify(req.body));
+        } else {
+          res.render('user_request_confirm', {email:req.body.email, name: req.body.name});
+        }
+      });
+    }
+  });
+});
 
 // get a slicelet.  This just calls $ allocate-gee-slice.plcsh -- -e <user>.  This
 // script returns a JSON object with two fields, user (the user email) and slicelet_file
@@ -456,7 +493,7 @@ function render_users(req, res) {
     req.userlist = users;
     get_slicelet_data(req, res, function(req, res, error, slices) {
       if (error) {
-        render_error_page(req, res, "Error in displaying users " + req.session.slicename, error);
+        render_error_page(req, res, "Error in displaying users", error);
       } else {
         var user_list = [];
         var slice_dictionary = {};
@@ -464,17 +501,119 @@ function render_users(req, res) {
           var slice = slices[slice_index];
           slice_dictionary[slice.allocated] = slice.name;
         }
-        // console.log(slice_dictionary);
+        
         for (var index in req.userlist) {
           var user = req.userlist[index];
           user_list.push({email:user['email'], admin:user['admin'], slice:slice_dictionary[user['email']]});
         }
-        // console.log(user_list);
+        
         res.render('users', {"userlist": user_list});
       }
     });
   });
 }
+
+// A little utility because HTML forms return a string when only a single item is
+// checked in a list of checkboxes, but a list if more than one is checked.  This does awful things
+// unless you regularize it...
+
+function ensure_items_in_a_list(input_parm) {
+  var result = input_parm;
+  if (result == null) return []; // no nulls
+  if (typeof(result) == "string") return [result];
+  return result;
+}
+
+app.get('/user_requests', function(req, res) {
+  if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+    res.render('admin_only', {user:req.session.user});
+  } else {
+    render_user_requests(req, res);
+  }
+});
+
+function render_user_requests(req, res) {
+  UserRequests.find({}, function(err, user_requests) {
+    if(err) {
+      console.log("Error finding outstanding user requests: " + err);
+      render_error_page(req, res, "Error in displaying user requests", error);
+    }
+    res.render('user_requests', {"request_list": user_requests});
+  });
+}
+
+// The next three functions implement acting on user requests.  This comes from
+// the form /add_requested_users on page user_requests.jade.
+// This form will give us two separate email lists: new user requests to be
+// confirmed, and requests to be deleted.  Here, we pull out the two lists
+// and call act_on_user_requests to manipulate the database.
+// I should probably factor those into things which actually just manipulate the db
+
+app.post('/add_requested_users', function(req, res) {
+  var to_confirm = ensure_items_in_a_list(req.body.confirm);
+  var to_delete = ensure_items_in_a_list(req.body.to_delete);
+  var user_string = "Will confirm " + to_confirm.length + " new users: " + to_confirm + ".";
+  var delete_string = "Will delete " + to_delete.length + " requests: " + to_delete;
+  console.log(user_string + " " + delete_string);
+  if (to_confirm.length == 0 && to_delete.length == 0) {
+    // nothing to do!
+    res.render('admin_console', {user:req.session.user});
+  } else {
+    act_on_user_requests(req, res, to_confirm, to_delete);
+  }
+});
+
+// Act on the user requests.  This is called by /add_requested_users, and is broken
+// out as a separate function to avoid the usual node deep nesting...
+
+function act_on_user_requests(req, res, confirm, to_delete) {
+  // first, make sure that we are going to delete all the records we
+  // are confirming.  Also prepare the array for the batch add to Users.
+  var new_users = [];
+  // Should I check if this user is already in the DB?  That would be a pain, due
+  // to the asynch nature of find...
+  for(var confirm_index in confirm) {
+    var user = confirm[confirm_index];
+    if (to_delete.indexOf(user) == -1) {
+      to_delete.push(user);
+    }
+    new_users.push({email:user});
+  }
+  console.log("users to be added: " + new_users);
+  console.log("requests to be deleted: " + to_delete);
+  if (new_users.length > 0) { // there are users to add
+    Users.create(new_users, function(err, updated) {
+      if (err) {
+        render_error_page(req, res, "Error in updating users", err);
+        // note we won't do the deletes if we hit an error...
+      } else {
+        console.log("Update action " + updated + " completed.");
+        delete_requests(req, res, to_delete);
+      }
+    });
+  } else {
+    delete_requests(req, res, to_delete);
+  }
+}
+
+// Delete user requests that have been serviced, or have been explicitly marked
+// for deletion.  We will not have to worry about synchronization, because we
+// are displaying the user page, not the requests page after this, giving plenty of time
+// to finish up
+
+function delete_requests(req, res, requests_to_delete) {
+  // there is probably a better way to do this, but this is safe...revisit
+  // when I learn mongoose a little better
+  for(var i in requests_to_delete) {
+    var userid = requests_to_delete[i];
+    UserRequests.remove({email:userid}, function(err) {
+      console.log("Error in deleting request for userid " + userid + ": " + err);
+    });
+  }
+  // Just render the admin console again
+  res.render('admin_console', {user:req.session.user});
+}
+
 
 // A utility function that gets slice data, and passes it to next_function.
 // next_function is a function with signature
@@ -510,7 +649,8 @@ app.get('/users', function(req, res) {
   }
 });
 
-function update_all_users(req, res, admins) {
+function update_all_users(req, res, admins_from_form) {
+  var admins = ensure_items_in_a_list(admins_from_form);
   Users.find({}, function(err, users) {
     if(err) {
       console.log("Error in finding user in update_all_users: " + err);
@@ -662,4 +802,10 @@ app.get('/test_bug_report', function(req, res) {
   render_error_page(req, res, "Bug Report Test", "This is a test of bug reporting functionality");
 });
 
+// A test to walk us through the add_user_request pipeline
+// Don't forget to delete users through mongo when done
+
+app.get('/test_user_add', function(req, res) {
+  res.render('unauthorized_user', {user:'foo@bar.com'});
+});
 
