@@ -199,7 +199,7 @@ function render_error_page(req, res, bug_subject, bug_body_comment) {
   //var session_data = JSON.stringify(req.session);
   var bug_report = JSON.stringify({date:date, session:req.session, note:bug_body_comment});
   console.log("Error Page Rendered, subject " + bug_subject + ". Report: " + bug_report);
-  res.render('error_page', {bugreport: bug_subject, bugreport_body: bug_report});
+  res.render('error_page', {bugreport: bug_subject, bugreport_body: bug_report, title: 'Error'});
   
 }
 
@@ -467,14 +467,14 @@ app.get('/download', function(req, res) {
 // but no dependency, we can put this on the login page
 
 app.get('/send_feedback', function(req, res) {
-  res.render('feedback');
+  res.render('feedback', {title: 'Feedback');
 });
 
 // Administrator actions and options.  Only available
 // through the admin console
 app.get('/admin', function(req, res) {
   if (!req.session.admin) {
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     res.render('admin_console', {user:req.session.user});
   }
@@ -526,7 +526,7 @@ function ensure_items_in_a_list(input_parm) {
 
 app.get('/user_requests', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     render_user_requests(req, res);
   }
@@ -643,7 +643,7 @@ function get_slicelet_data(req, res, next_function) {
 
 app.get('/users', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     render_users(req, res);
   }
@@ -700,7 +700,7 @@ app.post('/update_users', function(req, res) {
 
 app.get('/slices', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     console.log("Getting all slices " + req.session.slicename)
     get_slicelet_data(req, res, function(req, res, error, slices) {
@@ -740,7 +740,7 @@ function validate_username(username) {
 // of node.js...I should refactor and clean this up.
 app.get('/add_user', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     // user name is a parameter to the call
     var query = url.parse(req.url, true).query;
@@ -776,7 +776,7 @@ app.get('/add_user', function(req, res) {
 
 app.get('/dump_logfile', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     res.sendfile('gee_console.log');
   }
@@ -788,7 +788,7 @@ app.get('/dump_logfile', function(req, res) {
 
 app.get('/dump_error_logs', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user});
+    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
   } else {
     res.sendfile('gee_console_error.log');
   }

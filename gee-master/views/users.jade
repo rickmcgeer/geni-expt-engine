@@ -1,36 +1,36 @@
 doctype html
 html
 head 
-  title User List
+	title User List
 body
-  center 
-    h1 GEE Users
-    form(method="post", action="/update_users")
-      table(border=1)
-        tr
-          th User
-          th Admin
-          th Slice
-        
-        each user, i in userlist
-          tr
-            td #{user.email}
-            td
-               input(type="checkbox", value=user.email, name="admin", checked=user.admin)
-            td #{user.slice}
-      br
-      button(type="submit") Update
-    br
-    br
-    form(method="get", action="/add_user")
-      table
-        tr
-          td New User
-          td: input(type="text", name="user", size=30)
-        tr
-          td(colspan=2, style="text-align:center")
-            button(type="submit")  Add User
-    br
-    br
-    form(method="get", action="/admin")
-        button(type="submit") Return to admin console
+	center 
+		h1 GEE Users
+		form(method="post", action="/update_users")
+			table(border=1)
+				tr
+					th User
+					th Admin
+					th Slice
+				
+				each user, i in userlist
+					tr
+						td #{user.email}
+						td
+							 input(type="checkbox", value=user.email, name="admin", checked=user.admin)
+						td #{user.slice}
+			br
+			button(type="submit") Update
+		br
+		br
+		form(method="get", action="/add_user")
+			table
+				tr
+					td New User
+					td: input(type="text", name="user", size=30)
+				tr
+					td(colspan=2, style="text-align:center")
+						button(type="submit")	Add User
+		br
+		br
+		form(method="get", action="/admin")
+				button(type="submit") Return to admin console

@@ -1,15 +1,15 @@
 doctype html
 html
 head 
-  title Welcome to GEE
-  link(rel="openid.server", href="https://portal.geni.net/server/server.php")
+	title Welcome to GEE
+	link(rel="openid.server", href="https://portal.geni.net/server/server.php")
 body
 center
-  h1 Welcome to the GENI Experiment Engine
-  p This website will permit you to allocate and free slicelets, check the status of your slicelets, and download credentials and execution files.
-  p Please start by signing in with your GENI account
+	h1 Welcome to the GENI Experiment Engine
+	p This website will permit you to allocate and free slicelets, check the status of your slicelets, and download credentials and execution files.
+	p Please start by signing in with your GENI account
 
-  form(method="post", action="/auth/openid")
-    input(type="hidden", name="openid_identifier", value="https://portal.geni.net/server/server.php")
-    button(type="submit") Login
-  img(src="/images/GEELogo.png")
+	form(method="post", action="/auth/openid")
+		input(type="hidden", name="openid_identifier", value="https://portal.geni.net/server/server.php")
+		button(type="submit") Login
+	img(src="/images/GEELogo.png")
