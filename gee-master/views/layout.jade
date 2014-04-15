@@ -1,11 +1,12 @@
 doctype html
-	html
-		head
-			if title
-				title GEE - #{title}
-			else
-				title Geni Experiment Engine
-			block custHead
-		body
-			div#content
-				block content
+html
+	head
+		if title
+			title GEE - #{title}
+		else
+			title GENI Experiment Engine
+		link(rel='stylesheet' href='/styles/main.css')
+		block custHead
+	body
+		div#content
+			block content

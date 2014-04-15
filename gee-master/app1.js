@@ -467,7 +467,7 @@ app.get('/download', function(req, res) {
 // but no dependency, we can put this on the login page
 
 app.get('/send_feedback', function(req, res) {
-  res.render('feedback', {title: 'Feedback');
+  res.render('feedback', {title: 'Feedback'});
 });
 
 // Administrator actions and options.  Only available
@@ -538,7 +538,7 @@ function render_user_requests(req, res) {
       console.log("Error finding outstanding user requests: " + err);
       render_error_page(req, res, "Error in displaying user requests", error);
     }
-    res.render('user_requests', {"request_list": user_requests. title:'User List'});
+    res.render('user_requests', {"request_list": user_requests, title:'User List'});
   });
 }
 
