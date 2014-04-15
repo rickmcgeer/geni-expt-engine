@@ -1,11 +1,6 @@
-doctype html
-html
-head 
-	title User Request Confirmed
-body
+extends layout
+block content
 	center
 		h1 Account requested for User #{email}
 	p An account has been requested for User #{email} with name #{name}, with comments attached:
 	p #{comments}
-	center
-		img(src="/images/GEELogo.png")

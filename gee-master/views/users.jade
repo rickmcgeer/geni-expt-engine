@@ -1,9 +1,6 @@
-doctype html
-html
-head 
-	title User List
-body
-	center 
+extends layout
+block content
+	center
 		h1 GEE Users
 		form(method="post", action="/update_users")
 			table(border=1)
@@ -11,12 +8,11 @@ body
 					th User
 					th Admin
 					th Slice
-				
 				each user, i in userlist
 					tr
 						td #{user.email}
 						td
-							 input(type="checkbox", value=user.email, name="admin", checked=user.admin)
+							input(type="checkbox", value=user.email, name="admin", checked=user.admin)
 						td #{user.slice}
 			br
 			button(type="submit") Update
@@ -33,4 +29,4 @@ body
 		br
 		br
 		form(method="get", action="/admin")
-				button(type="submit") Return to admin console
+                        button(type="submit") Return to admin console

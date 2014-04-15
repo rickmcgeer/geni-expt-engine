@@ -1,9 +1,6 @@
-doctype html
-html
-head 
-	title User List
-body
-	center 
+extends layout
+block content
+	center
 		h1 GEE User Requests
 		form(method="post", action="/add_requested_users")
 			table(border=1)
@@ -14,7 +11,7 @@ body
 					th Comments
 					th Confirm?
 					th Delete Request (Automatically deleted on confirmation)
-				
+
 				each user, i in request_list
 					tr
 						td #{user.name}
@@ -31,4 +28,3 @@ body
 			br
 			form(method="get", action="/admin")
 				button(type="submit") Return to admin console
-		

@@ -138,14 +138,14 @@ app.get('/auth/openid/return',
 // The greeting page is the login page
 
 app.get('/', function(req, res) {
-    res.render('login');
+    res.render('login', {title: 'Welcome to GEE'});
 });
 
 // Redirect here on failure.  This page will permit the user to try to login
 // again
 
 app.get('/login_failure', function(req, res) {
-    res.render('login_failure');
+    res.render('login_failure', {title: 'Login Failed'});
 });
 
 
@@ -241,7 +241,7 @@ app.get('/logged_in', function(req, res) {
         var message = "Error in authorized user lookup for " + req.session.user;
         render_error_page(req, res, message, message);
       } else if (users.length == 0) {
-        res.render('unauthorized_user', {user:req.session.user});
+        res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
       } else {
         // he's a valid user.  If he doesn't have a slice, send him to a page where
         // he can allocate a slicelet.  If he does have a slice, initialize the slicename
@@ -272,7 +272,7 @@ app.post('/add_user_request', function(req, res) {
           console.log("Error adding user request " + JSON.stringify(req.body) + ": " + err);
           render_error_page(req, res, "Error adding user request " + err, JSON.stringify(req.body));
         } else {
-          res.render('user_request_confirm', {email:req.body.email, name: req.body.name});
+          res.render('user_request_confirm', {email:req.body.email, name: req.body.name, title:'User Request Confirmed'});
         }
       });
     }
@@ -507,7 +507,7 @@ function render_users(req, res) {
           user_list.push({email:user['email'], admin:user['admin'], slice:slice_dictionary[user['email']]});
         }
         
-        res.render('users', {"userlist": user_list});
+        res.render('users', {"userlist": user_list, title:'User List'});
       }
     });
   });
@@ -538,7 +538,7 @@ function render_user_requests(req, res) {
       console.log("Error finding outstanding user requests: " + err);
       render_error_page(req, res, "Error in displaying user requests", error);
     }
-    res.render('user_requests', {"request_list": user_requests});
+    res.render('user_requests', {"request_list": user_requests. title:'User List'});
   });
 }
 
@@ -711,7 +711,7 @@ app.get('/slices', function(req, res) {
           slices[i].expiry_date = new Date(slices[i].expiry_date*1000).toString()
         }
         console.log(slices);
-        res.render('slices', {slices:slices});
+        res.render('slices', {slices:slices, title:'Slice List'});
       }  
     });
   }
@@ -806,6 +806,6 @@ app.get('/test_bug_report', function(req, res) {
 // Don't forget to delete users through mongo when done
 
 app.get('/test_user_add', function(req, res) {
-  res.render('unauthorized_user', {user:'foo@bar.com'});
+  res.render('unauthorized_user', {user:'foo@bar.com', title:'Unauthorized User'});
 });
 

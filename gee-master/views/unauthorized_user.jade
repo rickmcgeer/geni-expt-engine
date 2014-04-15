@@ -1,8 +1,5 @@
-doctype html
-html
-head 
-	title Unauthorized User
-body
+extends layout
+block content
 	center
 		h1 User #{user} Not Registered For GEE Beta
 	p Sorry, #{user}, during the beta period only registered users may use the GEE.
@@ -23,4 +20,3 @@ body
 				tr
 					td(colspan=2, style="text-align:center")
 						button(type="submit") Submit
-		img(src="/images/GEELogo.png")

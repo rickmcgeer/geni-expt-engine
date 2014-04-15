@@ -1,19 +1,17 @@
-doctype html
-body
-center
-	h1 Dashboard for User #{user}
-	p User #{user} logged in, and has no current slicelets.
-	table(border="0")
-		tr
-			 td
-				 form(method="get", action='/get_slicelet')
-						 button(type="submit") Get a Slicelet!
-			 td
-				 form(method="get", action='/send_feedback')
-						 button(type="submit") Send us feedback
-				if admin
-					 td
-							form(method="get", action="/admin")
-									button(type="submit") Admin Console
-	img(src="/images/GEELogo.png")
-
+extends layout
+block content
+        center
+        	h1 Dashboard for User #{user}
+        	p User #{user} logged in, and has no current slicelets.
+        	table(border="0")
+        		tr
+        			td
+        				form(method="get", action='/get_slicelet')
+        					button(type="submit") Get a Slicelet!
+        			td
+        				form(method="get", action='/send_feedback')
+        					button(type="submit") Send us feedback
+        				if admin
+        					td
+        					form(method="get", action="/admin")
+                                                        button(type="submit") Admin Console
