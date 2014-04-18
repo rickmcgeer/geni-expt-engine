@@ -1,22 +1,23 @@
 extends layout
 block content
-        center
-        	h1 Dashboard for User #{user}
-        	p User #{user} logged in, currently has slicelet #{slice}, which expires on #{date}.
-        	table(border=0)
-        		tr
-        			td
-        				form(method="get", action='/free_slicelet')
-        					button(type="submit") Free Slicelet #{slice}
-        			td
-        				form(method="get", action='/renew_slicelet')
-        					button(type="submit") Renew Slicelet #{slice}
-        			td
-        				form(method="get", action='/download')
-        					button(type="submit") Download Slicelet File
-        			td
-        				form(method="get", action='/send_feedback')
-        					button(type="submit") Send us feedback
-        				if admin
-        					td
-                                                        form(method="get", action="/admin")button(type="submit") Admin Console
+	center
+		h1 Dashboard for User #{user}
+		p User #{user} logged in, currently has slicelet #{slice}, which expires on #{date}.
+		table(border=0)
+			tr
+				td
+					form(method="get", action='/free_slicelet')
+						button(type="submit") Free Slicelet #{slice}
+				td
+					form(method="get", action='/renew_slicelet')
+						button(type="submit") Renew Slicelet #{slice}
+				td
+					form(method="get", action='/download')
+						button(type="submit") Download Slicelet File
+				td
+					form(method="get", action='/send_feedback')
+						button(type="submit") Send us feedback
+				if admin
+					td
+						form(method="get", action="/admin")
+							button(type="submit") Admin Console
