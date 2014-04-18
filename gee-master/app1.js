@@ -807,3 +807,23 @@ app.get('/test_bug_report', function(req, res) {
 //app.get('/test_user_add', function(req, res) {
 //  res.render('unauthorized_user', {user:'foo@bar.com', title:'Unauthorized User'});
 //});
+
+//404 handling
+app.use(function(req, res, next){
+	res.status(404);
+	
+	// respond with html page
+	if (req.accepts('html')) {
+		res.render('404', {title: '404'});
+		return;
+	}
+	
+	// respond with json
+	if (req.accepts('json')) {
+		res.json({ error: '404 - Not found' });
+		return;
+	}
+	
+	// default to plain-text. send()
+	res.type('txt').send('Not found');
+});
