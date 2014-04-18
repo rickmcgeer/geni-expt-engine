@@ -1,24 +1,23 @@
 extends layout
 block content
-        center
-        	h1 Admin Console for User #{user}
-        	p Admin #{user} logged in.
-                p Available actions:
-        	table(border=0)
-        		tr
-        			 td
-        				 form(method="get", action='/users')
-        						button(type="submit") Show users
-        			 td
-        				form(method="get", action='/slices')
-        						button(type="submit") Show slices
-        			 td
-        				form(method="get", action='/user_requests')
-        						button(type="submit") Show add-user requests
-
-        			 td
-        				 form(method="get", action='/dump_logfile')
-        						button(type="submit") Dump the logfile
-        			 td
-        				 form(method="get", action='/dump_error_logs')
-        						 button(type="submit") Show Error logs
+	center
+		h1 Admin Console for User #{user}
+		p Admin #{user} logged in.
+		p Available actions:
+		table(border=0)
+			tr
+				td
+					form(method="get", action='/users')
+						button(type="submit") Show users
+				td
+					form(method="get", action='/slices')
+						button(type="submit") Show slices
+				td
+					form(method="get", action='/user_requests')
+						button(type="submit") Show add-user requests
+				td
+					form(method="get", action='/dump_logfile')
+						button(type="submit") Dump the logfile
+				td
+					form(method="get", action='/dump_error_logs')
+						button(type="submit") Show Error logs
