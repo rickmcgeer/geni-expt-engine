@@ -804,8 +804,6 @@ app.get('/test_bug_report', function(req, res) {
 
 // A test to walk us through the add_user_request pipeline
 // Don't forget to delete users through mongo when done
-
 app.get('/test_user_add', function(req, res) {
   res.render('unauthorized_user', {user:'foo@bar.com', title:'Unauthorized User'});
 });
-
