@@ -1,24 +1,21 @@
 extends layout
 block content
-	center
-		h1 Feedback
-		p.
-			Thanks for taking the time to give us feedback on the GENI Experiment Engine
-	center
-		form(method="get", action="mailto:rick.mcgeer@us-ignite.org, acb@cs.princeton.edu")
-			table
-				tr
-					td Name
-					td: input(type="text", name="name", value="Your Name", size=30)
-				tr
-					td Email
-					td: input(type="text", name="mail", value = "Your Email", size=20)
-				tr
-					td Subject
-					td: input(type="text", name="subject", value="Subject", size=50)
-				tr
-					td Additional Comments
-					td: textarea(name="body", rows=10, cols=50, value=bugreport_body)
-				tr
-					td(colspan=2, style="text-align:center")
-						button(type="submit") Submit
+	div.pageHeader Feedback
+	div Thanks for taking the time to give us feedback on the GENI Experiment Engine
+	form(method="get", action="mailto:rick.mcgeer@us-ignite.org, acb@cs.princeton.edu")
+		table
+			tr
+				td Name
+				td: input(type="text", name="name", value="Your Name", size=30)
+			tr
+				td Email
+				td: input(type="text", name="mail", value = "Your Email", size=20)
+			tr
+				td Subject
+				td: input(type="text", name="subject", value="Subject", size=50)
+			tr
+				td Additional Comments
+				td: textarea(name="body", rows=10, cols=50, value=bugreport_body)
+			tr
+				td(colspan=2, style="text-align:center")
+					button(type="submit") Submit

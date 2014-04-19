@@ -1,20 +1,19 @@
 exends layout
 block content
-	center
-		h1 GEE Slices
-		table(border=1)
+	div.pageHeader GEE Slices
+	table(border=1)
+		tr
+			th Slice
+			th Allocated
+			th File
+			th Expires
+		each slice, i in slices
 			tr
-				th Slice
-				th Allocated
-				th File
-				th Expires
-			each slice, i in slices
-				tr
-					td #{slice.name}
-					td #{slice.allocated}
-					td #{slice.file}
-					td #{slice.expiry_date}
-		br
-		br
-		form(method="get", action="/admin")
-			button(type="submit") Return to admin console
+				td #{slice.name}
+				td #{slice.allocated}
+				td #{slice.file}
+				td #{slice.expiry_date}
+	br
+	br
+	form(method="get", action="/admin")
+		button(type="submit") Return to admin console

@@ -1,29 +1,28 @@
 extends layout
 block content
-	center
-		h1 GEE User Requests
-		form(method="post", action="/add_requested_users")
-			table(border=1)
+	div.pageHeader GEE User Requests
+	form(method="post", action="/add_requested_users")
+		table(border=1)
+			tr
+				th Name
+				th Email
+				th Request Date
+				th Comments
+				th Confirm?
+				th Delete Request (Automatically deleted on confirmation)
+			each user, i in request_list
 				tr
-					th Name
-					th Email
-					th Request Date
-					th Comments
-					th Confirm?
-					th Delete Request (Automatically deleted on confirmation)
-				each user, i in request_list
-					tr
-						td #{user.name}
-						td #{user.email}
-						td #{user.created}
-						td #{user.comments}
-						td
-							 input(type="checkbox", value=user.email, name="confirm", checked)
-						td
-							 input(type="checkbox", value=user.email, name="to_delete", checked)
-			br
-			button(type="submit") Update
-			br
-			br
-			form(method="get", action="/admin")
-				button(type="submit") Return to admin console
+					td #{user.name}
+					td #{user.email}
+					td #{user.created}
+					td #{user.comments}
+					td
+						 input(type="checkbox", value=user.email, name="confirm", checked)
+					td
+						 input(type="checkbox", value=user.email, name="to_delete", checked)
+		br
+		button(type="submit") Update
+		br
+		br
+	form(method="get", action="/admin")
+		button(type="submit") Return to admin console
