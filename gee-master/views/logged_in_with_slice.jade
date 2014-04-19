@@ -2,21 +2,10 @@ extends layout
 block content
 		div.pageHeader Dashboard for User #{user}
 		div User #{user} logged in, currently has slicelet #{slice}, which expires on #{date}.
-		table(border=0)
-			tr
-				td
-					form(method="get", action='/free_slicelet')
-						button(type="submit") Free Slicelet #{slice}
-				td
-					form(method="get", action='/renew_slicelet')
-						button(type="submit") Renew Slicelet #{slice}
-				td
-					form(method="get", action='/download')
-						button(type="submit") Download Slicelet File
-				td
-					form(method="get", action='/send_feedback')
-						button(type="submit") Send us feedback
-				if admin
-					td
-						form(method="get", action="/admin")
-							button(type="submit") Admin Console
+		div
+			a.pageOptions(href='/free_slicelet') Free Slicelet #{slice}
+			a.pageOptions(href='/renew_slicelet') Renew Slicelet #{slice}
+			a.pageOptions(href='/download') Download Slicelet File
+			a.pageOptions(href='/send_feedback') Send us feedback
+			if admin
+				a.pageOptions(href='/admin') Admin Console

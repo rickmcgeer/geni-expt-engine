@@ -2,15 +2,8 @@ extends layout
 block content
 		div.pageHeader Dashboard for User #{user}
 		div User #{user} logged in, and has no current slicelets.
-		table(border="0")
-			tr
-				td
-					form(method="get", action='/get_slicelet')
-						button(type="submit") Get a Slicelet!
-				td
-					form(method="get", action='/send_feedback')
-						button(type="submit") Send us feedback
-				if admin
-					td
-						form(method="get", action="/admin")
-							button(type="submit") Admin Console
+		div
+			a.pageOptions(href='/get_slicelet') Get a Slicelet!
+			a.pageOptions(href='/send_feedback') Send us feedback
+			if admin
+				a.pageOptions(href='/admin') Admin Console

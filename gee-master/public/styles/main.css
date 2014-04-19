@@ -1,12 +1,13 @@
 body{
-	background-color: #FCDBC1;
+	background-color: #F57F20;
+	font-family: 'PT Sans', sans-serif;
 }
 
 #content {
 	width:800px;
 	margin-left:auto;
 	margin-right:auto;
-	background-color: #FFF;
+	background-color: #F8A563;
 }
 
 .pageHeader {
@@ -15,7 +16,11 @@ body{
 	font-size:30px;
 }
 
+.pageOptions {
+	padding-right:15px;
+}
+
 #footer{
-	font-size:8px;
+	font-size:12px;
 	text-align: center;
 }
