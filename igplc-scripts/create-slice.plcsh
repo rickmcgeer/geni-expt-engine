@@ -8,23 +8,16 @@ from M2Crypto import RSA
 from base64 import b64encode
 
 slice_nodes = [
-    'pc4.utah.geniracks.net',
-    'pc4.instageni.gpolab.bbn.com',
-    'pc30.utahddc.geniracks.net',
-    'pc4.instageni.wisc.edu',
+    'pc3.instageni.rnoc.gatech.edu',
+    'pc32.utahddc.geniracks.net',
+    'pc5.geni.it.cornell.edu',
     ]
 
-slice_links = [
-    ('pc4.utah.geniracks.net','pc30.utahddc.geniracks.net'),
-    ('pc4.instageni.gpolab.bbn.com','pc30.utahddc.geniracks.net'),
-    ('pc4.instageni.wisc.edu','pc30.utahddc.geniracks.net'),
-    ]
-
+# Need to manually set up the GRE tunnel topology on the nodes
 slice_tags = [
-    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.1', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.utah.geniracks.net'),
-    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.2', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc30.utahddc.geniracks.net'),
-    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.3', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.instageni.wisc.edu'),
-    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.4', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.instageni.gpolab.bbn.com'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.1', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc3.instageni.rnoc.gatech.edu'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.2', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc32.utahddc.geniracks.net'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.3', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc5.geni.it.cornell.edu'),
     ]
 
 keydir='/usr/share/keydir'
