@@ -8,7 +8,7 @@ import re
 # a gee slicelet is a "person" with last_name 'IGPL',
 #
 def is_gee_slicelet(person):
-    return person['last_name'] == 'IGPL'
+    return (person['last_name'] == 'IGPL') and (len(GetSlices(person['slice_ids'])) > 0)
     
 def get_all_info(gee_slicelet_person):
     return (person, GetSlices(person['slice_ids'])[0])
