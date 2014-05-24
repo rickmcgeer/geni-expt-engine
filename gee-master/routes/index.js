@@ -18,6 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS 
 //IN THE WORK.
 
-module.exports = function() {
-	require('');
+module.exports = function(app, passport) {
+	var utils = require('./route_utils');
+	require('./auth')(app,passport);
+	require('./main')(app);
+	require('./user')(app,utils);
 }
