@@ -15,26 +15,4 @@ module.exports = function(app) {
 	app.get('/send_feedback', function(req, res) {
 	  res.render('feedback', {title: 'Feedback'});
 	});
-	
-	// dump the logfile
-
-app.get('/dump_logfile', function(req, res) {
-  if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
-  } else {
-    res.sendfile('gee_console.log');
-  }
-  
-});
-
-// dump the error logs
-// dump the logfile
-
-app.get('/dump_error_logs', function(req, res) {
-  if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-    res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
-  } else {
-    res.sendfile('gee_console_error.log');
-  }
-});
 }
