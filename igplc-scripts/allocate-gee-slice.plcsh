@@ -43,7 +43,12 @@ if inuse:
 
 # Choose a free user account and mark it as allocated
 # A free account will have an instagenipl*@gmail.com address
-free = GetPersons({'email':'instagenipl*@gmail.com'})
+allegedlyFree = GetPersons({'email':'instagenipl*@gmail.com'})
+free = []
+for person in allegedlyFree:
+    if len(GetSlices(person['slice_ids'])) > 0:
+          free.append(person)
+
 if not free:
     sys.exit("ERROR: no GEE slices available!")
 

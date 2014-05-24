@@ -36,7 +36,13 @@ except:
 if re.match("instageni.*@gmail.com", args.email):
     sys.exit("ERROR: email address %s is not allowed!" % args.email)
 
-alloc = GetPersons({'email':args.email, 'last_name':'IGPL'})
+# alloc = GetPersons({'email':args.email, 'last_name':'IGPL'})
+allegedlyFree = GetPersons({'email':args.email, 'last_name':'IGPL'});
+alloc = []
+for person in allegedlyFree:
+    if len(GetSlices(person['slice_ids'])) > 0:
+          alloc.append(person)
+
 
 #
 # If we can't find anything, the user has no slicelets.  Just
