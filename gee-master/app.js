@@ -159,9 +159,16 @@ var free_slicelet_url = application_url + "/free_slicelet";
 var renew_slicelet_url = application_url + "/renew_slicelet";
 var download_url = application_url + "/download";
 
+var urls = {
+  get_slicelet_url:get_slicelet_url,
+  free_slicelet_url:free_slicelet_url,
+  renew_slicelet_url:renew_slicelet_url,
+  download_url:download_url
+}
 
 
-require('./routes/')(app,passport, Users, UserRequests);
+
+require('./routes/')(app,passport, Users, UserRequests,urls);
 
 
 // Just a test to see if the bug report functionality works

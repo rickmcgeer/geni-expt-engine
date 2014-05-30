@@ -10,32 +10,6 @@ exports.render_error_page = function(req, res, bug_subject, bug_body_comment) {
 	res.render('error_page', {bugreport: bug_subject, bugreport_body: bug_report, title: 'Error'});
 }
 
-// A utility function that gets slice data, and passes it to next_function.
-// next_function is a function with signature
-// next_function(req, res, error, slices)
-
-exports.get_slicelet_data = function(req, res, next_function) {
-	var spawn = require('child_process').spawn;
-	var cmd = spawn('/home/service_instageni/find-slicelets.plcsh', []);
-	var error = "";
-	var result = "";
-	var slices = [];
-	cmd.stdout.on('data', function (data) {
-		console.log('stdout: ' + data);
-		result = result + data;
-		slices = JSON.parse(data);
-	});
-	cmd.stderr.on('data', function (data) {
-		console.log('Error in find-slicelets: ' + data);
-		error = error + data;
-	});
-	cmd.on('close', function (code) {
-		console.log('child process exited with code ' + code);
-		next_function(req, res, error, slices);
-	});
-}
-
-
 // A utility function called from logged_in, get_slicelet, renew_slicelet, download_slicelet...
 // Render the page with the user's slice information
 // This is only called when req.session.slicename != null...looks up the slice data from the
@@ -104,7 +78,7 @@ exports.get_user_dashboard = function(req, res) {
 			if (has_slicelet) {
 				render_slice_dashboard(req, res, req.session.slice_data)
 			} else {
-				res.render('logged_in_no_slice', {user:req.session.user, get_url:get_slicelet_url, admin:req.session.admin});
+				res.render('logged_in_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
 			}
 		} else {
 			render_error_page(req, res, "Error in finding slice data", error)
