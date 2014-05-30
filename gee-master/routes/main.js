@@ -4,7 +4,7 @@ module.exports = function(app) {
 	// The greeting page is the login page
 	
 	app.get('/', function(req, res) {
-	    res.render('login', {title: 'Welcome to GEE'});
+		res.render('login', {title: 'Welcome to GEE'});
 	});
 	
 	// The user clicked on "send feedback".  This will take him to a page
@@ -13,6 +13,6 @@ module.exports = function(app) {
 	// but no dependency, we can put this on the login page
 	
 	app.get('/send_feedback', function(req, res) {
-	  res.render('feedback', {title: 'Feedback'});
+		res.render('feedback', {title: 'Feedback'});
 	});
 }

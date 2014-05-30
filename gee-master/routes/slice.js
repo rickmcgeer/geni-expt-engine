@@ -128,31 +128,6 @@ module.exports = function(app) {
 	    }
 	});
 	
-	// A utility function that gets slice data, and passes it to next_function.
-	// next_function is a function with signature
-	// next_function(req, res, error, slices)
-	
-	function get_slicelet_data(req, res, next_function) {
-	    var spawn = require('child_process').spawn;
-	    var cmd = spawn('/home/service_instageni/find-slicelets.plcsh', []);
-	    var error = "";
-	    var result = "";
-	    var slices = [];
-	    cmd.stdout.on('data', function (data) {
-		console.log('stdout: ' + data);
-		result = result + data;
-		slices = JSON.parse(data)
-	    });
-	    cmd.stderr.on('data', function (data) {
-		console.log('Error in find-slicelets: ' + data);
-		error = error + data;
-	    });
-	    cmd.on('close', function (code) {
-		console.log('child process exited with code ' + code);
-		next_function(req, res, error, slices);
-	    });
-	}
-	
 	app.get('/slices', function(req, res) {
   if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
     res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
