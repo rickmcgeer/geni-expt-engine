@@ -115,10 +115,6 @@ passport.use(new OpenIDStrategy({
   }
 ));
 
-
-require('./routes/')(app,passport);
-
-
 // Database code.  The database currently holds the users and slice data.
 // To add an authorized user or a slice, do it from the console on bilby.
 // The slice/user data ought to migrate to the MyPLC DB -- this is a hack to
@@ -162,6 +158,10 @@ var get_slicelet_url = application_url + "/get_slicelet";
 var free_slicelet_url = application_url + "/free_slicelet";
 var renew_slicelet_url = application_url + "/renew_slicelet";
 var download_url = application_url + "/download";
+
+
+
+require('./routes/')(app,passport, Users, UserRequests);
 
 
 // Just a test to see if the bug report functionality works
