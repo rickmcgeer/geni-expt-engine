@@ -53,7 +53,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 			});
 		}
 		// Just render the admin console again
-		res.render('admin_console', {user:req.session.user});
+		res.render('admin', {user:req.session.user});
 	}
 	
 	// Act on the user requests.  This is called by /add_requested_users, and is broken
@@ -163,7 +163,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 		if (!req.session.admin) {
 			res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
 		} else {
-			res.render('admin_console', {user:req.session.user});
+			res.render('admin', {user:req.session.user});
 		}
 	});
 	
@@ -217,7 +217,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 		console.log(user_string + " " + delete_string);
 		if (to_confirm.length == 0 && to_delete.length == 0) {
 			// nothing to do!
-			res.render('admin_console', {user:req.session.user});
+			res.render('admin', {user:req.session.user});
 		} else {
 			act_on_user_requests(req, res, to_confirm, to_delete);
 		}

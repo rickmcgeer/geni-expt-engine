@@ -1,5 +1,5 @@
-extends layout
-block content
+extends admin_layout
+block adminContent
 	div.pageHeader GEE User Requests
 	form(method="post", action="/add_requested_users")
 		table(border=1)
@@ -22,6 +22,3 @@ block content
 						input(type="checkbox", value=user.email, name="to_delete", checked)
 		br
 		button(type="submit") Update
-		br
-		br
-	a.pageOptions(href='/admin') Return to admin console

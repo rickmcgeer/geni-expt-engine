@@ -1,5 +1,5 @@
-exends layout
-block content
+extends admin_layout
+block adminContent
 	div.pageHeader GEE Slices
 	table(border=1)
 		tr
@@ -13,6 +13,3 @@ block content
 				td #{slice.allocated}
 				td #{slice.file}
 				td #{slice.expiry_date}
-	br
-	br
-	a.pageOptions(href='/admin') Return to admin console
