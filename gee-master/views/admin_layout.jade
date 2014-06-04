@@ -1,13 +1,11 @@
 extends layout
-block content
-	block adminPageHeader
-	div#optionsHeader
-		a.pageOptions(href='/admin') Admin
-		a.pageOptions(href='/users') Show users
-		a.pageOptions(href='/slices') Show slices
-		a.pageOptions(href='/user_requests') Show add-user requests
-		a.pageOptions(href='/dump_logfile' target='_blank') Dump the logfile
-		a.pageOptions(href='/dump_error_logs' target='_blank') Show Error logs
-	br
-	br
-	block adminContent
+block pageOptions
+	a.pageOptions(href='/admin') Admin
+	a.pageOptions(href='/users') Show users
+	a.pageOptions(href='/slices') Show slices
+	a.pageOptions(href='/user_requests') Show add-user requests
+	a.pageOptions(href='/dump_logfile' target='_blank') Dump the logfile
+	a.pageOptions(href='/dump_error_logs' target='_blank') Show Error logs
+br
+br
+block adminContent

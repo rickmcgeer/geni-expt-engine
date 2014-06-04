@@ -1,6 +1,7 @@
 extends layout
-block content
+block pageHeader
 	div.pageHeader User #{user} Not Registered For GEE Beta
+block content
 	div Sorry, #{user}, during the beta period only registered users may use the GEE.
 	div If you would like to use the GEE for the beta period, please use this form to contact us.
 	- var subject="Please add " + user + " to the GEE Beta program";

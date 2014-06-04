@@ -1,6 +1,7 @@
 extends layout
+block pageHeader
+	div.pageHeader Dashboard for User #{user}
 block content
-		div.pageHeader Dashboard for User #{user}
 		div User #{user} logged in, currently has slicelet #{slice}, which expires on #{date}.
 		div
 			a.pageOptions(href='/free_slicelet') Free Slicelet #{slice}

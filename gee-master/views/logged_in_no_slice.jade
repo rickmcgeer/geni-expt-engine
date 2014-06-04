@@ -1,8 +1,9 @@
 extends layout
+block pageHeader
+	div.pageHeader Dashboard for User #{user}
 block content
-		div.pageHeader Dashboard for User #{user}
-		div User #{user} logged in, and has no current slicelets.
-		div
-			a.pageOptions(href='/get_slicelet') Get a Slicelet!
-			if admin
-				a.pageOptions(href='/admin') Admin Console
+	div User #{user} logged in, and has no current slicelets.
+	div
+		a.pageOptions(href='/get_slicelet') Get a Slicelet!
+		if admin
+			a.pageOptions(href='/admin') Admin Console
