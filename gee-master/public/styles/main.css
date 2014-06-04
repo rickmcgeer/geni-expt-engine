@@ -1,13 +1,17 @@
 body{
-	background-color: #F57F20;
+	/*background-color: #F57F20;*/
 	font-family: 'PT Sans', sans-serif;
+}
+#imageHeader {
+	margin-left:auto;
+	margin-right:auto;
 }
 
 #fullWrapper {
 	width:800px;
 	margin-left:auto;
 	margin-right:auto;
-	background-color: #F8A563;
+	/*background-color: #F8A563;*/
 	padding:20px;
 }
 
