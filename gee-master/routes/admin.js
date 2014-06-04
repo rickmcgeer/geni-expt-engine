@@ -22,7 +22,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 						user_list.push({email:user['email'], admin:user['admin'], slice:slice_dictionary[user['email']]});
 					}
 					
-					res.render('users', {"userlist": user_list, title:'User List'});
+					res.render('admin_users', {"userlist": user_list, title:'User List'});
 				}
 			});
 		});
@@ -34,7 +34,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 				console.log("Error finding outstanding user requests: " + err);
 				utils.render_error_page(req, res, "Error in displaying user requests", error);
 			}
-			res.render('user_requests', {"request_list": user_requests, title:'User List'});
+			res.render('admin_user_requests', {"request_list": user_requests, title:'User List'});
 		});
 	}
 	
@@ -180,7 +180,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 						slices[i].expiry_date = new Date(slices[i].expiry_date*1000).toString()
 					}
 					console.log(slices);
-					res.render('slices', {slices:slices, title:'Slice List'});
+					res.render('admin_slices', {slices:slices, title:'Slice List'});
 				}  
 			});
 		}
