@@ -49,13 +49,23 @@ var http = require('http');
 var app = express();
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
+var nconf = require('nconf');
+
+// We use nconf to read configuration options.  Command line arguments override config file options which override default options.
+nconf.argv().file('./config.json');
+nconf.defaults({
+	host_name: 'igplc.cs.princeton.edu',
+	application_port: 8080,
+	mongo_url: 'mongodb://localhost/gee_master',
+        session_secret: 'keyboard cat'
+});
 
 // the host and port we are running on, and the URL for people to request
-var host_name = 'igplc.cs.princeton.edu'
-application_port = 8080
+var host_name = nconf.get('host_name');
+var application_port = nconf.get('application_port');
 var application_url = 'http://' + host_name + ':' + application_port;
 // Code to initialize and connect to the database.  We're using mongodb, default port, and mongoose
-mongoose.connect('mongodb://localhost/gee_master');
+mongoose.connect(nconf.get('mongo_url'));
 var gee_master_db = mongoose.connection;
 gee_master_db.on('error', console.error.bind(console, 'Mongoose connection error to gee-master'));
 gee_master_db.once('open', function callback() {
@@ -72,7 +82,7 @@ app.configure(function() {
   // app.use(express.cookieSession);
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat' }));
+  app.use(express.session({ secret: nconf.get('session_secret') }));
   // Initialize Passport!  Also use passport.session() middleware, to support
   // persistent login sessions (recommended).
   app.use(passport.initialize());
