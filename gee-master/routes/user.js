@@ -2,7 +2,7 @@
 
 module.exports = function(app,utils,Users,UserRequests,urls) {
 	// Successful login page.
-	app.get('/logged_in', function(req, res) {
+	app.get('/user', function(req, res) {
 		console.log(JSON.stringify(req.session));
 		console.log(JSON.stringify(req.session.passport.user.emails[0].value));
 		// squirrel away the userid in a session variable; this way, we don't have to pass
@@ -28,7 +28,7 @@ module.exports = function(app,utils,Users,UserRequests,urls) {
 	});
 	
 	// Put in an add-user request.  We're replacing an email here
-	app.post('/add_user_request', function(req, res) {
+	app.post('/user/request', function(req, res) {
 		// shouldn't happen, but there are weird timing things...
 		Users.find({email:req.body.email}, function(err, users) {
 			// we will log any error, but aside from that do nothing -- this was just a sanity check

@@ -13,7 +13,7 @@ module.exports = function(app, passport) {
 	// bother).   We could check the valid addresses here, but we'll do that
 	// later because it's code we'll remove.  If valid,
 	// the user will be logged in.  Otherwise, authentication has failed.
-	app.get('/auth/openid/return', passport.authenticate('openid', { successRedirect: '/logged_in', failureRedirect: '/login_failure' }));
+	app.get('/auth/openid/return', passport.authenticate('openid', { successRedirect: '/user', failureRedirect: '/login_failure' }));
 	
 	// Redirect here on failure.  This page will permit the user to try to login
 	// again

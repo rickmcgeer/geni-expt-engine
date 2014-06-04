@@ -5,7 +5,7 @@ module.exports = function(app,utils,urls,url) {
 	// do more, like submit a bug report to ourselves, or give the user that option.
 	// If it succeeds, give the user a  URL which points to a download.
 	
-	app.get('/get_slicelet', function(req, res) {
+	app.get('/slice/get', function(req, res) {
 		console.log(req.url);
 		var query = url.parse(req.url, true).query;
 		console.log(JSON.stringify(query));
@@ -52,7 +52,7 @@ module.exports = function(app,utils,urls,url) {
 	// script returns a JSON object with two fields, user (the user email) and slicelet_file
 	// Return the user to the logged-in-with-no-slice page when done
 	
-	app.get('/free_slicelet', function(req, res) {
+	app.get('/slice/free', function(req, res) {
 		console.log(req.url);
 		var query = url.parse(req.url, true).query;
 		console.log(JSON.stringify(query));
@@ -86,7 +86,7 @@ module.exports = function(app,utils,urls,url) {
 	// Renew a slicelet.  Just calls expiry_date to set the session expiration two weeks into the
 	// future, updates the slice record, then renders the dashboard.
 	
-	app.get('/renew_slicelet', function(req, res) {
+	app.get('/slice/renew', function(req, res) {
 		if(req.session.slicename == null) {
 			utils.render_error_page(req, res, "req.session.slicename null in call to renew_slicelet", "");
 		} else {
@@ -117,7 +117,7 @@ module.exports = function(app,utils,urls,url) {
 	// Callback for download.  Fortunately, this is simple, as node.js provides a
 	// download primitive.  We need to error-check this better.  In particular, we
 	// need to check that the file actually exists!
-	app.get('/download', function(req, res) {
+	app.get('/slice/download', function(req, res) {
 		if(req.session.filename == null) {
 			var error_message = "No filename set on call to /download ";
 			utils.render_error_page(req, res, error_message, "");

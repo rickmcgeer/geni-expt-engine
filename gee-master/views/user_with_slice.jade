@@ -1,7 +1,7 @@
 extends user_layout
 block userPageOptions
-	a.pageOptions(href='/free_slicelet') Free Slicelet #{slice}
-	a.pageOptions(href='/renew_slicelet') Renew Slicelet #{slice}
-	a.pageOptions(href='/download') Download Slicelet File
+	a.pageOptions(href='/slice/free') Free Slicelet #{slice}
+	a.pageOptions(href='/slice/renew') Renew Slicelet #{slice}
+	a.pageOptions(href='/slice/download') Download Slicelet File
 block content
 	div User #{user} logged in, currently has slicelet #{slice}, which expires on #{date}.

@@ -6,7 +6,7 @@ module.exports = function(app) {
 	app.get('/', function(req, res) {
 		if (req.session) {
 			if (req.session.user) {
-				res.redirect('/logged_in');
+				res.redirect('/user');
 			} else {
 				res.render('main', {title: 'Welcome to GEE'});
 			}
@@ -20,7 +20,7 @@ module.exports = function(app) {
 	// on the login page, so ATM the user must be logged in to send feedback
 	// but no dependency, we can put this on the login page
 	
-	app.get('/send_feedback', function(req, res) {
+	app.get('/feedback', function(req, res) {
 		res.render('main_feedback', {title: 'Feedback'});
 	});
 }

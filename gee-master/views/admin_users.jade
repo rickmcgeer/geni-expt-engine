@@ -2,7 +2,7 @@ extends admin_layout
 block pageHeader
 	div.pageHeader GEE Users
 block content
-	form(method="post", action="/update_users")
+	form(method="post", action="/admin/users/update")
 		table(border=1)
 			tr
 				th User
@@ -18,7 +18,7 @@ block content
 		button(type="submit") Update
 	br
 	br
-	form(method="get", action="/add_user")
+	form(method="get", action="/admin/users/add")
 		table
 			tr
 				td New User

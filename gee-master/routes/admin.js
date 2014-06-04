@@ -167,7 +167,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 		}
 	});
 	
-	app.get('/slices', function(req, res) {
+	app.get('/admin/slices', function(req, res) {
 		if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
 			res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
 		} else {
@@ -186,7 +186,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 		}
 	});
 	
-	app.get('/user_requests', function(req, res) {
+	app.get('/admin/users/requests', function(req, res) {
 		if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
 			res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
 		} else {
@@ -194,7 +194,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 		}
 	});
 	
-	app.get('/users', function(req, res) {
+	app.get('/admin/users', function(req, res) {
 		if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
 			res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
 		} else {
@@ -209,7 +209,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 	// and call act_on_user_requests to manipulate the database.
 	// I should probably factor those into things which actually just manipulate the db
 	
-	app.post('/add_requested_users', function(req, res) {
+	app.post('/admin/users/requests/add', function(req, res) {
 		var to_confirm = utils.ensure_items_in_a_list(req.body.confirm);
 		var to_delete = utils.ensure_items_in_a_list(req.body.to_delete);
 		var user_string = "Will confirm " + to_confirm.length + " new users: " + to_confirm + ".";
@@ -223,7 +223,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 		}
 	});
 
-	app.post('/update_users', function(req, res) {
+	app.post('/admin/users/update', function(req, res) {
 		var admins = req.body.admin;
 		console.log("Updating users, admins = " + JSON.stringify(admins));
 		update_all_users(req, res, admins);
@@ -231,7 +231,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 
 	// Add a user.  Nesting is way too deep here, but that is an artifact of the callback/continuation architecture
 	// of node.js...I should refactor and clean this up.
-	app.get('/add_user', function(req, res) {
+	app.get('/admin/users/add', function(req, res) {
 		if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
 			res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
 		} else {
