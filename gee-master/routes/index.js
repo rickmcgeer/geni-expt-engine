@@ -19,7 +19,7 @@
 //IN THE WORK.
 
 module.exports = function(app, passport, Users, UserRequests,urls) {
-	var utils = require('./route_utils');
+	var utils = require('./route_utils')(urls);
 	require('./admin')(app,utils,Users);
 	require('./auth')(app,passport);
 	require('./main')(app);
