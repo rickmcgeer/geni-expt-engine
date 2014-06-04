@@ -168,7 +168,7 @@ var urls = {
 
 
 
-require('./routes/')(app,passport, Users, UserRequests,urls);
+require('./routes/')(app,passport, Users, UserRequests,urls,url);
 
 
 // Just a test to see if the bug report functionality works

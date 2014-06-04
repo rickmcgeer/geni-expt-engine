@@ -18,11 +18,11 @@
 //OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS 
 //IN THE WORK.
 
-module.exports = function(app, passport, Users, UserRequests,urls) {
+module.exports = function(app, passport, Users, UserRequests,urls,url) {
 	var utils = require('./route_utils');
-	require('./admin')(app,utils,Users);
+	require('./admin')(app,utils,Users,url);
 	require('./auth')(app,passport);
 	require('./main')(app);
-	require('./slice')(app,utils,urls);
+	require('./slice')(app,utils,urls,url);
 	require('./user')(app,utils,Users,UserRequests,urls);
 }

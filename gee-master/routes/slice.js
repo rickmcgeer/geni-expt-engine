@@ -1,4 +1,4 @@
-module.exports = function(app,utils,urls) {
+module.exports = function(app,utils,urls,url) {
 	// get a slicelet.  This just calls $ allocate-gee-slice.plcsh -- -e <user>.  This
 	// script returns a JSON object with two fields, user (the user email) and slicelet_file
 	// If the command fails, we tell the user, with the error message -- and should probably
