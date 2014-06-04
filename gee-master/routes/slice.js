@@ -77,7 +77,7 @@ module.exports = function(app,utils,urls,url) {
 			} else {
 				req.session.slicename = null;
 				req.session.filename = null;
-				res.render('logged_in_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
+				res.render('user_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
 			}
 		});
 	});

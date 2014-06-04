@@ -45,7 +45,7 @@ module.exports = function(app,utils,Users,UserRequests,urls) {
 						console.log("Error adding user request " + JSON.stringify(req.body) + ": " + err);
 						utils.render_error_page(req, res, "Error adding user request " + err, JSON.stringify(req.body));
 					} else {
-						res.render('user_request_confirm', {email:req.body.email, name: req.body.name, title:'User Request Confirmed'});
+						res.render('user_request', {email:req.body.email, name: req.body.name, title:'User Request Confirmed'});
 					}
 				});
 			}

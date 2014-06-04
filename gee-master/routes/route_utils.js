@@ -28,7 +28,7 @@ exports.render_slice_dashboard = function(req, res, slice_dictionary) {
 		admin: req.session.admin,
 		date: new Date(slice_dictionary.expires*1000).toString()
 	};
-	res.render('logged_in_with_slice', page_dictionary);
+	res.render('user_with_slice', page_dictionary);
 }
 
 // get the data for the user dashboard from
@@ -70,14 +70,14 @@ exports.get_user_dashboard = function(req, res, urls) {
 		error = error + data;
 	});
 	// when the command finishes, render the dashboard if there is a slicelet, otherwise
-	// the logged_in_no_slice page
+	// the user_no_slice page
 	cmd.on('close', function (code) {
 		console.log('child process exited with code ' + code);
 		if(data_received) {
 			if (has_slicelet) {
 				exports.render_slice_dashboard(req, res, req.session.slice_data)
 			} else {
-				res.render('logged_in_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
+				res.render('user_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
 			}
 		} else {
 			render_error_page(req, res, "Error in finding slice data", error)
