@@ -54,9 +54,9 @@ var nconf = require('nconf');
 // We use nconf to read configuration options.  Command line arguments override config file options which override default options.
 nconf.argv().file('./config.json');
 nconf.defaults({
-	host_name: 'igplc.cs.princeton.edu',
-	application_port: 8080,
-	mongo_url: 'mongodb://localhost/gee_master',
+        host_name: 'igplc.cs.princeton.edu',
+        application_port: 8080,
+        mongo_url: 'mongodb://localhost/gee_master',
         session_secret: 'keyboard cat'
 });
 
