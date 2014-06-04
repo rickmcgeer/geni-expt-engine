@@ -4,7 +4,15 @@ module.exports = function(app) {
 	// The greeting page is the login page
 	
 	app.get('/', function(req, res) {
-		res.render('main', {title: 'Welcome to GEE'});
+		if (req.session) {
+			if (req.session.user) {
+				res.redirect('/logged_in');
+			} else {
+				res.render('main', {title: 'Welcome to GEE'});
+			}
+		} else {
+			res.render('main', {title: 'Welcome to GEE'});
+		}
 	});
 	
 	// The user clicked on "send feedback".  This will take him to a page
