@@ -1,6 +1,7 @@
 // Routes related to users
 
 module.exports = function(app,utils,Users,UserRequests) {
+	console.log(utils);
 	// Successful login page.
 	app.get('/logged_in', function(req, res) {
 		console.log(JSON.stringify(req.session));
