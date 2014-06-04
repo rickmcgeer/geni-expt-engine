@@ -75,7 +75,7 @@ exports.get_user_dashboard = function(req, res, urls) {
 		console.log('child process exited with code ' + code);
 		if(data_received) {
 			if (has_slicelet) {
-				render_slice_dashboard(req, res, req.session.slice_data)
+				exports.render_slice_dashboard(req, res, req.session.slice_data)
 			} else {
 				res.render('logged_in_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
 			}
