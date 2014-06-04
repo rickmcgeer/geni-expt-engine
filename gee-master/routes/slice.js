@@ -40,7 +40,7 @@ module.exports = function(app,utils,urls) {
 		cmd.on('close', function (code) {
 			console.log('child process exited with code ' + code);
 			if(req.session.slicename != null) {
-				utils.get_user_dashboard(req, res);
+				utils.get_user_dashboard(req, res,urls);
 			} else {
 				utils.render_error_page(req, res, "Slicelet Allocation Failure", error)
 			}
@@ -108,7 +108,7 @@ module.exports = function(app,utils,urls) {
 				if (error) {
 					utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
 				} else {
-					utils.get_user_dashboard(req, res);
+					utils.get_user_dashboard(req, res,urls);
 				}
 			}); 
 		}

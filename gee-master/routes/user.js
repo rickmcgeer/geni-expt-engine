@@ -1,7 +1,6 @@
 // Routes related to users
 
-module.exports = function(app,utils,Users,UserRequests) {
-	console.log(utils);
+module.exports = function(app,utils,Users,UserRequests,urls) {
 	// Successful login page.
 	app.get('/logged_in', function(req, res) {
 		console.log(JSON.stringify(req.session));
@@ -23,7 +22,7 @@ module.exports = function(app,utils,Users,UserRequests) {
 				// session variable with the name and send him to his dashboard.
 				// Also note whether he is admin
 				req.session.admin = users[0].admin;
-				utils.get_user_dashboard(req, res);
+				utils.get_user_dashboard(req, res,urls);
 			}
 		});
 	});
@@ -38,7 +37,7 @@ module.exports = function(app,utils,Users,UserRequests) {
 			} else if (users.length > 0) {
 				console.log("user " + req.body.email + " requested a login but already has an account!");
 				req.session.user = req.body.email;
-				get_user_dashboard(req, res);
+				get_user_dashboard(req, res,urls);
 			} else {
 				// Add the user to the user_requests table and show a results page
 				UserRequests.create( { email: req.body.email, name: req.body.name, comments: req.body.comments}, function(err, addition) {
