@@ -1,6 +1,7 @@
 extends admin_layout
-block adminContent
+block adminPageHeader
 	div.pageHeader GEE Users
+block adminContent
 	form(method="post", action="/update_users")
 		table(border=1)
 			tr

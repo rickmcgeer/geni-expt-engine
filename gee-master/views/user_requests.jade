@@ -1,6 +1,7 @@
 extends admin_layout
-block adminContent
+block adminPageHeader
 	div.pageHeader GEE User Requests
+block adminContent
 	form(method="post", action="/add_requested_users")
 		table(border=1)
 			tr
