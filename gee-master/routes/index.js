@@ -20,7 +20,7 @@
 
 module.exports = function(app, passport, Users, UserRequests,urls,url) {
 	var utils = require('./route_utils');
-	require('./admin')(app,utils,Users,url);
+	require('./admin')(app,utils,Users,UserRequests,url);
 	require('./auth')(app,passport);
 	require('./main')(app);
 	require('./slice')(app,utils,urls,url);

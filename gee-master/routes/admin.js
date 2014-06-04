@@ -1,4 +1,4 @@
-module.exports = function(app,utils,Users,url) {
+module.exports = function(app,utils,Users,UserRequests,url) {
 	
 	// Utility to lookup and render the users page -- called from /users and /add_users
 	var render_users = function(req, res) {
