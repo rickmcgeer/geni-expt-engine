@@ -4,6 +4,7 @@
 import sys
 import subprocess
 import argparse
+import datetime
 
 pool_size = 10
 index_file = "/usr/share/gee/index"
@@ -35,7 +36,7 @@ f = open(logfile, "a")
 free = GetPersons({'email':'instagenipl*@gmail.com'})
 
 need = pool_size - len(free)
-f.write("Need %s slices to top up\n" % need)
+f.write("%s Need %s slices to top up\n" % (datetime.datetime.now(), need))
 
 if need > 0:
     index = get_index()
@@ -43,7 +44,7 @@ if need > 0:
     while need > 0:
         create_slice(index)
         need -= 1
-        f.write("Created slice ig_%s\n" % index)
+        f.write("%s Created slice ig_%s\n" % (datetime.datetime.now(), index))
         """
         except:
             print "Could not create ig_%s" % index
