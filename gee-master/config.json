@@ -1,6 +1,6 @@
 {
-	host_name: 'igplc.cs.princeton.edu',
-	application_port: 8080,
-	mongo_url: 'mongodb://localhost/gee_master',
-        session_secret: 'keyboard cat'
+	'host_name': 'igplc.cs.princeton.edu',
+	'application_port': 8080,
+	'mongo_url': 'mongodb://localhost/gee_master',
+        'session_secret': 'keyboard cat'
 }
