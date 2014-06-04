@@ -1,0 +1,7 @@
+extends layout
+block pageHeader
+	div.pageHeader Dashboard for User #{user}
+block pageOptions
+	if admin
+		a.pageOptions(href='/admin') Admin Dashboard
+	block userPageOptions
