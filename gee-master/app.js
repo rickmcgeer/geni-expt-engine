@@ -88,6 +88,7 @@ app.configure(function() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
+  app.use(express.favicon(__dirname + '/public/images/geni.ico'));
 });
 app.set('env', 'development');
 //
