@@ -18,14 +18,18 @@ tardir='/tmp/GEE'
 fabfile='/usr/share/gee/fabfile.py'
 readme='/usr/share/gee/README.txt'
 network='/usr/share/gee/network.py'
+execfile('./config.py')
+
 
 parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')
 parser.add_argument('-e','--email',
                     help='Email address of the user for this slice', 
 		    required=True)
 
-args = parser.parse_args()
 
+
+args = parser.parse_args()
+execfile(args.config)
 # Check that the email address looks valid
 try:
     validate_email(args.email)
@@ -33,7 +37,7 @@ except:
     sys.exit("ERROR: %s is not a valid email address!" % args.email)
 
 # Disallow the fake email addresses that mark the account as unused
-if re.match("instagenipl.*@gmail.com", args.email):
+if re.match(ig_names['email_wildcard_string'], args.email):
     sys.exit("ERROR: email address %s is not allowed!" % args.email)
 
 # Make sure the email address is not already in use for GEE
@@ -42,8 +46,8 @@ if inuse:
     sys.exit("ERROR: email address %s already in use on InstaGENI-PlanetLab" % args.email)
 
 # Choose a free user account and mark it as allocated
-# A free account will have an instagenipl*@gmail.com address
-allegedlyFree = GetPersons({'email':'instagenipl*@gmail.com'})
+# A free account will have anig_names['email_wildcard_string']address
+allegedlyFree = GetPersons({'email':ig_names['email_wildcard_string']})
 free = []
 for person in allegedlyFree:
     if len(GetSlices(person['slice_ids'])) > 0:

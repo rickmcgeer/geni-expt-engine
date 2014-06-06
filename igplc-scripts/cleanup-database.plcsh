@@ -1,12 +1,14 @@
 #!/usr/bin/plcsh
 
 import datetime 
+execfile('../config.py')
+
 
 logfile = "/var/log/cleanup-database.log"
 
 f = open(logfile, "a")
 
-for person in GetPersons({'last_name':'IGPL'}):
+for person in GetPersons({'last_name':ig_names['last_name']}):
   if len(person['slice_ids']) == 0:
     f.write("%s Deleting person %s, email: %s\n" % (datetime.datetime.now(), person['person_id'], person['email']))
     DeletePerson(person['person_id'])
@@ -16,7 +18,7 @@ for person in GetPersons({'last_name':'IGPL'}):
 # def delete_and_log(person):
 #     f.write("%s Deleting person %s, email: %s\n" % (datetime.datetime.now(), person['person_id'], person['email']))
 #     DeletePerson(person['person_id'])
-# igpl_users = GetPersons({'last_name':'IGPL'})
+# igpl_users = GetPersons({'last_name':ig_names['last_name']})
 # dead_users = [user for user in igpl_users if len(user['slice_ids']) == 0]
 # for user in dead_users: delete_and_log(user)
 # 

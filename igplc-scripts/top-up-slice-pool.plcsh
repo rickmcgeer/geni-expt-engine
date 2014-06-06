@@ -8,8 +8,9 @@ import datetime
 
 pool_size = 10
 index_file = "/usr/share/gee/index"
-gee_script_path = "/home/service_instageni"
 logfile = "/var/log/top-up-slice-pool.log"
+execfile('./config.py')
+
 
 def get_index():
     f = open(index_file, 'r')
@@ -33,7 +34,7 @@ def create_slice(index):
     
 f = open(logfile, "a")
 
-free = GetPersons({'email':'instagenipl*@gmail.com'})
+free = GetPersons({'email':ig_names['email_wildcard_string']})
 
 need = pool_size - len(free)
 f.write("%s Need %s slices to top up\n" % (datetime.datetime.now(), need))

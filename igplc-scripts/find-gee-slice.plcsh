@@ -18,6 +18,8 @@ tardir='/tmp/GEE'
 fabfile='/usr/share/gee/fabfile.py'
 readme='/usr/share/gee/README'
 network='/usr/share/gee/network.py'
+execfile('./config.py')
+
 
 parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')
 parser.add_argument('-e','--email',
@@ -33,11 +35,11 @@ except:
     sys.exit("ERROR: %s is not a valid email address!" % args.email)
 
 # Disallow the fake email addresses that mark the account as unused
-if re.match("instageni.*@gmail.com", args.email):
+if re.match(ig_names['email_wildcard_string'], args.email):
     sys.exit("ERROR: email address %s is not allowed!" % args.email)
 
-# alloc = GetPersons({'email':args.email, 'last_name':'IGPL'})
-allegedlyFree = GetPersons({'email':args.email, 'last_name':'IGPL'});
+# alloc = GetPersons({'email':args.email, 'last_name':ig_names['last_name']})
+allegedlyFree = GetPersons({'email':args.email, 'last_name':ig_names['last_name']});
 alloc = []
 for person in allegedlyFree:
     if len(GetSlices(person['slice_ids'])) > 0:

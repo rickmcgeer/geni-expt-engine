@@ -10,6 +10,8 @@ import json
 import time
 import datetime
 from StringIO import StringIO
+execfile('./config.py')
+
 
 parser = argparse.ArgumentParser(description='Renew a GEE Slice')
 parser.add_argument('-s','--slice',

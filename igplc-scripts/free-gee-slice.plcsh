@@ -7,6 +7,8 @@ import re
 import tarfile
 import argparse
 from django.core.validators import validate_email
+execfile('./config.py')
+
 
 parser = argparse.ArgumentParser(description='Release a GEE slice')
 parser.add_argument('-e','--email',
@@ -22,10 +24,10 @@ except:
     sys.exit("ERROR: %s is not a valid email address!" % args.email)
 
 # Disallow the fake email addresses that mark the account as unused
-if re.match("instageni.*@gmail.com", args.email):
+if re.match(ig_names['email_wildcard_string'], args.email):
     sys.exit("ERROR: email address %s is not allowed!" % args.email)
 
-alloc = GetPersons({'email':args.email, 'last_name':'IGPL'})
+alloc = GetPersons({'email':args.email, 'last_name':ig_names['last_name']})
 if not alloc:
     sys.exit("ERROR: no GEE slice allocated to %s!" % args.email)
 

@@ -2,13 +2,15 @@
 # Run as ./find-slicelets.plcsh -- <args>
 import json
 import re
+execfile('./config.py')
+
 #
 # is a particular slice a gee slicelet?
 # this returns true if it is, false if not;
-# a gee slicelet is a "person" with last_name 'IGPL',
+# a gee slicelet is a "person" with last_name ig_names['last_name'],
 #
 def is_gee_slicelet(person):
-    return (person['last_name'] == 'IGPL') and (len(GetSlices(person['slice_ids'])) > 0)
+    return (person['last_name'] == ig_names['last_name']) and (len(GetSlices(person['slice_ids'])) > 0)
     
 def get_all_info(gee_slicelet_person):
     return (person, GetSlices(person['slice_ids'])[0])
@@ -17,7 +19,7 @@ tardir='/tmp/GEE'
     
 def make_slice_dictionary(person, slice):
     result = {'name':slice['name'], 'allocated':None, 'file': None, 'expiry_date': slice['expires']}
-    if re.match("instagenipl.*@gmail.com", person['email']):
+    if re.match(ig_names['email_wildcard_string'], person['email']):
         # slice is unallocated, return
         return result
     result['allocated'] = person['email']
