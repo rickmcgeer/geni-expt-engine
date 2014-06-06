@@ -1,0 +1,2 @@
+ig_names = {'last_name':'IGPL_VTS', 'email_pattern_string': 'instagenivts+%s@gmail.com', 'email_wildcard_string': 'instagenivts*@gmail.com'}
+gee_script_path = '/home/service_instageni/alternate'

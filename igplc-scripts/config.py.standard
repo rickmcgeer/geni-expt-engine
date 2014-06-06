@@ -1,0 +1,2 @@
+ig_names = {'last_name':'IGPL', 'email_pattern_string': 'instagenipl+%s@gmail.com', 'email_wildcard_string': 'instagenipl*@gmail.com'}
+gee_script_path = '/home/service_instageni'
