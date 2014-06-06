@@ -1,2 +1,13 @@
 ig_names = {'last_name':'IGPL', 'email_pattern_string': 'instagenipl+%s@gmail.com', 'email_wildcard_string': 'instagenipl*@gmail.com'}
 gee_script_path = '/home/service_instageni'
+slice_nodes = [
+    'pc3.instageni.rnoc.gatech.edu',
+    'pc32.utahddc.geniracks.net',
+    'pc5.geni.it.cornell.edu',
+    ]
+slice_tags = [
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.1', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc3.instageni.rnoc.gatech.edu'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.2', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc32.utahddc.geniracks.net'),
+    ("[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.3', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc5.geni.it.cornell.edu'),
+    ]
+

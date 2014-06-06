@@ -1,2 +1,10 @@
-ig_names = {'last_name':'IGPL_VTS', 'email_pattern_string': 'instagenivts+%s@gmail.com', 'email_wildcard_string': 'instagenivts*@gmail.com'}
+ig_names = {'last_name':'IGPL_VTS', 'email_pattern_string': 'instagenipl+vts%s@gmail.com', 'email_wildcard_string': 'instagenipl+vts*@gmail.com'}
 gee_script_path = '/home/service_instageni/alternate'
+slice_nodes = [
+    'pc24.utahddc.geniracks.net',
+    'pc4.instageni.illinois.edu',
+    ]
+slice_tags = [
+    ("[{'bridge': 'gee', 'vlan':'%d', 'IPADDR': '10.128.234.1', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc24.utahddc.geniracks.net'),
+    ("[{'bridge': 'gee', 'vlan':'%d', 'IPADDR': '10.128.234.2', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]", 'pc4.instageni.illinois.edu'),
+    ]
