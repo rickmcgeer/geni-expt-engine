@@ -37,7 +37,7 @@ module.exports = function(app,utils,Users,UserRequests,urls) {
 			} else if (users.length > 0) {
 				console.log("user " + req.body.email + " requested a login but already has an account!");
 				req.session.user = req.body.email;
-				get_user_dashboard(req, res,urls);
+				utils.get_user_dashboard(req, res,urls);
 			} else {
 				// Add the user to the user_requests table and show a results page
 				UserRequests.create( { email: req.body.email, name: req.body.name, comments: req.body.comments}, function(err, addition) {
