@@ -11,13 +11,13 @@ block content
 		table
 			tr
 				td Name
-				td: input(type="text", name="name", value="Your Name", size=30)
+				td: input(type="text", name="name", placeholder="Your Name", size=30)
 			tr
 				td Email
-				td: input(type="text", name="mail", value="#{user}", readonly, size=20)
+				td: input(type="text", name="mail", placeholder="#{user}", readonly, size=20)
 			tr
 				td Subject
-				td: input(type="text", name="subject", value=subject, readonly, size=subject.length + 3)
+				td: input(type="text", name="subject", placeholder=subject, readonly, size=subject.length + 3)
 			tr
 				td Additional Comments
 				td: textarea(name="body", rows=4, cols=50)
