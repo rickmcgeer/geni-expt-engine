@@ -18,7 +18,7 @@ exports.render_error_page = function(req, res, bug_subject, bug_body_comment) {
 
 exports.render_slice_dashboard = function(req, res, slice_dictionary) {
 	if (slice_dictionary.slice == null) { // should never get here!  How do I throw an exception in Javascript?
-		render_error_page(req, res, "render_slice_dashboard called with slicename null","render_slice_dashboard called with slicename null");
+		exports.render_error_page(req, res, "render_slice_dashboard called with slicename null","render_slice_dashboard called with slicename null");
 		return;
 	}
 	
@@ -80,7 +80,7 @@ exports.get_user_dashboard = function(req, res, urls, script_dir) {
 				res.render('user_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
 			}
 		} else {
-			render_error_page(req, res, "Error in finding slice data", error)
+			exports.render_error_page(req, res, "Error in finding slice data", error)
 		}
 	});
 }
