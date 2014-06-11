@@ -1,6 +1,7 @@
 // Routes related to users
 
-module.exports = function(app,utils,Users,UserRequests,urls) {
+module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
+	console.log("In route/users.js, script dir is: " + script_dir)
 	// Successful login page.
 	app.get('/user', function(req, res) {
 		console.log(JSON.stringify(req.session));
@@ -22,7 +23,10 @@ module.exports = function(app,utils,Users,UserRequests,urls) {
 				// session variable with the name and send him to his dashboard.
 				// Also note whether he is admin
 				req.session.admin = users[0].admin;
-				utils.get_user_dashboard(req, res,urls);
+				if (!script_dir) {
+					console.log("In /user, script_dir is undefined!" );
+				}
+				utils.get_user_dashboard(req, res, urls, script_dir);
 			}
 		});
 	});
@@ -37,7 +41,7 @@ module.exports = function(app,utils,Users,UserRequests,urls) {
 			} else if (users.length > 0) {
 				console.log("user " + req.body.email + " requested a login but already has an account!");
 				req.session.user = req.body.email;
-				get_user_dashboard(req, res,urls);
+				get_user_dashboard(req, res,urls, script_dir);  // should this be utils.get_user_dashboard?
 			} else {
 				// Add the user to the user_requests table and show a results page
 				UserRequests.create( { email: req.body.email, name: req.body.name, comments: req.body.comments}, function(err, addition) {

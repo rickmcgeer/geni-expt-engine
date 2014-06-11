@@ -1,4 +1,4 @@
-module.exports = function(app,utils,Users,UserRequests,url) {
+module.exports = function(app,utils,Users,UserRequests,url, script_dir) {
 	
 	// Utility to lookup and render the users page -- called from /users and /add_users
 	var render_users = function(req, res) {
@@ -138,7 +138,7 @@ module.exports = function(app,utils,Users,UserRequests,url) {
 	
 	var get_slicelet_data = function(req, res, next_function) {
 		var spawn = require('child_process').spawn;
-		var cmd = spawn('/home/service_instageni/find-slicelets.plcsh', []);
+		var cmd = spawn(script_dir + '/find-slicelets.plcsh', []);
 		var error = "";
 		var result = "";
 		var slices = [];

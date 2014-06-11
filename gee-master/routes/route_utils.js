@@ -35,9 +35,9 @@ exports.render_slice_dashboard = function(req, res, slice_dictionary) {
 // the shell script find-gee-slice.plcsh  and
 // render the user dashboard
 // command is find_gee_slice -- -e req.session.user
-exports.get_user_dashboard = function(req, res, urls) {
+exports.get_user_dashboard = function(req, res, urls, script_dir) {
 	var spawn = require('child_process').spawn;
-	var cmd = spawn('/home/service_instageni/find-gee-slice.plcsh', ["--", "-e", req.session.user]);
+	var cmd = spawn(script_dir + '/find-gee-slice.plcsh', ["--", "-e", req.session.user]);
 	var error = "";
 	var result = "";
 	// set the has_slicelet and slice_data variables for this session to a sensible
@@ -66,7 +66,7 @@ exports.get_user_dashboard = function(req, res, urls) {
 	// when data is received on stderr, we have a problem and log it.  Should do something more
 	// intelligent on exit...
 	cmd.stderr.on('data', function (data) {
-		console.log('Error find-gee-slice: ' + data);
+		console.log('Error in find-gee-slice: ' + data);
 		error = error + data;
 	});
 	// when the command finishes, render the dashboard if there is a slicelet, otherwise

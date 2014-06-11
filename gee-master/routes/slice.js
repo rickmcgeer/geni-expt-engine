@@ -1,4 +1,4 @@
-module.exports = function(app,utils,urls,url) {
+module.exports = function(app,utils,urls,url, script_dir) {
 	// get a slicelet.  This just calls $ allocate-gee-slice.plcsh -- -e <user>.  This
 	// script returns a JSON object with two fields, user (the user email) and slicelet_file
 	// If the command fails, we tell the user, with the error message -- and should probably
@@ -11,10 +11,10 @@ module.exports = function(app,utils,urls,url) {
 		console.log(JSON.stringify(query));
 		var user = req.session.user;
 		console.log(user);
-		// formulate the command /home/service_instageni/allocate-gee-slice.plcsh -- -e user
+		// formulate the command script_dir/allocate-gee-slice.plcsh -- -e user
 		// and set up variables to hold the result
 		var spawn = require('child_process').spawn;
-		var cmd = spawn('/home/service_instageni/allocate-gee-slice.plcsh', ["--", "-e", user]);
+		var cmd = spawn(script_dir + '/allocate-gee-slice.plcsh', ["--", "-e", user]);
 		var returned_user = null;
 		var download_file = null;
 		var error = "";
@@ -40,7 +40,7 @@ module.exports = function(app,utils,urls,url) {
 		cmd.on('close', function (code) {
 			console.log('child process exited with code ' + code);
 			if(req.session.slicename != null) {
-				utils.get_user_dashboard(req, res,urls);
+				utils.get_user_dashboard(req, res,urls, script_dir);
 			} else {
 				utils.render_error_page(req, res, "Slicelet Allocation Failure", error)
 			}
@@ -59,7 +59,7 @@ module.exports = function(app,utils,urls,url) {
 		var user = req.session.user;
 		console.log(user);
 		var spawn = require('child_process').spawn;
-		var cmd = spawn('/home/service_instageni/free-gee-slice.plcsh', ["--", "-e", user]);
+		var cmd = spawn(script_dir + '/free-gee-slice.plcsh', ["--", "-e", user]);
 		var error = "";
 		var result = "";
 		cmd.stdout.on('data', function (data) {
@@ -92,7 +92,7 @@ module.exports = function(app,utils,urls,url) {
 		} else {
 			console.log("Renewing slice " + req.session.slicename);
 			var spawn = require('child_process').spawn;
-			var cmd = spawn('/home/service_instageni/renew-gee-slice.plcsh', ["--", "-s", req.session.slicename]);
+			var cmd = spawn(script_dir + '/renew-gee-slice.plcsh', ["--", "-s", req.session.slicename]);
 			var error = "";
 			var result = "";
 			cmd.stdout.on('data', function (data) {
@@ -108,7 +108,7 @@ module.exports = function(app,utils,urls,url) {
 				if (error) {
 					utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
 				} else {
-					utils.get_user_dashboard(req, res,urls);
+					utils.get_user_dashboard(req, res,urls, script_dir);
 				}
 			}); 
 		}
