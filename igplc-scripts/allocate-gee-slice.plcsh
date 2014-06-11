@@ -29,7 +29,7 @@ parser.add_argument('-e','--email',
 
 
 args = parser.parse_args()
-execfile(args.config)
+# execfile(args.config)
 # Check that the email address looks valid
 try:
     validate_email(args.email)
