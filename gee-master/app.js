@@ -57,13 +57,16 @@ nconf.defaults({
         host_name: 'igplc.cs.princeton.edu',
         application_port: 8080,
         mongo_url: 'mongodb://localhost/gee_master',
-        session_secret: 'keyboard cat'
+        session_secret: 'keyboard cat',
+        script_dir: '/home/service_instageni'
 });
 
-// the host and port we are running on, and the URL for people to request
+// the host and port we are running on, and the URL for people to request, and the directory
+// where igplc scripts run
 var host_name = nconf.get('host_name');
 var application_port = nconf.get('application_port');
 var application_url = 'http://' + host_name + ':' + application_port;
+var script_dir = nconf.get("script_dir");
 // Code to initialize and connect to the database.  We're using mongodb, default port, and mongoose
 mongoose.connect(nconf.get('mongo_url'));
 var gee_master_db = mongoose.connection;
@@ -179,7 +182,7 @@ var urls = {
 
 
 
-require('./routes/')(app,passport, Users, UserRequests,urls,url);
+require('./routes/')(app,passport, Users, UserRequests,urls,url, script_dir);
 
 
 // Just a test to see if the bug report functionality works
