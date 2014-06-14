@@ -28,7 +28,7 @@ module.exports = function(app,utils,urls,url, script_dir) {
 			result = JSON.parse(data);
 			returned_user = result.user;
 			download_file = result.slicelet_file;
-			req.session.slicename = result.slice;
+			req.session.slice_data = result.slice;
 		});
 		// when data is received on stderr, we have a problem and log it.  Should do something more
 		// intelligent on exit...
@@ -39,7 +39,7 @@ module.exports = function(app,utils,urls,url, script_dir) {
 		// when the command finishes, render the dashboard
 		cmd.on('close', function (code) {
 			console.log('child process exited with code ' + code);
-			if(req.session.slicename != null) {
+			if(req.session.slice_data != null) {
 				utils.get_user_dashboard(req, res,urls, script_dir);
 			} else {
 				utils.render_error_page(req, res, "Slicelet Allocation Failure", error)
@@ -73,9 +73,9 @@ module.exports = function(app,utils,urls,url, script_dir) {
 		cmd.on('close', function (code) {
 			console.log('child process exited with code ' + code);
 			if (error) {
-				utils.render_error_page(req, res, "Error in freeing slicelet " + req.session.slicename, error);
+				utils.render_error_page(req, res, "Error in freeing slicelet " + req.session.slice_data.slice, error);
 			} else {
-				req.session.slicename = null;
+				req.session.slice_data = null;
 				req.session.filename = null;
 				res.render('user_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
 			}
@@ -87,12 +87,12 @@ module.exports = function(app,utils,urls,url, script_dir) {
 	// future, updates the slice record, then renders the dashboard.
 	
 	app.get('/slice/renew', function(req, res) {
-		if(req.session.slicename == null) {
-			utils.render_error_page(req, res, "req.session.slicename null in call to renew_slicelet", "");
+		if(req.session.slice_data == null) {
+			utils.render_error_page(req, res, "req.session.slice_data null in call to renew_slicelet", "");
 		} else {
-			console.log("Renewing slice " + req.session.slicename);
+			console.log("Renewing slice " + req.session.slice_data.slice);
 			var spawn = require('child_process').spawn;
-			var cmd = spawn(script_dir + '/renew-gee-slice.plcsh', ["--", "-s", req.session.slicename]);
+			var cmd = spawn(script_dir + '/renew-gee-slice.plcsh', ["--", "-s", req.session.slice_data.slice]);
 			var error = "";
 			var result = "";
 			cmd.stdout.on('data', function (data) {
@@ -106,7 +106,7 @@ module.exports = function(app,utils,urls,url, script_dir) {
 			cmd.on('close', function (code) {
 				console.log('child process exited with code ' + code);
 				if (error) {
-					utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slicename, error);
+					utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slice_data.slice, error);
 				} else {
 					utils.get_user_dashboard(req, res,urls, script_dir);
 				}

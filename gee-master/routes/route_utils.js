@@ -11,8 +11,7 @@ exports.render_error_page = function(req, res, bug_subject, bug_body_comment) {
 
 // A utility function called from logged_in, get_slicelet, renew_slicelet, download_slicelet...
 // Render the page with the user's slice information
-// This is only called when req.session.slicename != null...looks up the slice data from the
-// database, and renders the page, and handles any errors in the lookup...
+// This is only called when req.session.slice_data.slice != null
 // all of the slice information is in slice_dictionary, and is of the form
 // {"slice": <slicename>", "slicelet_file": <filename>, "user": "<username>, "has_slicelet": true}
 

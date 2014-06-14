@@ -102,7 +102,7 @@ expires = now + two_weeks
 UpdateSlice(slice['slice_id'], {'expires':expires})
 
 # Return the email, expiry time, slice name, and the tarball, in JSON format
-print json.dumps({'user': args.email, 'slicelet_file': tarball, 'expires': expires, 'slice':slice['name']})
+print json.dumps({'user': args.email, 'slicelet_file': tarball, 'expires': expires, 'slice':slice})
 #print tarball
 
 

@@ -1,18 +1,16 @@
 from fabric.api import *
 env.hosts = ['bilby.cs.princeton.edu']
 env.user = 'service_instageni'
+host = env.hosts[0]
 #
 # change this to your private key...
 #
-env.key_file_name = '/Users/rick/.ssh/id_dsa'
+env.key_filename = '/Users/rick/.ssh/id_dsa'
 remote_dir = '/home/service_instageni/gee-master'
 remote_dir_test = '/home/service_instageni/test/gee-master'
 remote_dir_alternate = '/home/service_instageni/alternate/gee-master'
 json_config_file_standard = 'config.json.standard'
 json_config_file_alternate = 'config.json.alternate'
-
-
-
 
 def deploy_internal(remote_dir, json_config_file):
     local('scp -i %s -r *.js run-gee-server.sh start-gee-master.sh views public routes *.json %s@%s:%s' % (env.key_filename, env.user, host, remote_dir))
@@ -58,3 +56,7 @@ def run_server():
 @task
 def run_server_alternate():
     run_server_internal(remote_dir_alternate)
+    
+@task
+def check_status():
+    run('ps aux | grep node')

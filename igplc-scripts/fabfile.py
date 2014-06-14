@@ -48,3 +48,26 @@ def deploy_alternate():
 def deploy_file_alternate(file):
     deploy_file_internal(file, remote_dir_alternate, config_file_alternate)
     
+def test_gee_script(script, remote_dir):
+    run('cd %s; %s' % (remote_dir, script))
+    
+def form_command_line(script, user, slice):
+    if (script == 'find-slicelets.plcsh'):
+        return script
+    elif (script == 'renew-gee-slice.plcsh'):
+        return "%s -- -s %s" % (script, slice)
+    else:
+        return "%s -- -e %s" % (script, user)
+    
+
+@task
+def test_script(script, user=None, slice=None):
+    cmd = form_command_line(script, user, slice)
+    test_gee_script(cmd, remote_dir_standard)
+
+@task
+def test_script_alternate(script, user=None, slice=None):
+    cmd = form_command_line(script, user, slice)
+    test_gee_script(cmd, remote_dir_alternate)
+                                   
+    
