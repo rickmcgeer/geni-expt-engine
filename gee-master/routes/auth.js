@@ -20,4 +20,6 @@ module.exports = function(app, passport) {
 	app.get('/login_failure', function(req, res) {
 		res.render('login_failure', {title: 'Login Failed'});
 	});
+	
+
 }

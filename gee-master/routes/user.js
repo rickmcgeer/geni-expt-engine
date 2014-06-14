@@ -8,7 +8,9 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 		console.log(JSON.stringify(req.session.passport.user.emails[0].value));
 		// squirrel away the userid in a session variable; this way, we don't have to pass
 		// it as an argument, or use cookies.
-		req.session.user = req.session.passport.user.emails[0].value;
+		if (!req.session.user) {
+			req.session.user = req.session.passport.user.emails[0].value;
+		}
 		// See if the user is in the database.  if he isn't, he isn't authorized, and we direct
 		// him to a page where he can send us a request 
 		Users.find({ email: req.session.user }, function(err, users) {
@@ -31,11 +33,20 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 		});
 	});
 	
-	// repeat this code, basically, but for the demo, where we aren't authenticating.
-	// the only difference here is that our internal demo page put the userid in
-	// req.session.user already
-	app.get('/demo_user', function(req, res) {
-		console.log('Demo user is ' + JSON.stringify(req.session.user));
+	// repeat the code, basically, but for the demo, where we aren't authenticating.
+	// the only difference here is that this is 
+	// code for the demo login site.  This is a no-password site which pulls
+	// users directly from the database.  User has entered an email in
+	// a text box on a form, and all we have to do is make sure it's valid
+	// and in the db
+	app.post('/demo_login', function(req, res) {
+		console.log('Demo user is ' + JSON.stringify(req.body.demo_userid));
+		var demo_user = req.body.demo_userid;
+		if (!demo_user || demo_user.length == 0) {
+			res.render('login_failure', {title: 'Login Failed'})
+			return;
+		}
+		req.session.user = req.body.demo_userid;
 		Users.find({ email: req.session.user }, function(err, users) {
 			if (err) {
 				var message = "Error in authorized user lookup for " + req.session.user;
