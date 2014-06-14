@@ -6,8 +6,7 @@ host = env.hosts[0]
 # change this to your private key...
 #
 env.key_filename = '/Users/rick/.ssh/id_dsa'
-remote_dir = '/home/service_instageni/gee-master'
-remote_dir_test = '/home/service_instageni/test/gee-master'
+remote_dir = '/home/service_instageni/test/gee-master'
 remote_dir_alternate = '/home/service_instageni/alternate/gee-master'
 json_config_file_standard = 'config.json.standard'
 json_config_file_alternate = 'config.json.alternate'
@@ -30,13 +29,6 @@ def deploy():
 def deploy_file(file):
     deploy_file_internal(file, remote_dir, json_config_file_standard )
 
-@task    
-def deploy_test():
-    deploy_internal(remote_dir_test, json_config_file_standard )
-
-@task   
-def deploy_file_test(file):
-    deploy_file_internal(file, remote_dir, json_config_file_standard )
 
 @task
 def deploy_alternate():

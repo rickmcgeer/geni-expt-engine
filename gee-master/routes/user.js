@@ -31,6 +31,33 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 		});
 	});
 	
+	// repeat this code, basically, but for the demo, where we aren't authenticating.
+	// the only difference here is that our internal demo page put the userid in
+	// req.session.user already
+	app.get('/demo_user', function(req, res) {
+		console.log('Demo user is ' + JSON.stringify(req.session.user));
+		Users.find({ email: req.session.user }, function(err, users) {
+			if (err) {
+				var message = "Error in authorized user lookup for " + req.session.user;
+				utils.render_error_page(req, res, message, message);
+			} else if (users.length == 0) {
+				res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
+				// clear the userid so he can log in again
+				req.session.user = null;
+			} else {
+				// he's a valid user.  If he doesn't have a slice, send him to a page where
+				// he can allocate a slicelet.  If he does have a slice, initialize the slicename
+				// session variable with the name and send him to his dashboard.
+				// Also note whether he is admin
+				req.session.admin = users[0].admin;
+				if (!script_dir) {
+					console.log("In /user, script_dir is undefined!" );
+				}
+				utils.get_user_dashboard(req, res, urls, script_dir);
+			}
+		});
+	});
+	
 	// Put in an add-user request.  We're replacing an email here
 	app.post('/user/request', function(req, res) {
 		// shouldn't happen, but there are weird timing things...
