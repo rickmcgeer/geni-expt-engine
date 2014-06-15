@@ -8,7 +8,9 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 		console.log(JSON.stringify(req.session.passport.user.emails[0].value));
 		// squirrel away the userid in a session variable; this way, we don't have to pass
 		// it as an argument, or use cookies.
-		req.session.user = req.session.passport.user.emails[0].value;
+		if (!req.session.user) {
+			req.session.user = req.session.passport.user.emails[0].value;
+		}
 		// See if the user is in the database.  if he isn't, he isn't authorized, and we direct
 		// him to a page where he can send us a request 
 		Users.find({ email: req.session.user }, function(err, users) {
