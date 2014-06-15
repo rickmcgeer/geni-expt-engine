@@ -2,7 +2,7 @@ from fabric.api import *
 env.hosts = ['bilby.cs.princeton.edu']
 env.user = 'service_instageni'
 host = env.hosts[0]
-remote_dir = '/home/service_instageni/gee-master'
+remote_dir = '/home/service_instageni/test/gee-master'
 #
 # change this to your private key...
 #

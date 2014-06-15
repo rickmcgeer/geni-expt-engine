@@ -2,7 +2,7 @@ from fabric.api import local, task
 host = 'bilby.cs.princeton.edu'
 user = 'service_instageni'
 remote_dir = '/home/service_instageni/'
-remote_config_file_dir = '/home/service_instageni'
+remote_config_file_dir = '/home/service_instageni/test'
 
 #
 # change this to your private key...
