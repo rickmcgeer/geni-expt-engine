@@ -5,7 +5,7 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 	// Successful login page.
 	app.get('/user', function(req, res) {
 		console.log(JSON.stringify(req.session));
-		console.log(JSON.stringify(req.session.passport.user.emails[0].value));
+		// console.log(JSON.stringify(req.session.passport.user.emails[0].value));
 		// squirrel away the userid in a session variable; this way, we don't have to pass
 		// it as an argument, or use cookies.
 		if (!req.session.user) {
