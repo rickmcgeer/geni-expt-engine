@@ -27,19 +27,20 @@ def deploy_file(file):
 def test_gee_script(script):
     run('export GEE_CONFIG_FILE=%s/config.py; cd %s; %s' % (remote_config_file_dir, remote_dir, script))
     
-def form_command_line(script, email_addr, slice):
+def form_command_line(script, email, slice):
     if (script == 'find-slicelets.plcsh'):
         return './'+script
     elif (script == 'renew-gee-slice.plcsh'):
         return "./%s -- -s %s" % (script, slice)
     else:
-        return "./%s -- -e %s" % (script, email_addr)
+        return "./%s -- -e %s" % (script, email)
     
 
 @task
-def test_script(script, email_addr=None, slice=None):
-    cmd = form_command_line(script, email_addr, slice)
+def test_script(script, email=None, slice=None):
+    cmd = form_command_line(script, email, slice)
     test_gee_script(cmd)
+
 
                                    
     
