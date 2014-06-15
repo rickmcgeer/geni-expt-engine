@@ -36,6 +36,7 @@ exports.render_slice_dashboard = function(req, res, slice_dictionary) {
 // command is find_gee_slice -- -e req.session.user
 exports.get_user_dashboard = function(req, res, urls, script_dir) {
 	var spawn = require('child_process').spawn;
+	console.log("in get_user_dashboard, script_dir is: " + script_dir)
 	var cmd = spawn(script_dir + '/find-gee-slice.plcsh', ["--", "-e", req.session.user]);
 	var error = "";
 	var result = "";

@@ -3,5 +3,5 @@
 	"application_port": 15000,
 	"mongo_url": "mongodb://localhost/gee_master",
 	"session_secret": "keyboard cat",
-	"script_dir":"/home/service_instageni/test"
+	"script_dir":"/home/service_instageni"
 }
