@@ -18,7 +18,11 @@ tardir='/tmp/GEE'
 fabfile='/usr/share/gee/fabfile.py'
 readme='/usr/share/gee/README.txt'
 network='/usr/share/gee/network.py'
-execfile('./config.py')
+
+if 'GEE_CONFIG_FILE' in os.environ:
+    execfile(os.environ['GEE_CONFIG_FILE'])
+else:
+    execfile('./config.py')
 
 
 parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')

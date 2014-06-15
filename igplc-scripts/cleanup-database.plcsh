@@ -1,7 +1,10 @@
 #!/usr/bin/plcsh
-
+import os
 import datetime 
-execfile('../config.py')
+if 'GEE_CONFIG_FILE' in os.environ:
+    execfile(os.environ['GEE_CONFIG_FILE'])
+else:
+    execfile('./config.py')
 
 
 logfile = "/var/log/cleanup-database.log"

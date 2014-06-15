@@ -9,7 +9,11 @@ import datetime
 pool_size = 10
 index_file = "/usr/share/gee/index"
 logfile = "/var/log/top-up-slice-pool.log"
-execfile('./config.py')
+
+if 'GEE_CONFIG_FILE' in os.environ:
+    execfile(os.environ['GEE_CONFIG_FILE'])
+else:
+    execfile('./config.py')
 
 
 def get_index():

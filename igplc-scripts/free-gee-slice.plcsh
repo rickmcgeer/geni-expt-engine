@@ -7,7 +7,10 @@ import re
 import tarfile
 import argparse
 from django.core.validators import validate_email
-execfile('./config.py')
+if 'GEE_CONFIG_FILE' in os.environ:
+    execfile(os.environ['GEE_CONFIG_FILE'])
+else:
+    execfile('./config.py')
 
 
 parser = argparse.ArgumentParser(description='Release a GEE slice')

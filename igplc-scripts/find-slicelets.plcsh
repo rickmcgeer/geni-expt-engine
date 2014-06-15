@@ -2,7 +2,10 @@
 # Run as ./find-slicelets.plcsh -- <args>
 import json
 import re
-execfile('./config.py')
+if 'GEE_CONFIG_FILE' in os.environ:
+    execfile(os.environ['GEE_CONFIG_FILE'])
+else:
+    execfile('./config.py')
 
 #
 # is a particular slice a gee slicelet?
