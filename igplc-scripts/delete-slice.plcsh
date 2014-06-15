@@ -4,7 +4,10 @@
 import sys
 import os
 import argparse
-execfile('./config.py')
+if 'GEE_CONFIG_FILE' in os.environ:
+    execfile(os.environ['GEE_CONFIG_FILE'])
+else:
+    execfile('./config.py')
 
 
 parser = argparse.ArgumentParser(description='Deletes a GENI Experiment Engine slice')
