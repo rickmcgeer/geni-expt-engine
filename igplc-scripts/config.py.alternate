@@ -1,5 +1,5 @@
 ig_names = {'last_name':'IGPL_VTS', 'email_pattern_string': 'instagenipl+vts%s@gmail.com', 'email_wildcard_string': 'instagenipl+vts*@gmail.com'}
-gee_script_path = '/home/service_instageni/alternate'
+gee_script_path = '/home/service_instageni'
 slice_nodes = [
     'pc24.utahddc.geniracks.net',
     'pc4.instageni.illinois.edu',

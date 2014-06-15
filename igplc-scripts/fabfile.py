@@ -17,7 +17,7 @@ def deploy():
 @task
 def deploy_file(file):
     if (file == "config.py"):
-        local('scp -i %s config.py %s@%s:%sconfig.py' % (keyfile, user, host, remote_config_file_dir))
+        local('scp -i %s config.py %s@%s:%s/config.py' % (keyfile, user, host, remote_config_file_dir))
     else:
         local('scp -i %s -r %s %s@%s:%s/%s' % (keyfile, file, user, host, remote_dir, file))
     
