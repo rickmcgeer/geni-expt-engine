@@ -40,7 +40,7 @@ module.exports = function(app,utils,urls,url, script_dir) {
 		cmd.on('close', function (code) {
 			console.log('child process exited with code ' + code);
 			if(req.session.slice_data != null) {
-				utils.get_user_dashboard(req, res,urls, script_dir);
+				res.redirect('/user');
 			} else {
 				utils.render_error_page(req, res, "Slicelet Allocation Failure", error)
 			}
@@ -81,7 +81,7 @@ module.exports = function(app,utils,urls,url, script_dir) {
 			} else {
 				req.session.slice_data = null;
 				req.session.filename = null;
-				res.render('user_no_slice', {user:req.session.user, get_url:urls.get_slicelet_url, admin:req.session.admin});
+				res.redirect('/user');
 			}
 		});
 	});
@@ -112,7 +112,7 @@ module.exports = function(app,utils,urls,url, script_dir) {
 				if (error) {
 					utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slice_data.slice, error);
 				} else {
-					utils.get_user_dashboard(req, res,urls, script_dir);
+					res.redirect('/user');
 				}
 			}); 
 		}
