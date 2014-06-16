@@ -73,7 +73,11 @@ module.exports = function(app,utils,urls,url, script_dir) {
 		cmd.on('close', function (code) {
 			console.log('child process exited with code ' + code);
 			if (error) {
-				utils.render_error_page(req, res, "Error in freeing slicelet " + req.session.slice_data.slice, error);
+				if (req.session.slice_data && req.session.slice_data.slice) {
+					utils.render_error_page(req, res, "Error in freeing slicelet " + req.session.slice_data.slice, error);
+				} else {
+					utils.render_error_page(req, res, "Error in freeing unknown slicelet ", error);
+				}
 			} else {
 				req.session.slice_data = null;
 				req.session.filename = null;
