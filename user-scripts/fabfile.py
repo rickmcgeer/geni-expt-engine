@@ -2,18 +2,8 @@ from fabric.api import *
 
 env.user='%SLICE%'
 env.key_filename='~/.ssh/%SLICE%.pem'
-env.hosts = [
-    'pc3.instageni.rnoc.gatech.edu',
-    'pc32.utahddc.geniracks.net',
-    'pc5.geni.it.cornell.edu',
-    ]
-
-slivers = [
-	{'host': 'pc3.instageni.rnoc.gatech.edu', 'addr': '10.128.234.1'}, 
-	{'host': 'pc32.utahddc.geniracks.net', 'addr': '10.128.234.2'}, 
-	{'host': 'pc5.geni.it.cornell.edu', 'addr': '10.128.234.3'},
-	]
-
+env.hosts = %HOSTS%
+slivers = %SLIVERS%
 
 # Install the 'nmap' RPM on all hosts
 @task
