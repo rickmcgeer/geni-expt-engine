@@ -54,13 +54,18 @@ UpdateSlice(sliceid, {'expires':2147397247L})
 AddPersonToSlice(userid, sliceid)
 
 # Add the nodes to the slice
-AddSliceToNodes(sliceid, slice_nodes)
-slice = GetSlices(sliceid)
+AddSliceToNodes(sliceid, [x['hostname'] for x in slice_nodes])
+# slice = GetSlices(sliceid)
 # print slice
 
-# Set up GRE tunnels
-for (tagvalue, node) in slice_tags:
-    AddSliceTag(slicename, 'interface', tagvalue % args.userid, node)
+# Create tags
+tag_template = "[{'bridge': 'gee', 'vlan':'%d', 'IPADDR': '10.128.234.%d', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]"
+
+idx = 1
+for node in slice_nodes:
+    tagvalue = tag_template % (args.userid, idx)
+    AddSliceTag(slicename, 'interface', tagvalue, node['hostname'])
+    idx += 1
 
 # We should be all set!    
 
