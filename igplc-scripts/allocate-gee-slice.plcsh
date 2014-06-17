@@ -87,13 +87,32 @@ for name in [keyfile, readme, network]:
 
 # Fix up fabfile.py template
 with open(fabfile, "r") as f:
-     tmpl = f.read()
-fab = re.sub("%SLICE%", slice['name'], tmpl)
+     fab = f.read()
+fab = re.sub("%SLICE%", slice['name'], fab)
+
+hosts = [x['hostname'] for x in slice_nodes]
+fab = re.sub("%HOSTS%", hosts, fab)
+
+idx = 1
+slivers = []
+labels = []
+for node in slice_nodes:
+    slivers.append({'host': node['hostname'], 'addr': '10.128.234.%d' % idx})
+    labels.append("%s = 10.128.234.%d" % (node['label'], idx))
+    idx += 1
+    
+fab = re.sub("%SLIVERS%", slivers, fab)
 
 ti = tarfile.TarInfo("fabfile.py")
 ti.size = len(fab)
 ti.mtime = time.time()
 tar.addfile(ti, StringIO(fab))
+
+network = labels.join('\n')
+ti = tarfile.TarInfo("network.py")
+ti.size = len(network)
+ti.mtime = time.time()
+tar.addfile(ti, StringIO(network))
 
 tar.close()
 
