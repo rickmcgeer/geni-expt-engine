@@ -21,9 +21,9 @@ if 'GEE_CONFIG_FILE' in os.environ:
 else:
     execfile('./config.py')
 
-fabfile='user-scripts/fabfile.py'
-readme='user-scripts/README.txt'
-network='user-scripts/network.py'
+fabfile=user_script_path+'/fabfile.py'
+readme=user_script_path+'/README.txt'
+network=user_script_path+'/network.py'
 
 
 parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')
