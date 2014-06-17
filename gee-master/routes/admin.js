@@ -171,7 +171,7 @@ module.exports = function(app,utils,Users,UserRequests,url, script_dir) {
 		if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
 			res.render('admin_only', {user:req.session.user, title: 'Unauthorized Admin'});
 		} else {
-			console.log("Getting all slices " + req.session.slice_data.slice);
+			console.log("Getting all slices")
 			get_slicelet_data(req, res, function(req, res, error, slices) {
 				if (error) {
 					utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slice_data.slice, error);
