@@ -13,6 +13,7 @@ env.key_filename = '/Users/rick/.ssh/id_dsa'
 @task
 def deploy():
     local('scp -i %s   *.plcsh %s@%s:%s' % (env.key_filename, env.user, host, remote_dir))
+    local('scp -i %s -r user-scripts %s@%s:%s' % (env.key_filename, env.user, host, remote_dir))
     local('scp -i %s config.py %s@%s:%s/config.py' % (env.key_filename,  env.user, host, remote_config_file_dir))
 
 @task

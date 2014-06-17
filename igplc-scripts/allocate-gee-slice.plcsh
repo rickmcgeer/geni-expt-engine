@@ -15,14 +15,15 @@ from django.core.validators import validate_email
 
 keydir='/usr/share/keydir'
 tardir='/tmp/GEE'
-fabfile='/usr/share/gee/fabfile.py'
-readme='/usr/share/gee/README.txt'
-network='/usr/share/gee/network.py'
 
 if 'GEE_CONFIG_FILE' in os.environ:
     execfile(os.environ['GEE_CONFIG_FILE'])
 else:
     execfile('./config.py')
+
+fabfile=user_script_path+'/fabfile.py'
+readme=user_script_path+'/README.txt'
+network=user_script_path+'/network.py'
 
 
 parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')
@@ -91,7 +92,7 @@ with open(fabfile, "r") as f:
 fab = re.sub("%SLICE%", slice['name'], fab)
 
 hosts = [x['hostname'] for x in slice_nodes]
-fab = re.sub("%HOSTS%", hosts, fab)
+fab = re.sub("%HOSTS%", "%s" % hosts, fab)
 
 idx = 1
 slivers = []
@@ -101,14 +102,14 @@ for node in slice_nodes:
     labels.append("%s = 10.128.234.%d" % (node['label'], idx))
     idx += 1
     
-fab = re.sub("%SLIVERS%", slivers, fab)
+fab = re.sub("%SLIVERS%", "%s" % slivers, fab)
 
 ti = tarfile.TarInfo("fabfile.py")
 ti.size = len(fab)
 ti.mtime = time.time()
 tar.addfile(ti, StringIO(fab))
 
-network = labels.join('\n')
+network = '\n'.join(labels)
 ti = tarfile.TarInfo("network.py")
 ti.size = len(network)
 ti.mtime = time.time()
