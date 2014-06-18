@@ -238,7 +238,7 @@ module.exports = function(app,utils,Users,UserRequests,url, script_dir) {
 			// user name is a parameter to the call
 			var query = url.parse(req.url, true).query;
 			var username = query.user;
-			if (!validate_username(username)) {
+			if (!utils.validate_username(username)) {
 				res.send("Invalid username " + username + " sent to add_user")
 			} else {
 				// Look for the user in the db.  If he's already there, send an error.  If
