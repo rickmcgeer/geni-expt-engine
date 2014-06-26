@@ -24,6 +24,7 @@ else:
 fabfile=user_script_path+'/fabfile.py'
 readme=user_script_path+'/README.txt'
 network=user_script_path+'/network.py'
+utils=user_script_path+'/beanstalk_utils.py'
 
 
 parser = argparse.ArgumentParser(description='Get the tarball for a new GEE slice')
@@ -82,7 +83,7 @@ except OSError:
     pass
 
 tar = tarfile.open(tarball, 'w')
-for name in [keyfile, readme, network]:
+for name in [keyfile, readme, network, utils]:
     arcname = os.path.split(name)[1]
     tar.add(name, arcname=arcname)
 

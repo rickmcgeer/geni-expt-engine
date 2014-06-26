@@ -1,9 +1,60 @@
 from fabric.api import *
+from fabric.contrib.files import exists
 
 env.user='%SLICE%'
 env.key_filename='~/.ssh/%SLICE%.pem'
 env.hosts = %HOSTS%
 slivers = %SLIVERS%
+
+#
+# run a job in the background
+#
+
+
+
+def run_bg(cmd, before=None, sockname="dtach", use_sudo=False):
+    """Run a command in the background using dtach
+
+    :param cmd: The command to run
+    :param output_file: The file to send all of the output to.
+    :param before: The command to run before the dtach. E.g. exporting
+                   environment variable
+    :param sockname: The socket name to use for the temp file
+    :param use_sudo: Whether or not to use sudo
+    """
+    if not exists("/usr/bin/dtach"):
+        sudo("yum  install -y dtach")
+    if before:
+        cmd = "{}; dtach -n `mktemp -u /tmp/{}.XXXX` {}".format(
+            before, sockname, cmd)
+    else:
+        cmd = "dtach -n `mktemp -u /tmp/{}.XXXX` {}".format(sockname, cmd)
+    if use_sudo:
+        return sudo(cmd)
+    else:
+        return run(cmd)
+
+def run_bg_bash(
+        cmd, output_file=None, before=None, sockname="dtach", use_sudo=False):
+    """Run a bash command in the background using dtach
+
+    Although bash commands can be run using the plain :func:`run_bg` function,
+    this version will ensure to do the proper thing if the output of the
+    command is to be redirected.
+
+    :param cmd: The command to run
+    :param output_file: The file to send all of the output to.
+    :param before: The command to run before the dtach. E.g. exporting
+                   environment variable
+    :param sockname: The socket name to use for the temp file
+    :param use_sudo: Whether or not to use sudo
+    """
+    if output_file:
+        cmd = "/bin/bash -c '{} > {}'".format(cmd, output_file)
+    else:
+        cmd = "/bin/bash -c '{}'".format(cmd)
+    return run_bg(cmd, before=before, sockname=sockname, use_sudo=use_sudo)
+
 
 #
 # Generate the GEE Programming Environment
@@ -94,7 +145,6 @@ def check_beanstalk_server():
 # import('beanstalk_config.py') into his Python program
 #
 
-
 @task
 @hosts('localhost')
 def setup_beanstalk_clients():
@@ -108,12 +158,13 @@ def setup_beanstalk_clients():
 	with settings(host_string = host):
 	    f = open("beanstalk_config.py", "w")
 	    f.write("import beanstalkc\n")
+            f.write("from beanstalk_utils import *\n")
 	    f.write("beanstalk = beanstalkc.Connection(host='%s', port=14711)\n" % env.beanstalk_server)
 	    f.write("beanstalk.watch('%s')\n" % host)
 	    f.write("client_tubes = %s\n" % str(env.hosts))
 	    f.write("server_tube = 'server'\n")
 	    f.close()
-	    local("scp -i %s beanstalk_config.py %s@%s:." % (env.key_filename, env.user, host))
+	    local("scp -i %s beanstalk_config.py beanstalk_utils.py %s@%s:." % (env.key_filename, env.user, host))
 
 
 # Install the 'nmap' RPM on all hosts
@@ -142,68 +193,5 @@ def run_expt():
     # run('ifconfig -a | grep  inet | grep :10')
     # put the commands you want to run here...
     pass
-
-
-
-@hosts([env.hosts[0]])
-@task
-def install_scraper():
-    for host in env.hosts:
-	local('scp -i %s scrape-youtube.py %s@%s:.' % (env.key_filename, env.user, host))
-    
-
-
-@task
-def install_beautiful_soup():
-    with settings (warn_only=True):
-	run("pip install requests")
-	run("pip install beautifulsoup4")
-
-@task
-def install_youtube_dl():
-    with settings (warn_only=True):
-	run('pip install --upgrade youtube_dl')
-	
-@task
-def install_all():
-    install_gee_environment()
-    install_beautiful_soup()
-    install_scraper()
-    install_youtube_dl()
-    
-
-
-
-
-
-@task
-@hosts(env.hosts[0])
-def setup_job_server():
-    local('scp -i %s scrape-youtube.py %s@%s:.' %(env.key_filename, env.user, env.hosts[0]))
-    run('chmod +x ./scrape-youtube.py')
-
-@task
-@hosts('localhost')
-def deploy_video_clients():
-    for host in env.hosts:
-	local('scp -i %s video_client.py %s@%s:.' %(env.key_filename, env.user, host))
-
-@task
-def run_video_clients():
-    with settings(warn_only = True):
-	run('mkdir /tmp/downloads')
-    run('chmod +x ./video_client.py; ./video_client.py')
-
-@task
-def cleanup_video_client():
-    run('rm -rf /tmp/download/*')
-
-@task
-@hosts(env.hosts[0])
-def run_job_server():
-    run('./scrape-youtube.py')
-    
-    
-    
 
 
