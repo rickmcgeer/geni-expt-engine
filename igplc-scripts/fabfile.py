@@ -3,7 +3,7 @@ env.hosts = ['bilby.cs.princeton.edu']
 env.user = 'service_instageni'
 host = env.hosts[0]
 remote_dir = '/home/service_instageni/'
-remote_config_file_dir = '/home/service_instageni/test'
+remote_config_file_dir = '/home/service_instageni'
 
 #
 # change this to your private key...
