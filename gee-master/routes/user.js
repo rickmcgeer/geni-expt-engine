@@ -11,14 +11,26 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 		if (!req.session.user) {
 			req.session.user = req.session.passport.user.emails[0].value;
 		}
-		// See if the user is in the database.  if he isn't, he isn't authorized, and we direct
-		// him to a page where he can send us a request 
+		// See if the user is in the database.  if he isn't, add him
 		Users.find({ email: req.session.user }, function(err, users) {
 			if (err) {
 				var message = "Error in authorized user lookup for " + req.session.user;
 				utils.render_error_page(req, res, message, message);
 			} else if (users.length == 0) {
-				res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
+				// res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
+				Users.create([{email:req.session.user}], function(err, updated) {
+					if(err) {
+						utils.render_error_page(req, res, "Error in updating users", err);
+					} else {
+						console.log("User " + req.session.user + " added");
+						req.session.admin = false;
+						if (!script_dir) {
+							console.log("In /user, script_dir is undefined!" );
+						}
+						utils.get_user_dashboard(req, res, urls, script_dir);
+						
+					}
+				});
 			} else {
 				// he's a valid user.  If he doesn't have a slice, send him to a page where
 				// he can allocate a slicelet.  If he does have a slice, initialize the slicename
@@ -52,9 +64,23 @@ module.exports = function(app,utils,Users,UserRequests,urls, script_dir) {
 				var message = "Error in authorized user lookup for " + req.session.user;
 				utils.render_error_page(req, res, message, message);
 			} else if (users.length == 0) {
-				res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
+				// res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
 				// clear the userid so he can log in again
-				req.session.user = null;
+				// req.session.user = null;
+				// we now add users automatically if they aren't in the db
+				Users.create([{email:req.session.user}], function(err, updated) {
+					if(err) {
+						utils.render_error_page(req, res, "Error in updating users", err);
+					} else {
+						console.log("User " + req.session.user + " added");
+						req.session.admin = false;
+						if (!script_dir) {
+							console.log("In /user, script_dir is undefined!" );
+						}
+						utils.get_user_dashboard(req, res, urls, script_dir);
+						
+					}
+				});
 			} else {
 				// he's a valid user.  If he doesn't have a slice, send him to a page where
 				// he can allocate a slicelet.  If he does have a slice, initialize the slicename
