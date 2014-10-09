@@ -1,6 +1,10 @@
 #!/usr/bin/plcsh
 import os
-import datetime 
+import datetime
+
+def liveSlice(aSliceID):
+  return len(GetSlices(aSliceID)) > 0
+  
 if 'GEE_CONFIG_FILE' in os.environ:
     execfile(os.environ['GEE_CONFIG_FILE'])
 else:
@@ -12,7 +16,8 @@ logfile = "/var/log/cleanup-database.log"
 f = open(logfile, "a")
 
 for person in GetPersons({'last_name':ig_names['last_name']}):
-  if len(person['slice_ids']) == 0:
+  slice_ids = [] if len(person['slice_ids']) == 0 else [id for id in person['slice_ids'] if liveSlice(id)]
+  if len(slice_ids) == 0:
     f.write("%s Deleting person %s, email: %s\n" % (datetime.datetime.now(), person['person_id'], person['email']))
     DeletePerson(person['person_id'])
 #

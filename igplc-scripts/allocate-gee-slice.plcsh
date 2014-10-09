@@ -13,6 +13,9 @@ import datetime
 from StringIO import StringIO
 from django.core.validators import validate_email
 
+def liveSlice(sliceID):
+    return len(GetSlices(sliceID)) > 0
+
 keydir='/usr/share/keydir'
 tardir='/tmp/GEE'
 
@@ -47,7 +50,16 @@ if re.match(ig_names['email_wildcard_string'], args.email):
     sys.exit("ERROR: email address %s is not allowed!" % args.email)
 
 # Make sure the email address is not already in use for GEE
-inuse = GetPersons({'email':args.email})
+person = GetPersons({'email':args.email})
+if person:
+    slices = person['slice_ids']
+    if len(slices) > 0:
+       slices = [id for id in slices if len(GetSlices(id)) > 0]
+       inuse = len(slices) > 0
+    else:
+       inuse = False
+else:
+    inuse = False
 if inuse:
     sys.exit("ERROR: email address %s already in use on InstaGENI-PlanetLab" % args.email)
 
