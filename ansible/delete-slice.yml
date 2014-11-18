@@ -1,0 +1,16 @@
+---
+- hosts: nodes
+  sudo: no
+  tasks:
+
+  - name: Delete a slice
+    docker: name={{ slice }}
+      image={{ docker_image | default("phusion/baseimage:0.9.15") }}
+      state=absent
+
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Remove slice directory
+    file: path={{ slicedir }}
+      state=absent

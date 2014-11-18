@@ -1,0 +1,5 @@
+---
+basedir: /home/ubuntu/slices
+slicedir: "{{ basedir }}/{{ slice }}"
+keyfile: "{{ slicedir }}/id_rsa"
+archivedir: "{{ basedir }}/old"

@@ -1,0 +1,6 @@
+{% for host in groups['nodes'] %}
+Host {{ slice }}.{{ host }}
+  User root
+  HostName {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}
+  Port {{ hostvars[host]['docker_containers'][0]['NetworkSettings']['Ports']['22/tcp'][0]['HostPort'] }}
+{% endfor %}

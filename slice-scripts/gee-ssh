@@ -1,0 +1,9 @@
+#!/bin/bash
+
+slice=$1
+host=$2
+[ $# -eq 0 ] && { echo "Usage: $0 slice host"; exit 1; }
+
+slicedir=/home/ubuntu/slices/$slice
+
+ssh -F $slicedir/config -i $slicedir/id_rsa $slice.$host

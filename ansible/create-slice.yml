@@ -1,0 +1,45 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+  tasks:
+
+  - name: Create directory for slice files
+    file: path={{ slicedir }}
+      state=directory
+
+  - name: Create SSH key for slice
+    shell: ssh-keygen -t rsa -f {{ keyfile }} -P ""
+      creates={{ keyfile }}
+
+- hosts: nodes
+  sudo: no
+  tasks:
+
+  - name: Create a slice
+    docker: name={{ slice }}
+      hostname={{ slice }}.{{ inventory_hostname }}
+      image={{ docker_image | default("geeproject/phusion-baseimage:0.1") }}
+      expose=22 
+      publish_all_ports=yes
+
+  - name: Inject ssh key
+    sudo: yes
+    copy: src={{ keyfile }}.pub
+      dest=/var/lib/docker/devicemapper/mnt/{{ docker_containers[0]['Id'] }}/rootfs/root/.ssh/authorized_keys
+
+  - debug: var=docker_containers
+
+  - name: Set up /etc/hosts in container
+    sudo: yes
+    template: src=templates/etc-hosts
+      dest=/var/lib/docker/devicemapper/mnt/{{ docker_containers[0]['Id'] }}/rootfs/etc/workaround-docker-2267/hosts
+
+- hosts: localhost
+  tasks:
+  - name: Create helper files
+    template: src=templates/{{ item.name }}
+      dest={{ slicedir }}/{{ item.name }}
+    with_items:
+    - name: ssh-config
+    - name: ansible-hosts
