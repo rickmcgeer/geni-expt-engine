@@ -59,14 +59,23 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     // Renew a slicelet.  Just calls makeExpiryDate to set the session expiration two weeks into the
     // future, updates the slice record, then renders the dashboard.
     app.get('/slice/renew', function (req, res) {
-        Slices.findAndModify({user:req.session.user},[['_id', 'asc']], {$set: {expires:makeExpiryDate()}}, {}, function(err, object) {
+        Slices.findOne({user:req.session.user}, function(err, doc) {
             if (err) {
                 var message = "Error renewing slice for user " + req.session.user + ": " + err
                 console.log(message)
                 utils.render_error_page(req, res, message)        
             } else {
-                console.log("Slice for user " + req.session.user + " renewed ")
-                res.redirect('/user')
+                doc.expires = makeExpiryDate();
+                doc.save(function(err, slice, numberAffected) {
+                    if (err ) {
+                        var message = "Error renewing slice for user " + req.session.user + ": " + err
+                        console.log(message)
+                        utils.render_error_page(req, res, message)
+                    } else {
+                        console.log("Slice for user " + req.session.user + " renewed ")
+                        res.redirect('/user')
+                    }
+                });
             }
         });
     });
