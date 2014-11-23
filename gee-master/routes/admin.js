@@ -104,9 +104,22 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
         }
 
     var update_all_users = function (req, res, admins_from_form) {
-	console.log(JSON.stringify(admins_from_form))
-            var admins = ensure_items_in_a_list(admins_from_form);
-            Users.find({}, function (err, users) {
+	var admins = utils.ensure_items_in_a_list(admins_from_form)
+	if (admins.length > 0) {
+            Users.update({email: {$in: admins}}, {$set:{admin:true}}, {multi:true}, function (err, numAffected, raw) {
+		if(err) {
+		    utils.handleError("Error in update_all_users: " + err)
+		} else {
+		    render_users(req, res);
+		}
+	    });
+	} else {
+	    console.log("Nothing to do in update_all_users")
+	    render_users(req, res);
+	}
+    }
+/*
+
                 if (err) {
                     console.log("Error in finding user in update_all_users: " + err);
                     return;
@@ -156,7 +169,7 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
                 }
             });
         }
-
+*/
         // A utility function that gets slice data, and passes it to next_function.
         // next_function is a function with signature
         // next_function(req, res, error, slices)

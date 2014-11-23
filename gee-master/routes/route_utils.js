@@ -122,6 +122,10 @@ exports.ensure_items_in_a_list = function (input_parm) {
     return result;
 }
 
+exports.handleError = function(req, res, message) {
+    console.log(message);
+    exports.render_error_page(req, res, message)
+}
 
 
 // make sure a username looks like a valid email address...
