@@ -155,7 +155,7 @@ var user_schema = mongoose.Schema({
 // user is the email of the user who owns the slice (null if not allocated)
 // expires is the date on which the slice expires
 // tarfile is the name of slice file
-var slice_schema = Mongoose.Schema({
+var slice_schema = mongoose.Schema({
   user: {
     type: String,
     default: null // no user for this slice
