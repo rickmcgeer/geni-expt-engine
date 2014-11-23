@@ -1,118 +1,74 @@
-module.exports = function (app, utils, urls, url, script_dir) {
-    // get a slicelet.  This just calls $ allocate-gee-slice.plcsh -- -e <user>.  This
-    // script returns a JSON object with two fields, user (the user email) and slicelet_file
-    // If the command fails, we tell the user, with the error message -- and should probably
-    // do more, like submit a bug report to ourselves, or give the user that option.
-    // If it succeeds, give the user a  URL which points to a download.
+module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
+    function makeTarfile(sliceName) {
+	return sliceName;
+    }
+    
+    function makeExpiryDate() {
+	var expiration = new Date() // gets doday
+        var two_weeks = 1000 * 3600 * 24 * 7 * 2; // ms/sec * secs/hour * hours/day * days/week * 2 weeks
+        expiration.setTime(expiration.getTime() + two_weeks)
+        return expiration;
+    }
+    
+    // get the next slice number.  used only for debugging
+    app.get('/slice/next', function (req, res) {
+        res.end('Next slice number is ' + next_slice)
+    })
+    
     app.get('/slice/get', function (req, res) {
-        console.log(req.url);
-        var query = url.parse(req.url, true).query;
-        console.log(JSON.stringify(query));
-        var user = req.session.user;
-        console.log(user);
-        // formulate the command script_dir/allocate-gee-slice.plcsh -- -e user
-        // and set up variables to hold the result
-        var spawn = require('child_process').spawn;
-        var cmd = spawn(script_dir + '/allocate-gee-slice.plcsh', ["--", "-e", user]);
-        var returned_user = null;
-        var download_file = null;
-        var error = "";
-        var download_file;
-        var expiration_date;
-        // callbacks from the command.  When data is received on stdout, that's the output of
-        // the command, which will come in a JSON dictionary {user: user-email, slicelet_file:tarball-name, slice:slice-name}
-        // then call expiry_date() to get the expiration date, store all the data in the db
-        cmd.stdout.on('data', function (data) {
-            console.log('stdout: ' + data);
-            result = JSON.parse(data);
-            returned_user = result.user;
-            download_file = result.slicelet_file;
-            req.session.slice_data = result.slice;
-        });
-        // when data is received on stderr, we have a problem and log it.  Should do something more
-        // intelligent on exit...
-        cmd.stderr.on('data', function (data) {
-            console.log('Error in allocate-gee-slice: ' + data);
-            error = error + data;
-        });
-        // when the command finishes, render the dashboard
-        cmd.on('close', function (code) {
-            console.log('child process exited with code ' + code);
-            if (req.session.slice_data != null) {
-                res.redirect('/user');
+        Slices.nextCount(function(err, nextSliceNum) {
+            if (err) {
+                var message  = "Error in getting the next Slice Number: " + err
+                console.log(message);
+                utils.render_error_page(req, res,  message);
             } else {
-                utils.render_error_page(req, res, "Slicelet Allocation Failure", error)
+                var sliceName = utils.makeSliceName(nextSliceNum)
+                Slices.create({user:req.session.user,
+                              tarfile:makeTarfile(sliceName),
+                              expires:makeExpiryDate()
+                              },
+                              function(err, slice) {
+                                if (err) {
+                                    var message  = "Error in creating the Slice: " + sliceName + ": " + err;
+                                    console.log(message)
+                                    utils.render_error_page(req, res, message)
+                                } else {
+                                    console.log("Slice " + sliceName + " created for user " + req.session.user)
+                                    res.redirect('/user')
+                                }
+                              });
             }
         });
     });
-
-
-    // free a slicelet.  This just calls $ free-gee-slice.plcsh -- -e <user>.  This
-    // script returns a JSON object with two fields, user (the user email) and slicelet_file
-    // Return the user to the logged-in-with-no-slice page when done
+    
+    // free a slicelet.  Just deletes the slicelet from the db
     app.get('/slice/free', function (req, res) {
         console.log(req.url);
-        var query = url.parse(req.url, true).query;
-        console.log(JSON.stringify(query));
-        var user = req.session.user;
-        console.log(user);
-        var spawn = require('child_process').spawn;
-        var cmd = spawn(script_dir + '/free-gee-slice.plcsh', ["--", "-e", user]);
-        var error = "";
-        var result = "";
-        cmd.stdout.on('data', function (data) {
-            console.log('stdout: ' + data);
-            result = result + data;
-        });
-        cmd.stderr.on('data', function (data) {
-            console.log('Error in free-gee-slice: ' + data);
-            error = error + data;
-        });
-        cmd.on('close', function (code) {
-            console.log('child process exited with code ' + code);
-            if (error) {
-                if (req.session.slice_data && req.session.slice_data.slice) {
-                    utils.render_error_page(req, res, "Error in freeing slicelet " + req.session.slice_data.slice, error);
-                } else {
-                    utils.render_error_page(req, res, "Error in freeing unknown slicelet ", error);
-                }
+        Slices.remove({user:req.session.user}, function(err) {
+            if(err) {
+                var message = "Error removing slice for user " + req.session.user + " from the database: " + err
+                console.log(message)
+                utils.render_error_page(req, res, message)
             } else {
-                req.session.slice_data = null;
-                req.session.filename = null;
-                res.redirect('/user');
+                console.log("Slice   for user " + req.session.user + " freed ")
+                res.redirect('/user')
             }
         });
     });
-
     //
-    // Renew a slicelet.  Just calls expiry_date to set the session expiration two weeks into the
+    // Renew a slicelet.  Just calls makeExpiryDate to set the session expiration two weeks into the
     // future, updates the slice record, then renders the dashboard.
     app.get('/slice/renew', function (req, res) {
-        if (req.session.slice_data == null) {
-            utils.render_error_page(req, res, "req.session.slice_data null in call to renew_slicelet", "");
-        } else {
-            console.log("Renewing slice " + req.session.slice_data.slice);
-            var spawn = require('child_process').spawn;
-            var cmd = spawn(script_dir + '/renew-gee-slice.plcsh', ["--", "-s", req.session.slice_data.slice]);
-            var error = "";
-            var result = "";
-            cmd.stdout.on('data', function (data) {
-                console.log('stdout: ' + data);
-                result = result + data;
-            });
-            cmd.stderr.on('data', function (data) {
-                console.log('Error in renew-gee-slice: ' + data);
-                error = error + data;
-            });
-            cmd.on('close', function (code) {
-                console.log('child process exited with code ' + code);
-                if (error) {
-                    utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slice_data.slice, error);
-                } else {
-                    res.redirect('/user');
-                }
-            });
-        }
+        Slices.findAndModify({user:req.session.user},[['_id', 'asc']], {$set: {expires:makeExpiryDate()}}, {}, function(err, object) {
+            if (err) {
+                var message = "Error renewing slice for user " + req.session.user + ": " + err
+                console.log(message)
+                utils.render_error_page(req, res, message)        
+            } else {
+                console.log("Slice for user " + req.session.user + " renewed ")
+                res.redirect('/user')
+            }
+        });
     });
 
     // Callback for download.  Fortunately, this is simple, as node.js provides a

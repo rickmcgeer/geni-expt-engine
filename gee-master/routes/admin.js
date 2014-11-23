@@ -1,4 +1,4 @@
-module.exports = function (app, utils, Users, UserRequests, url, script_dir) {
+module.exports = function (app, utils, Users, Slices, url, script_dir) {
 
     // Utility to lookup and render the users page -- called from /users and /add_users
     var render_users = function (req, res) {
@@ -11,12 +11,12 @@ module.exports = function (app, utils, Users, UserRequests, url, script_dir) {
                         utils.render_error_page(req, res, "Error in displaying users", error);
                     } else {
                         var user_list = [];
-                        var slice_dictionary = {};
-                        for (var slice_index in slices) {
-                            var slice = slices[slice_index];
-                            slice_dictionary[slice.allocated] = slice.name;
-                        }
-
+                        var slice_dictionary = {}
+			slices.forEach(function(aSliceEntry) {
+			    var userName = aSliceEntry.allocated;
+			    slice_dictionary[userName] = aSliceEntry.name;
+			});
+			
                         for (var index in req.userlist) {
                             var user = req.userlist[index];
                             user_list.push({
@@ -123,7 +123,7 @@ module.exports = function (app, utils, Users, UserRequests, url, script_dir) {
                     }); // note that we will have to update i
                 }
                 var updates_done = 0;
-                // Tricky.  These updates happen asyncrhonously due to the callback architecture of node, so
+                // Tricky.  These updates happen asynchronously due to the callback architecture of node, so
                 // we have to keep track of what's been done and only display after the LAST update has been done.
                 for (var i in do_update) {
                     var userid = do_update[i].userid;
@@ -160,25 +160,20 @@ module.exports = function (app, utils, Users, UserRequests, url, script_dir) {
         // next_function is a function with signature
         // next_function(req, res, error, slices)
     var get_slicelet_data = function (req, res, next_function) {
-            var spawn = require('child_process').spawn;
-            var cmd = spawn(script_dir + '/find-slicelets.plcsh', []);
-            var error = "";
-            var result = "";
-            var slices = [];
-            cmd.stdout.on('data', function (data) {
-                console.log('stdout: ' + data);
-                result = result + data;
-                slices = JSON.parse(data);
-            });
-            cmd.stderr.on('data', function (data) {
-                console.log('Error in find-slicelets: ' + data);
-                error = error + data;
-            });
-            cmd.on('close', function (code) {
-                console.log('child process exited with code ' + code);
-                next_function(req, res, error, slices);
-            });
-        }
+        Slices.find({}, function(err, allSlices) {
+	if (allSlices && allSlices.length > 0) {
+	    var sliceDictionary = allSlices.map(function(aSliceEntry) {
+		return {name:utils.makeSliceName(aSliceEntry.sliceNum),
+		        allocated:aSliceEntry.user,
+			file:aSliceEntry.tarfile,
+			expiry_date:aSliceEntry.expires
+		})
+	    next_function(req, res, error, sliceDictionary)	
+	} else {
+	    next_function(req, res, error, [])
+	}
+    }
+
 
         // Administrator actions and options.  Only available
         // through the admin console
@@ -207,9 +202,6 @@ module.exports = function (app, utils, Users, UserRequests, url, script_dir) {
                 if (error) {
                     utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slice_data.slice, error);
                 } else {
-                    for (var i = 0; i < slices.length; i++) {
-                        slices[i].expiry_date = new Date(slices[i].expiry_date * 1000).toString()
-                    }
                     console.log(slices);
                     res.render('admin_slices', {
                         slices: slices,

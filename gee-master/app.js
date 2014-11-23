@@ -72,6 +72,9 @@ var real_application_port = nconf.get('real_port');
 // Code to initialize and connect to the database.  We're using mongodb, default port, and mongoose
 mongoose.connect(nconf.get('mongo_url'));
 var gee_master_db = mongoose.connection;
+// use autoincrement to automatically get sequences for slice numbers
+var autoIncrement = require('mongoose-auto-increment');
+autoIncrement.initialize(gee_master_db); // turn on auto-increment in the database
 gee_master_db.on('error', console.error.bind(console, 'Mongoose connection error to gee-master'));
 gee_master_db.once('open', function callback() {
     console.log("Connection to db done");
@@ -133,63 +136,42 @@ passport.use(new OpenIDStrategy({
     });
 }));
 
-// Database code.  The database currently holds the users and slice data.
-// To add an authorized user or a slice, do it from the console on bilby.
-// The slice/user data ought to migrate to the MyPLC DB -- this is a hack to
-// try stuff out...will ask Andy about moving authorized users to the MyPLC DB,
-// but we can do it here...
+
+// Database code.  .
 
 // database schema:
-// users: {email, role [list, currently just "admin"], admin [a boolean], "slice"}
-// users.slice is null if the user has no slice
-// users.slice and users.role are now obsolete and will probably be deleted
+// users: {email [String], admin [a boolean]}
 // email is a unique index for both the collections users and user_requests in
 // mongo (done from the command line) so we don't have to worry about duplicate entries
 var user_schema = mongoose.Schema({
     email: String,
-    role: {
-        type: [String],
-    default:
-        ["user"]
-    },
     admin: {
         type: Boolean,
-    default:
-        false
-    },
-    slice: {
-        type: String,
-    default:
-        null
+        default: false
     }
 });
+// slices: {name, allocated, expires, tarfile}
+// name is just the slice name
+// user is the email of the user who owns the slice (null if not allocated)
+// expires is the date on which the slice expires
+// tarfile is the name of slice file
+var slice_schema = Mongoose.Schema({
+  user: {
+    type: String,
+    default: null // no user for this slice
+  },
+  expires: {
+    type: Date
+  },
+  tarfile: String
+})
+
+// turn on auto-increment in the slice-number field
+sliceSchema.plugin(autoIncrement.plugin, {model: 'slices', field: 'sliceNum'})
 
 // get the users out of the database
 var Users = mongoose.model('users', user_schema);
-
-// user requests
-// These are requests that have come in from the form and are to be serviced
-var user_request_schema = mongoose.Schema({
-    email: String,
-    name: {
-        type: String,
-    default:
-        null
-    },
-    comments: {
-        type: String,
-    default:
-        null
-    },
-    created: {
-        type: Date,
-    default:
-        Date.now
-    }
-});
-
-// a variable for the user requests
-var UserRequests = mongoose.model('user_requests', user_request_schema);
+var Slices = mongoose.model('slices', slice_schema)
 
 // URLs to get, renew, and free slicelets, and download the tarball
 var get_slicelet_url = application_url + "/get_slicelet";
@@ -206,7 +188,7 @@ var urls = {
 
 
 
-require('./routes/')(app, passport, Users, UserRequests, urls, url, script_dir);
+require('./routes/')(app, passport, Users, Slices, urls, url, script_dir);
 
 
 // Just a test to see if the bug report functionality works

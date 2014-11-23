@@ -15,23 +15,26 @@ exports.render_error_page = function (req, res, bug_subject, bug_body_comment) {
         title: 'Error'
     });
 }
-
+// A utility to make a slice name from a number
+exports.makeSliceName = function(aNumber) {
+    return "slice" + aNumber;
+}
 // A utility function called from logged_in, get_slicelet, renew_slicelet, download_slicelet...
 // Render the page with the user's slice information
 // This is only called when req.session.slice_data.slice != null
 // all of the slice information is in slice_dictionary, and is of the form
 // {"slice": <slicename>", "slicelet_file": <filename>, "user": "<username>, "has_slicelet": true}
 exports.render_slice_dashboard = function (req, res, slice_dictionary) {
-    if (slice_dictionary.slice == null) { // should never get here!  How do I throw an exception in Javascript?
+    if (slice_dictionary.name == null) { // should never get here!  How do I throw an exception in Javascript?
         exports.render_error_page(req, res, "render_slice_dashboard called with slicename null", "render_slice_dashboard called with slicename null");
         return;
     }
 
     var page_dictionary = {
-        slice: slice_dictionary.slice,
+        slice: exports.makeSliceName(slice_dictionary.sliceNum),
         user: req.session.user,
         admin: req.session.admin,
-        date: new Date(slice_dictionary.expires * 1000).toString()
+        date: slice_dictionary.expires
     };
     res.render('user_with_slice', page_dictionary);
 }
@@ -39,9 +42,28 @@ exports.render_slice_dashboard = function (req, res, slice_dictionary) {
 // get the data for the user dashboard from
 // the shell script find-gee-slice.plcsh  and
 // render the user dashboard
-// command is find_gee_slice -- -e req.session.user
-exports.get_user_dashboard = function (req, res, urls, script_dir) {
-    var spawn = require('child_process').spawn;
+// command is 
+exports.get_user_dashboard = function (req, res, urls, Slices, script_dir) {
+    Slices.find({user:req.session.user},
+	function(err, slices) {
+	    if(err) {
+		var message = "Error in  slice lookup for " + req.session.user;
+		utils.render_error_page(req, res, message, message);
+	    } else if (slices.length > 0) {
+		req.session.slice_data = slices[0];
+		req.session.filename = result.tarfile;
+		exports.render_slice_dashboard(req, res, req.session.slice_data)
+	    } else {
+		res.render('user_no_slice', {
+                    user: req.session.user,
+                    get_url: urls.get_slicelet_url,
+                    admin: req.session.admin
+		});
+	    }
+	});
+}
+/* 	
+   var spawn = require('child_process').spawn;
     console.log("in get_user_dashboard, script_dir is: " + script_dir)
     var cmd = spawn(script_dir + '/find-gee-slice.plcsh', ["--", "-e", req.session.user]);
     var error = "";
@@ -93,7 +115,7 @@ exports.get_user_dashboard = function (req, res, urls, script_dir) {
         }
     });
 }
-
+*/
 // A little utility because HTML forms return a string when only a single item is
 // checked in a list of checkboxes, but a list if more than one is checked.  This does awful things
 // unless you regularize it...

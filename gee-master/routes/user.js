@@ -1,5 +1,5 @@
 // Routes related to users
-module.exports = function (app, utils, Users, UserRequests, urls, script_dir) {
+module.exports = function (app, utils, Users, Slices, urls, script_dir) {
     console.log("In route/users.js, script dir is: " + script_dir)
     // Successful login page.
     app.get('/user', function (req, res) {
@@ -30,8 +30,7 @@ module.exports = function (app, utils, Users, UserRequests, urls, script_dir) {
                         if (!script_dir) {
                             console.log("In /user, script_dir is undefined!");
                         }
-                        utils.get_user_dashboard(req, res, urls, script_dir);
-
+                        utils.get_user_dashboard(req, res, urls, Slices, script_dir);
                     }
                 });
             } else {
@@ -43,7 +42,7 @@ module.exports = function (app, utils, Users, UserRequests, urls, script_dir) {
                 if (!script_dir) {
                     console.log("In /user, script_dir is undefined!");
                 }
-                utils.get_user_dashboard(req, res, urls, script_dir);
+                utils.get_user_dashboard(req, res, urls, Slices, script_dir);
             }
         });
     });
@@ -86,7 +85,7 @@ module.exports = function (app, utils, Users, UserRequests, urls, script_dir) {
                         if (!script_dir) {
                             console.log("In /user, script_dir is undefined!");
                         }
-                        utils.get_user_dashboard(req, res, urls, script_dir);
+                        utils.get_user_dashboard(req, res, urls, Slices, script_dir);
 
                     }
                 });
@@ -99,41 +98,7 @@ module.exports = function (app, utils, Users, UserRequests, urls, script_dir) {
                 if (!script_dir) {
                     console.log("In /user, script_dir is undefined!");
                 }
-                utils.get_user_dashboard(req, res, urls, script_dir);
-            }
-        });
-    });
-
-    // Put in an add-user request.  We're replacing an email here
-    app.post('/user/request', function (req, res) {
-        // shouldn't happen, but there are weird timing things...
-        Users.find({
-            email: req.body.email
-        }, function (err, users) {
-            // we will log any error, but aside from that do nothing -- this was just a sanity check
-            if (err) {
-                console.log("Error " + err + " in sanity-check lookup of user " + req.body.email + " (which was not expected to succeed)");
-            } else if (users.length > 0) {
-                console.log("user " + req.body.email + " requested a login but already has an account!");
-                req.session.user = req.body.email;
-                utils.get_user_dashboard(req, res, urls, script_dir); // should this be utils.get_user_dashboard?
-                // Add the user to the user_requests table and show a results page
-                UserRequests.create({
-                    email: req.body.email,
-                    name: req.body.name,
-                    comments: req.body.comments
-                }, function (err, addition) {
-                    if (err) {
-                        console.log("Error adding user request " + JSON.stringify(req.body) + ": " + err);
-                        utils.render_error_page(req, res, "Error adding user request " + err, JSON.stringify(req.body));
-                    } else {
-                        res.render('user_request', {
-                            email: req.body.email,
-                            name: req.body.name,
-                            title: 'User Request Confirmed'
-                        });
-                    }
-                });
+                utils.get_user_dashboard(req, res, urls, Slices, script_dir);
             }
         });
     });
