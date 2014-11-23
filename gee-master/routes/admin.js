@@ -169,9 +169,9 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 			expiry_date:aSliceEntry.expires
 		}
 	    })
-	    next_function(req, res, error, sliceDictionary)	
+	    next_function(req, res, err, sliceDictionary)	
 	} else {
-	    next_function(req, res, error, [])
+	    next_function(req, res, err, [])
 	}
 	});
     }
