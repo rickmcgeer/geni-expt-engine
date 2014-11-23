@@ -23,5 +23,5 @@ module.exports = function (app, passport, Users, Slices, urls, url, script_dir) 
     require('./auth')(app, passport);
     require('./main')(app);
     require('./slice')(app, route_utils, urls, url, Users, Slices, script_dir);
-    require('./user')(app, utils, Users, Slices, urls, script_dir);
+    require('./user')(app, route_utils, Users, Slices, urls, script_dir);
 }
