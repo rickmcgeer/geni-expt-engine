@@ -104,6 +104,7 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
         }
 
     var update_all_users = function (req, res, admins_from_form) {
+	console.log(JSON.stringify(admins_from_form))
             var admins = ensure_items_in_a_list(admins_from_form);
             Users.find({}, function (err, users) {
                 if (err) {
