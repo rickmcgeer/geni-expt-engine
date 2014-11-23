@@ -167,11 +167,13 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 		        allocated:aSliceEntry.user,
 			file:aSliceEntry.tarfile,
 			expiry_date:aSliceEntry.expires
-		})
+		}
+	    })
 	    next_function(req, res, error, sliceDictionary)	
 	} else {
 	    next_function(req, res, error, [])
 	}
+	});
     }
 
 
