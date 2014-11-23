@@ -25,10 +25,6 @@ exports.makeSliceName = function(aNumber) {
 // all of the slice information is in slice_dictionary, and is of the form
 // {"slice": <slicename>", "slicelet_file": <filename>, "user": "<username>, "has_slicelet": true}
 exports.render_slice_dashboard = function (req, res, slice_dictionary) {
-    if (slice_dictionary.name == null) { // should never get here!  How do I throw an exception in Javascript?
-        exports.render_error_page(req, res, "render_slice_dashboard called with slicename null", "render_slice_dashboard called with slicename null");
-        return;
-    }
 
     var page_dictionary = {
         slice: exports.makeSliceName(slice_dictionary.sliceNum),
@@ -51,7 +47,7 @@ exports.get_user_dashboard = function (req, res, urls, Slices, script_dir) {
 		utils.render_error_page(req, res, message, message);
 	    } else if (slices.length > 0) {
 		req.session.slice_data = slices[0];
-		req.session.filename = result.tarfile;
+		req.session.filename = req.session.slice_data.tarfile;
 		exports.render_slice_dashboard(req, res, req.session.slice_data)
 	    } else {
 		res.render('user_no_slice', {
