@@ -102,11 +102,10 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
                 delete_requests(req, res, to_delete);
             }
         }
-
-    var update_all_users = function (req, res, admins_from_form) {
-	var admins = utils.ensure_items_in_a_list(admins_from_form)
-	if (admins.length > 0) {
-            Users.update({email: {$in: admins}}, {$set:{admin:true}}, {multi:true}, function (err, numAffected, raw) {
+    
+    var setDeletedAdmins = function(req, res, deletedAdmins) {
+	if (deletedAdmins.length > 0) {
+	    Users.update({email: {$in: deletedAdmins}}, {$set:{admin:false}}, {multi:true}, function (err, numAffected, raw) {
 		if(err) {
 		    utils.handleError("Error in update_all_users: " + err)
 		} else {
@@ -114,62 +113,41 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 		}
 	    });
 	} else {
-	    console.log("Nothing to do in update_all_users")
 	    render_users(req, res);
 	}
     }
-/*
+    
+    var setNewAndDeletedAdmins = function(req, res, newAdmins, deletedAdmins) {
+	if (newAdmins.length > 0) {
+	    Users.update({email: {$in: newAdmins}}, {$set:{admin:true}}, {multi:true}, function (err, numAffected, raw) {
+		if(err) {
+		    utils.handleError("Error in update_all_users: " + err)
+		} else {
+		    setDeletedAdmins(req, res, deletedAdmins)
+		}
+	    });
+	} else {
+	    setDeletedAdmins(req, res, deletedAdmins)
+	}
+    }
 
-                if (err) {
-                    console.log("Error in finding user in update_all_users: " + err);
-                    return;
-                }
-                // have to do two passes to force the updates to happen before we show the
-                // user page -- which me must to have the updates reflected in the user page.
-                // loop 1: count the number of updates
-                var do_update = []; // array of indices to update;
-                for (var i in users) {
-                    var userid = users[i].email;
-                    var is_admin = admins.indexOf(userid) != -1;
-                    if (is_admin != users[i].admin) do_update.push({
-                        userid: userid,
-                        new_admin_value: is_admin
-                    }); // note that we will have to update i
-                }
-                var updates_done = 0;
-                // Tricky.  These updates happen asynchronously due to the callback architecture of node, so
-                // we have to keep track of what's been done and only display after the LAST update has been done.
-                for (var i in do_update) {
-                    var userid = do_update[i].userid;
-                    var admin_value = do_update[i].new_admin_value;
-                    Users.update({
-                        email: userid
-                    }, {
-                        $set: {
-                            admin: admin_value
-                        }
-                    }, {
-                        multi: false
-                    }, function (err, numAffected) {
-                        var updating_string = "updating admin bit for " + userid + " to " + admin_value;
-                        if (err) {
-                            console.log("Error in " + updating_string + ": " + err);
-                        } else {
-                            console.log("Success in " + updating_string);
-                        }++updates_done;
-                        // This is thread-safe.  The invariant we want to maintain is that updates_done == do_updates.length
-                        // exactly ONCE, independent of thread-interleaving.  No matter how the threads are interleaved in a
-                        // multi-threaded execution environment, each update will increment updates_done by exactly one, and so
-                        // after the last increment to updates_done updates_done == do_updates.length.  Moreover, the last test
-                        // will follow the last update.  The worst that will happen is that we'll get an extra render...
-                        if (updates_done == do_update.length) {
-                            render_users(req, res);
-                        }
-                    });
-                }
-            });
-        }
-*/
+    var update_all_users = function (req, res, admins_from_form) {
+	var admins = utils.ensure_items_in_a_list(admins_from_form)
+	Users.find({}, function(err, users) {
+	    if(err) {
+		utils.handleError("Error in update_all_users: " + err)
+	    } else {
+		var newAdmins = [];
+		var deletedAdmins = [];
+		users.forEach(function(aUserRecord) {
+		    var adminBitSet = admins.indexOf(aUserRecord.email) >= 0;
+		    if (adminBitSet && !aUserRecord.admin) newAdmins.push(aUserRecord.email)
+		    if (aUserRecord.admin && !adminBitSet) deletedAdmins.push(aUserRecord.email)
+		});
+		setNewAndDeletedAdmins(req, res, newAdmins, deletedAdmins);
+	    }
+	})
+            
         // A utility function that gets slice data, and passes it to next_function.
         // next_function is a function with signature
         // next_function(req, res, error, slices)
