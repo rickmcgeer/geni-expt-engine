@@ -167,7 +167,7 @@ var slice_schema = mongoose.Schema({
 })
 
 // turn on auto-increment in the slice-number field
-sliceSchema.plugin(autoIncrement.plugin, {model: 'slices', field: 'sliceNum'})
+slice_schema.plugin(autoIncrement.plugin, {model: 'slices', field: 'sliceNum'})
 
 // get the users out of the database
 var Users = mongoose.model('users', user_schema);
