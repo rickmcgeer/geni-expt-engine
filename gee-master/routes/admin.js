@@ -147,6 +147,7 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 		setNewAndDeletedAdmins(req, res, newAdmins, deletedAdmins);
 	    }
 	})
+    }
             
         // A utility function that gets slice data, and passes it to next_function.
         // next_function is a function with signature
