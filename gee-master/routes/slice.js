@@ -16,6 +16,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     
     var invokeCommand = function(req, res, cmdName, argList, callBack, callBackArgStruct, errorCallback) {
         var spawn = require('child_process').spawn;
+        console.log("Invoking command " + script_dir + "/" + cmdName)
         var cmd = spawn(script_dir + '/' + cmdName, argList);
         var error = "";
         var result = "";
