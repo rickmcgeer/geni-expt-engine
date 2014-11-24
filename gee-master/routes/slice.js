@@ -81,7 +81,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                                     utils.render_error_page(req, res, message)
                                 } else {
                                     console.log("Slice " + sliceName + " entered for user " + req.session.user)
-                                    invokeCommand(req, res, 'createSlice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceFromDBOnError) // need to fix the imagename
+                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceFromDBOnError) // need to fix the imagename
                                 }
                               });
             }
@@ -103,7 +103,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                     if(err) {
                         utils.handleError("Error removing slice for user " + req.session.user + " from the database: " + err)
                     } else {
-                        invokeCommand(req, res, 'deleteSlice.sh', [sliceName, tarfile], redirectToUser, {}, utils.handleError)
+                        invokeCommand(req, res, 'delete-slice.sh', [sliceName, tarfile], redirectToUser, {}, utils.handleError)
                     }
                 })
             }
