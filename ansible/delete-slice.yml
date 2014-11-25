@@ -1,5 +1,6 @@
 ---
 - hosts: nodes
+  remote_user: ubuntu
   sudo: no
   tasks:
 

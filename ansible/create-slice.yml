@@ -14,6 +14,7 @@
 
 - hosts: nodes
   sudo: no
+  remote_user: ubuntu
   tasks:
 
   - name: Create a slice
@@ -28,7 +29,7 @@
     copy: src={{ keyfile }}.pub
       dest=/var/lib/docker/devicemapper/mnt/{{ docker_containers[0]['Id'] }}/rootfs/root/.ssh/authorized_keys
 
-  - debug: var=docker_containers
+#  - debug: var=docker_containers
 
   - name: Set up /etc/hosts in container
     sudo: yes
@@ -43,3 +44,7 @@
     with_items:
     - name: ssh-config
     - name: ansible-hosts
+
+  - name: Create tarball
+    shell: cd {{ slicedir }}; tar czf {{ tarball }} *
+    when: tarball != ""

@@ -1,8 +1,10 @@
 #!/bin/bash
 
-slice=$1
+SLICE=$1
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
 [ $# -eq 0 ] && { echo "Usage: $0 slice_name"; exit 1; }
 
-slicedir=/home/ubuntu/slices/$1
+SLICEDIR=/home/service_instageni/slices/$SLICE
 
-ansible -i $slicedir/hosts --private-key=$slicedir/id_rsa -m ping -u root nodes
+ansible -i $SLICEDIR/ansible-hosts --private-key=$SLICEDIR/id_rsa -m ping -u root nodes
