@@ -1,6 +1,6 @@
 module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     function makeTarfile(sliceName) {
-	return sliceName;
+	return "/tmp/" + sliceName + ".tgz";
     }
     
     function makeExpiryDate() {
@@ -22,8 +22,8 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         var result = "";
         var data_received = false;
         cmd.stdout.on('data', function (data) {
-            // console.log('stdout: ' + data);
-            result = JSON.parse(data);
+            console.log('stdout: ' + data);
+            // result = JSON.parse(data);
             data_received = true;
         });
         // when data is received on stderr, we have a problem and log it.  Should do something more
