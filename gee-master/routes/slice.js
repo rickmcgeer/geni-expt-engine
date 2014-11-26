@@ -12,9 +12,9 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     
     // invoke a remote command.  If the command exits with 0, invoke callBack, which should
     // be a function foo(req, res, callBackArgStruct, results), where results are the data
-    // that came back from command.  On error invoke errorCallBack, which takes (req, res, error)
+    // that came back from command.  On error invoke errorCallBack, which takes (req, res, error, errorCallBackStruct)
     
-    var invokeCommand = function(req, res, cmdName, argList, callBack, callBackArgStruct, errorCallback) {
+    var invokeCommand = function(req, res, cmdName, argList, callBack, callBackArgStruct, errorCallback, errorCallBackStruct) {
         var spawn = require('child_process').spawn;
         console.log("Invoking command " + script_dir + "/" + cmdName)
         var cmd = spawn(script_dir + '/' + cmdName, argList);
@@ -36,7 +36,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         cmd.on('close', function (code) {
             console.log('child process exited with code ' + code);
             if(code > 0) {
-                errorCallback(req, res, "Error in subprocess " + cmdName + " " + argList + ": " + error)
+                errorCallback(req, res, error, errorCallBackStruct)
             } else {
                 callBack(req, res, callBackArgStruct, result)
             }
@@ -109,6 +109,52 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
             }
         })
     });
+    
+    // A helper routine for slice expiration.  This is called after something has been done with
+    // each expired slice.  We are done when the deleted and error slices are the total number of
+    // expired slices
+    
+    var checkDone = function(req, res, slices, slicesDeleted, sliceErrors) {
+        if (slices.length == slicesDeleted.length + sliceErrors.length) {
+            res.end(JSON.stringify({deleted: slicesDeleted, errorOnDelete:sliceErrors}))
+        }
+    }
+    
+    // look for expired slices and delete them.  returns the data in JSON, because this
+    // will typically be invoked by a curl script
+    
+    app.get('/slice/expire', function(req, res) {
+        var date = new Date() // today
+        Slices.find({expires: {$lt:date}}, function(err, slices) {
+            if (err) {
+                res.json("Error in find expiring slices: " + err)
+            } else if (slices.length == 0) {
+                res.json("No expiring slices")
+            } else {
+                slicesDeleted = [];
+                sliceErrors = [];
+                slices.forEach(function(aSlice) {
+                    invokeCommand(req, res, 'delete-slice.sh', [utils.makeSliceName(aSlice.sliceNum)],
+                                  function(req, res, results) {
+                                    Slices.remove({sliceNum: aSlice.sliceNum}, function(err) {
+                                        if (err) {
+                                            sliceErrors.push({slice:aSlice.sliceNum, error:err})
+                                        } else {
+                                            slicesDeleted.push(aSlice.sliceNum)
+                                        }
+                                        checkDone(req, res, slices, slicesDeleted, sliceErrors)
+                                    })
+                                  }, {},
+                                  function(req, res, error) {
+                                    sliceErrors.push({slice:aSlice.sliceNum, error:err})
+                                    checkDone(req, res, slices, slicesDeleted, sliceErrors)
+                                  }, {})
+                    
+                })
+            }
+        });
+        
+    })
     //
     // Renew a slicelet.  Just calls makeExpiryDate to set the session expiration two weeks into the
     // future, updates the slice record, then renders the dashboard.
