@@ -1,5 +1,5 @@
 {
-	"host_name": "node56.stanford.vicci.org",
+	"host_name": "gee-project.org",
 	"application_port": 80,
 	"real_port": 80,
 	"mongo_url": "mongodb://mongodb/gee_master",

@@ -56,9 +56,9 @@ nconf.defaults({
     mongo_url: 'mongodb://localhost/gee_master',
     session_secret: 'keyboard cat',
     script_dir: '/home/service_instageni',
-    real_host_name: 'igplc.cs.princeton.edu',
+    real_host_name: 'node56.stanford.vicci.org',
     // need to use this because app.listen ignores port forwarding (EADDRINUSE errors because of plc webserver 
-    real_port: 8080
+    real_port: 80
 });
 
 // the host and port we are running on, and the URL for people to request, and the directory
