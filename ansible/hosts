@@ -1,3 +1,22 @@
 [nodes]
-test2
-test3
+pcvm3-1.geni.case.edu                  docker_bip=10.0.0.1/16
+pcvm1-1.geni.it.cornell.edu            docker_bip=10.1.0.1/16
+pcvm3-1.instageni.metrodatacenter.com  docker_bip=10.2.0.1/16
+pcvm2-2.instageni.rnoc.gatech.edu      docker_bip=10.3.0.1/16
+pcvm3-2.instageni.illinois.edu         docker_bip=10.4.0.1/16
+pcvm5-7.lan.sdn.uky.edu                docker_bip=10.5.0.1/16
+pcvm3-1.instageni.lsu.edu              docker_bip=10.6.0.1/16
+pcvm2-2.instageni.maxgigapop.net       docker_bip=10.7.0.1/16
+pcvm1-1.instageni.iu.edu               docker_bip=10.8.0.1/16
+pcvm3-4.instageni.rnet.missouri.edu    docker_bip=10.9.0.1/16
+pcvm3-7.instageni.nps.edu              docker_bip=10.10.0.1/16
+pcvm2-1.instageni.nysernet.org         docker_bip=10.11.0.1/16
+pcvm3-11.genirack.nyu.edu              docker_bip=10.12.0.1/16
+pcvm5-1.instageni.northwestern.edu     docker_bip=10.13.0.1/16
+pcvm5-2.instageni.cs.princeton.edu     docker_bip=10.14.0.1/16
+pcvm3-3.instageni.rutgers.edu          docker_bip=10.15.0.1/16
+pcvm1-6.instageni.sox.net              docker_bip=10.16.0.1/16
+pcvm3-1.instageni.stanford.edu         docker_bip=10.17.0.1/16
+pcvm2-1.instageni.idre.ucla.edu        docker_bip=10.18.0.1/16
+pcvm4-1.utahddc.geniracks.net          docker_bip=10.19.0.1/16
+pcvm1-1.instageni.wisc.edu             docker_bip=10.20.0.1/16
