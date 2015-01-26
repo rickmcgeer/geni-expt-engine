@@ -1,22 +1,6 @@
 extends layout
 block pageHeader
-	div.pageHeader Feedback
+	div.pageHeader Error Encountered
 block content
-	div Well, that's why they call it a beta program.  You've hit a bug.  We've initialized the bug report form below; please add any additional comments after the initial chunk (such as what you were doing when you hit this) and hit submit.  This will take you into your mailer, and then just send the email.  And thanks, and sorry about the bug.
-	form(method="get", action="mailto:rick.mcgeer@us-ignite.org, acb@cs.princeton.edu")
-		table
-			tr
-				td Name
-				td: input(type="text", name="name", placeholder="Your Name", size=30)
-			tr
-				td Email
-				td: input(type="text", name="mail", placeholder = "Your Email", size=20)
-			tr
-				td Subject
-				td: input(type="text", name="subject", value=bugreport, readonly, size=bugreport.length + 3)
-			tr
-				td Additional Comments
-				td: textarea(name="body", rows=10, cols=50, value=bugreport_body)
-			tr
-				td(colspan=2, style="text-align:center")
-					button(type="submit") Submit
+	div We encountered an error in performing your slice operation.  It may or may not affect the configuration of your slice; we've logged the error and are looking into it
+        a.content(href='/user') User Dashboard
