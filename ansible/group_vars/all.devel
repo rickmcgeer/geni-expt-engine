@@ -6,3 +6,4 @@ archivedir: "{{ basedir }}/old"
 
 dockeruser: "ubuntu"
 dockerfs: "devicemapper"
+rootfs: "rootfs"

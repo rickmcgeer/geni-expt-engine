@@ -27,14 +27,14 @@
   - name: Inject ssh key
     sudo: yes
     copy: src={{ keyfile }}.pub
-      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/root/.ssh/authorized_keys
+      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
 
 #  - debug: var=docker_containers
 
   - name: Set up /etc/hosts in container
     sudo: yes
     template: src=templates/etc-hosts
-      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/etc/workaround-docker-2267/hosts
+      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/etc/workaround-docker-2267/hosts
 
 - hosts: localhost
   tasks:
