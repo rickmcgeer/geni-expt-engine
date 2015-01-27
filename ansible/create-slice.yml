@@ -27,7 +27,7 @@
   - name: Inject ssh key
     sudo: yes
     copy: src={{ keyfile }}.pub
-      dest=/var/lib/docker/aufs/mnt/{{ docker_containers[0]['Id'] }}/root/.ssh/authorized_keys
+      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/root/.ssh/authorized_keys
 
 #  - debug: var=docker_containers
 
