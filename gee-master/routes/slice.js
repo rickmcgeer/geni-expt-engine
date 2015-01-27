@@ -43,6 +43,10 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         });
     }
     
+    app.get('/test_error', function(req, res) {
+        utils.handleError(req, res, "Error handler called")
+    })
+    
     var deleteSliceFromDBOnError = function(req, res, errorMessage) {
        Slices.remove({user:req.session.user}, function(err, result) {
         if(err) {
