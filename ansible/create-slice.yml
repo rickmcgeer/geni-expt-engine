@@ -46,6 +46,7 @@
     - name: ssh-config
     - name: ansible-hosts
     - name: fabfile.py
+    - name: README.txt
 
   - name: Create tarball
     shell: cd {{ slicedir }}; tar czf {{ tarball }} *
