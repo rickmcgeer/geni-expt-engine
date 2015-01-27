@@ -19,10 +19,10 @@ if [ "$1" != "production" ] && [ "$1" != "devel" ]; then
     exit 1
 fi
 
-rm $DIR/group_vars/all
+rm -f $DIR/group_vars/all
 ln -s $DIR/group_vars/all.$1 $DIR/group_vars/all
 
-rm $DIR/hosts
+rm -f $DIR/hosts
 ln -s $DIR/hosts.$1 $DIR/hosts
 
 exit 0
