@@ -4,11 +4,12 @@ module.exports = function (app, utils, Users, Slices, urls, script_dir) {
     // Successful login page.
     app.get('/user', function (req, res) {
         console.log(JSON.stringify(req.session));
-        // console.log(JSON.stringify(req.session.passport.user.emails[0].value));
-        // squirrel away the userid in a session variable; this way, we don't have to pass
-        // it as an argument, or use cookies.
-        if (!req.session.user) {
-            req.session.user = req.session.passport.user.emails[0].value;
+        // check to make sure we have a valid user.  If we do, it will be
+        // in req.session.user after this call, and proceed.  If we don't,
+        // show the login page
+        if (!utils.checkHasUser(req, res)) {
+            utils.renderLoginPage(req, res)
+            return;
         }
         // See if the user is in the database.  if he isn't, add him
         Users.find({

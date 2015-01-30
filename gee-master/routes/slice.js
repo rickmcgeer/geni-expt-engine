@@ -66,6 +66,26 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     })
     
     app.get('/slice/get', function (req, res) {
+        // check to make sure we have a valid user.  If we do, it will be
+        // in req.session.user after this call, and proceed.  If we don't,
+        // show the login page
+        if (!utils.checkHasUser(req, res)) {
+            utils.renderLoginPage(req, res)
+            return;
+        }
+        Slices.find({user:req.session.user}, function(err, slices) {
+            if(err) {
+                utils.handleError("Error in finding slice for user " + req.session.user + ": " + err)
+            } else if (slices.length == 0) {
+                createSlice(req, res)
+            } else {
+                utils.handleError("User " + req.session.user + "already has slice with slice file " + slice.tarfile)
+            }
+        });
+    });
+        
+    
+    var createSlice = function(req, res) {
         Slices.nextCount(function(err, nextSliceNum) {
             if (err) {
                 var message  = "Error in getting the next Slice Number: " + err
@@ -90,11 +110,18 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                               });
             }
         });
-    });
+    }
     
     // free a slicelet.  Just deletes the slicelet from the db
     app.get('/slice/free', function (req, res) {
         console.log(req.url);
+        // check to make sure we have a valid user.  If we do, it will be
+        // in req.session.user after this call, and proceed.  If we don't,
+        // show the login page
+        if (!utils.checkHasUser(req, res)) {
+            utils.renderLoginPage(req, res)
+            return;
+        }
         Slices.find({user:req.session.user}, function(err, slices) {
             if(err) {
                 utils.handleError("Error in finding slice for user " + req.session.user + ": " + err)
@@ -163,6 +190,13 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     // Renew a slicelet.  Just calls makeExpiryDate to set the session expiration two weeks into the
     // future, updates the slice record, then renders the dashboard.
     app.get('/slice/renew', function (req, res) {
+        // check to make sure we have a valid user.  If we do, it will be
+        // in req.session.user after this call, and proceed.  If we don't,
+        // show the login page
+        if (!utils.checkHasUser(req, res)) {
+            utils.renderLoginPage(req, res)
+            return;
+        }
         Slices.findOne({user:req.session.user}, function(err, doc) {
             if (err) {
                 var message = "Error renewing slice for user " + req.session.user + ": " + err

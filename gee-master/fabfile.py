@@ -1,12 +1,14 @@
 from fabric.api import *
-env.hosts = ['bilby.cs.princeton.edu']
-env.user = 'service_instageni'
+#env.hosts = ['bilby.cs.princeton.edu']
+env.hosts = ['instance-00000005@node56.stanford.vicci.org']
+#env.user = 'service_instageni'
+env.user = 'ubuntu'
 host = env.hosts[0]
 remote_dir = '/home/service_instageni/gee-master'
 #
 # change this to your private key...
 #
-env.key_filename = '/Users/rick/.ssh/id_dsa'
+env.key_filename = '/Users/rick/.ssh/id_rsa'
 #
 # run a job in the background
 #

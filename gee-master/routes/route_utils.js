@@ -15,6 +15,25 @@ exports.render_error_page = function (req, res, bug_subject, bug_body_comment) {
         title: 'Error'
     });
 }
+// A utility that checks to see if we have a valid user name; if we do, return true and
+// make sure req.session.user has the user name.  If not, return false
+exports.checkHasUser = function(req, res) {
+    if (req.session.user) {
+        return true;
+    }
+    // otherwise it might be in req.session.passport.user.emails[0].value
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.emails && req.session.passport.user.emails.length > 0 && req.session.passport.user.emails[0].value) {
+        req.session.user = req.session.passport.user.emails[0].value
+        return true;
+    }
+    return false;
+}
+// Render the login page
+exports.renderLoginPage = function(req, res) {
+    res.render('main', {
+        title: 'Welcome to GEE'
+    });
+}
 // A utility to make a slice name from a number
 exports.makeSliceName = function(aNumber) {
     return "slice" + aNumber;

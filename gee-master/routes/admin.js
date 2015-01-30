@@ -236,6 +236,13 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
     // and call act_on_user_requests to manipulate the database.
     // I should probably factor those into things which actually just manipulate the db
     app.post('/admin/users/requests/add', function (req, res) {
+	if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+            res.render('admin_only', {
+                user: req.session.user,
+                title: 'Unauthorized Admin'
+            });
+	    return;
+        }
         var to_confirm = utils.ensure_items_in_a_list(req.body.confirm);
         var to_delete = utils.ensure_items_in_a_list(req.body.to_delete);
         var user_string = "Will confirm " + to_confirm.length + " new users: " + to_confirm + ".";
@@ -252,6 +259,13 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
     });
 
     app.post('/admin/users/update', function (req, res) {
+	if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+            res.render('admin_only', {
+                user: req.session.user,
+                title: 'Unauthorized Admin'
+            });
+	    return;
+        }
         var admins = req.body.admin;
         console.log("Updating users, admins = " + JSON.stringify(admins));
         update_all_users(req, res, admins);
