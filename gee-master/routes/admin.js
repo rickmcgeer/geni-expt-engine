@@ -107,7 +107,7 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 	if (deletedAdmins.length > 0) {
 	    Users.update({email: {$in: deletedAdmins}}, {$set:{admin:false}}, {multi:true}, function (err, numAffected, raw) {
 		if(err) {
-		    utils.handleError("Error in update_all_users: " + err)
+		    utils.handleError(req, res, "Error in update_all_users: " + err)
 		} else {
 		    render_users(req, res);
 		}
@@ -121,7 +121,7 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 	if (newAdmins.length > 0) {
 	    Users.update({email: {$in: newAdmins}}, {$set:{admin:true}}, {multi:true}, function (err, numAffected, raw) {
 		if(err) {
-		    utils.handleError("Error in update_all_users: " + err)
+		    utils.handleError(req, res, "Error in update_all_users: " + err)
 		} else {
 		    setDeletedAdmins(req, res, deletedAdmins)
 		}
@@ -135,7 +135,7 @@ module.exports = function (app, utils, Users, Slices, url, script_dir) {
 	var admins = utils.ensure_items_in_a_list(admins_from_form)
 	Users.find({}, function(err, users) {
 	    if(err) {
-		utils.handleError("Error in update_all_users: " + err)
+		utils.handleError(req, res, "Error in update_all_users: " + err)
 	    } else {
 		var newAdmins = [];
 		var deletedAdmins = [];

@@ -75,11 +75,11 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         }
         Slices.find({user:req.session.user}, function(err, slices) {
             if(err) {
-                utils.handleError("Error in finding slice for user " + req.session.user + ": " + err)
+                utils.handleError(req, res, "Error in finding slice for user " + req.session.user + ": " + err)
             } else if (slices.length == 0) {
                 createSlice(req, res)
             } else {
-                utils.handleError("User " + req.session.user + "already has slice with slice file " + slice.tarfile)
+                utils.handleError(req, res, "User " + req.session.user + "already has slice with slice file " + slice.tarfile)
             }
         });
     });
@@ -124,15 +124,15 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         }
         Slices.find({user:req.session.user}, function(err, slices) {
             if(err) {
-                utils.handleError("Error in finding slice for user " + req.session.user + ": " + err)
+                utils.handleError(req, res, "Error in finding slice for user " + req.session.user + ": " + err)
             } else if (slices.length == 0) {
-                utils.handleError("No slices found for user " + req.session.user)
+                utils.handleError(req, res, "No slices found for user " + req.session.user)
             } else {
                 var sliceName = utils.makeSliceName(slices[0].sliceNum)
                 var tarfile = slices[0].tarfile;
                 Slices.remove({user:req.session.user}, function(err) {
                     if(err) {
-                        utils.handleError("Error removing slice for user " + req.session.user + " from the database: " + err)
+                        utils.handleError(req, res, "Error removing slice for user " + req.session.user + " from the database: " + err)
                     } else {
                         invokeCommand(req, res, 'delete-slice.sh', [sliceName, tarfile], redirectToUser, {}, utils.handleError)
                     }
