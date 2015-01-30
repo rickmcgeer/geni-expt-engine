@@ -109,7 +109,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                                     utils.render_error_page(req, res, message)
                                 } else {
                                     console.log("Slice " + sliceName + " entered for user " + req.session.user)
-                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarfile}) // need to fix the imagename
+                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
                                 }
                               });
             }
