@@ -1,6 +1,7 @@
 ---
 - hosts: nodes
   remote_user: "{{ dockeruser }}"
+  gather_facts: no
   sudo: no
   tasks:
 
