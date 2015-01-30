@@ -77,60 +77,13 @@ exports.get_user_dashboard = function (req, res, urls, Slices, script_dir) {
 	    }
 	});
 }
-/* 	
-   var spawn = require('child_process').spawn;
-    console.log("in get_user_dashboard, script_dir is: " + script_dir)
-    var cmd = spawn(script_dir + '/find-gee-slice.plcsh', ["--", "-e", req.session.user]);
-    var error = "";
-    var result = "";
-    // set the has_slicelet and slice_data variables for this session to a sensible
-    has_slicelet = false;
-    req.session.slice_data = null;
-    var data_received = false;
-    // data is of the form
-    //  {"slice": <slice-name>, "slicelet_file": <file-name>, "user": <user-name>, "has_slicelet": true}
-    // if the user has a slice, and
-    // {"user": <user-name>, "has_slicelet": false}
-    // if not.
-    // if has_slicelet is true, just 
-    cmd.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
-        result = JSON.parse(data);
-        if (result.has_slicelet) {
-            req.session.slice_data = result;
-            req.session.filename = result.slicelet_file;
-        } else {
-            req.session.slice_data = null;
-        }
-        has_slicelet = result.has_slicelet;
-        data_received = true;
-    });
-    // when data is received on stderr, we have a problem and log it.  Should do something more
-    // intelligent on exit...
-    cmd.stderr.on('data', function (data) {
-        console.log('Error in find-gee-slice: ' + data);
-        error = error + data;
-    });
-    // when the command finishes, render the dashboard if there is a slicelet, otherwise
-    // the user_no_slice page
-    cmd.on('close', function (code) {
-        console.log('child process exited with code ' + code);
-        if (data_received) {
-            if (has_slicelet) {
-                exports.render_slice_dashboard(req, res, req.session.slice_data)
-            } else {
-                res.render('user_no_slice', {
-                    user: req.session.user,
-                    get_url: urls.get_slicelet_url,
-                    admin: req.session.admin
-                });
-            }
-        } else {
-            exports.render_error_page(req, res, "Error in finding slice data", error)
-        }
+
+exports.render_in_progress = function(req, res, sliceName) {
+    res.render('user_in_progress', {
+        user: req.session.user,
+        slice: sliceName
     });
 }
-*/
 // A little utility because HTML forms return a string when only a single item is
 // checked in a list of checkboxes, but a list if more than one is checked.  This does awful things
 // unless you regularize it...

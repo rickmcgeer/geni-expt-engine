@@ -97,6 +97,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
             } else {
                 var sliceName = utils.makeSliceName(nextSliceNum)
                 var tarFile = makeTarfile(sliceName)
+                utils.render_in_progress(req, res, sliceName)
                 Slices.create({user:req.session.user,
                               tarfile:makeTarfile(sliceName),
                               expires:makeExpiryDate()
