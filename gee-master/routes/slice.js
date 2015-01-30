@@ -47,6 +47,9 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         utils.handleError(req, res, "Error handler called")
     })
     
+    var deleteSliceOnError = function(req, res, errorMessage, sliceObject) {
+        invokeCommand(req, res, 'delete-slice.sh', [sliceObject.name, sliceObject.tarfile], deleteSliceFromDBOnError, {}, deleteSliceFromDBOnError)
+    }
     var deleteSliceFromDBOnError = function(req, res, errorMessage) {
        Slices.remove({user:req.session.user}, function(err, result) {
         if(err) {
@@ -105,7 +108,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                                     utils.render_error_page(req, res, message)
                                 } else {
                                     console.log("Slice " + sliceName + " entered for user " + req.session.user)
-                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceFromDBOnError) // need to fix the imagename
+                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarfile}) // need to fix the imagename
                                 }
                               });
             }
