@@ -48,11 +48,11 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     })
     
     var setSliceStatusToError = function(req, res, sliceObject) {
-        Slices.update({user:req.session.user}, {$set: {status:"running"}}, {}, function() {return});
+        Slices.update({user:req.session.user}, {$set: {status:"Error"}}, {}, function() {return});
     }
     
     var setSliceStatusToRunning = function(req, res, sliceObject) {
-        Slices.update({user:req.session.user}, {$set: {status:"Error"}}, {}, function() {return});
+        Slices.update({user:req.session.user}, {$set: {status:"Running"}}, {}, function() {return});
     }
     var deleteSliceOnError = function(req, res, errorMessage, sliceObject) {
         invokeCommand(req, res, 'delete-slice.sh', [sliceObject.name, sliceObject.tarfile], deleteSliceFromDBOnError, {}, deleteSliceFromDBOnError)
