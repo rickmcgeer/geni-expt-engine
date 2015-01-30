@@ -52,11 +52,11 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     }
     var deleteSliceFromDBOnError = function(req, res, errorMessage) {
        Slices.remove({user:req.session.user}, function(err, result) {
-        if(err) {
+        /* if(err) {
             utils.handleError(req, res, "Double Error, requires administrator attention: " + errorMessage + " : " + err)
         } else {
             utils.handleError(req, res, errorMessage)
-        }
+        } */
        })
     }
     var redirectToUser = function(req, res) {
@@ -86,7 +86,12 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
             }
         });
     });
+    
+    // hack so I don't have to check for nulls in callbacks
+    var doNothing = function(req, res) {
+        return;
         
+    }
     
     var createSlice = function(req, res) {
         Slices.nextCount(function(err, nextSliceNum) {
@@ -106,10 +111,11 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                                 if (err) {
                                     var message  = "Error in creating the Slice: " + sliceName + ": " + err;
                                     console.log(message)
-                                    utils.render_error_page(req, res, message)
+                                    // utils.render_error_page(req, res, message)
                                 } else {
                                     console.log("Slice " + sliceName + " entered for user " + req.session.user)
-                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
+                                    // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
+                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], doNothing, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
                                 }
                               });
             }
