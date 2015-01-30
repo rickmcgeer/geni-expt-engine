@@ -1,0 +1,3 @@
+[nodes]
+test2                                  docker_bip=10.0.0.1/16
+test3                                  docker_bip=10.1.0.1/16

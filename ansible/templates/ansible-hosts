@@ -4,5 +4,7 @@
 
 [nodes]
 {% for host in groups['nodes'] %}
+  {% if hostvars[host]['docker_containers'] is defined %}
 {{ slice }}.{{ host }} ansible_ssh_host={{ hostvars[host]['ansible_eth0']['ipv4']['address'] }} ansible_ssh_port={{ hostvars[host]['docker_containers'][0]['NetworkSettings']['Ports']['22/tcp'][0]['HostPort'] }}
+  {% endif %}
 {% endfor %}

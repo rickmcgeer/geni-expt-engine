@@ -1,7 +1,7 @@
 ---
 - hosts: nodes
-#  remote_user: ubuntu
-  remote_user: gee
+  remote_user: "{{ dockeruser }}"
+  gather_facts: no
   sudo: no
   tasks:
 

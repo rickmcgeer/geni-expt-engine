@@ -1,5 +1,7 @@
 {% for host in groups['nodes'] %}
+  {% if hostvars[host]['docker_containers'] is defined %}
 {{ hostvars[host]['docker_containers'][0]['NetworkSettings']['IPAddress'] }} {{ slice }}.{{ host }}
+  {% endif %}
 {% endfor %}
 127.0.0.1 localhost
 ::1	  localhost ip6-localhost ip6-loopback
