@@ -1,7 +1,9 @@
 from fabric.api import env, run
 env.hosts = [
 {% for host in groups['nodes'] %}
+  {% if hostvars[host]['docker_containers'] is defined %}
 "{{ slice }}.{{ host }}",
+  {% endif %}
 {% endfor %}
 ]
 
