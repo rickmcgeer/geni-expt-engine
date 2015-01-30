@@ -47,6 +47,13 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
         utils.handleError(req, res, "Error handler called")
     })
     
+    var setSliceStatusToError = function(req, res, sliceObject) {
+        Slices.update({user:req.session.user}, {$set: {status:"running"}}, {}, function() {return});
+    }
+    
+    var setSliceStatusToRunning = function(req, res, sliceObject) {
+        Slices.update({user:req.session.user}, {$set: {status:"Error"}}, {}, function() {return});
+    }
     var deleteSliceOnError = function(req, res, errorMessage, sliceObject) {
         invokeCommand(req, res, 'delete-slice.sh', [sliceObject.name, sliceObject.tarfile], deleteSliceFromDBOnError, {}, deleteSliceFromDBOnError)
     }
@@ -105,7 +112,8 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                 utils.render_in_progress(req, res, sliceName)
                 Slices.create({user:req.session.user,
                               tarfile:makeTarfile(sliceName),
-                              expires:makeExpiryDate()
+                              expires:makeExpiryDate(),
+                              status:"Processing"
                               },
                               function(err, slice) {
                                 if (err) {
@@ -115,7 +123,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                                 } else {
                                     console.log("Slice " + sliceName + " entered for user " + req.session.user)
                                     // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
-                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], doNothing, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
+                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], setSliceStatusToRunning, {}, setSliceStatusToError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
                                 }
                               });
             }

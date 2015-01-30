@@ -49,7 +49,8 @@ exports.render_slice_dashboard = function (req, res, slice_dictionary) {
         slice: exports.makeSliceName(slice_dictionary.sliceNum),
         user: req.session.user,
         admin: req.session.admin,
-        date: slice_dictionary.expires
+        date: slice_dictionary.expires,
+        status: slice_dictionary.status
     };
     res.render('user_with_slice', page_dictionary);
 }

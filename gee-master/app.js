@@ -163,7 +163,8 @@ var slice_schema = mongoose.Schema({
   expires: {
     type: Date
   },
-  tarfile: String
+  tarfile: String,
+  status: String
 })
 
 // turn on auto-increment in the slice-number field
