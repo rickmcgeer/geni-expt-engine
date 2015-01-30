@@ -222,6 +222,13 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
     // download primitive.  We need to error-check this better.  In particular, we
     // need to check that the file actually exists!
     app.get('/slice/download', function (req, res) {
+        // check to make sure we have a valid user.  If we do, it will be
+        // in req.session.user after this call, and proceed.  If we don't,
+        // show the login page
+        if (!utils.checkHasUser(req, res)) {
+            utils.renderLoginPage(req, res)
+            return;
+        }
         if (req.session.filename == null) {
             var error_message = "No filename set on call to /download ";
             utils.render_error_page(req, res, error_message, "");
