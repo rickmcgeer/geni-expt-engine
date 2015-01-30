@@ -79,7 +79,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
             } else if (slices.length == 0) {
                 createSlice(req, res)
             } else {
-                utils.handleError(req, res, "User " + req.session.user + "already has slice with slice file " + slice.tarfile)
+                utils.handleError(req, res, "User " + req.session.user + "already has slice with slice file " + slices[0].tarfile)
             }
         });
     });
