@@ -152,7 +152,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                     if(err) {
                         utils.handleError(req, res, "Error removing slice for user " + req.session.user + " from the database: " + err)
                     } else {
-                        redirectToUser();
+                        res.redirect('/user')
                         invokeCommand(req, res, 'delete-slice.sh', [sliceName, tarfile], doNothing, {}, utils.handleError)
                     }
                 })
