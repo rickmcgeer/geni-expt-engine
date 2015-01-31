@@ -44,13 +44,15 @@ exports.makeSliceName = function(aNumber) {
 // all of the slice information is in slice_dictionary, and is of the form
 // {"slice": <slicename>", "slicelet_file": <filename>, "user": "<username>, "has_slicelet": true}
 exports.render_slice_dashboard = function (req, res, slice_dictionary) {
-
+    var colors = {Running: 'Green', Processing: 'Orange', 'Error':'Red'};
+    
     var page_dictionary = {
         slice: exports.makeSliceName(slice_dictionary.sliceNum),
         user: req.session.user,
         admin: req.session.admin,
         date: slice_dictionary.expires,
-        status: slice_dictionary.status
+        status: slice_dictionary.status,
+        color:colors[slice_dictionary.status]
     };
     res.render('user_with_slice', page_dictionary);
 }
