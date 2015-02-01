@@ -146,6 +146,14 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
             } else if (slices.length == 0) {
                 utils.handleError(req, res, "No slices found for user " + req.session.user)
             } else {
+                var slice = slices[0]
+                if (slice.status == "Processing") {
+                    res.render('user_delete_in_progress', {
+                        user: req.session.user,
+                        slice: sliceName
+                    });
+                    return;
+                }
                 var sliceName = utils.makeSliceName(slices[0].sliceNum)
                 var tarfile = slices[0].tarfile;
                 Slices.remove({user:req.session.user}, function(err) {
