@@ -52,7 +52,7 @@ def deleteSlice(sliceName):
 # service a request
 #
 def doRequest(aRequest):
-    logging.info("Performing request " + aRequest['action'] + + ' for user: ' + aRequest['user'] + ' and slice: ' + aRequest['sliceName'])
+    logging.info("Performing request " + aRequest['action']  + ' for user: ' + aRequest['user'] + ' and slice: ' + aRequest['sliceName'])
     if aRequest['action'] == 'create':
         createSlice(aRequest['user'], aRequest['sliceName'])
     else:
