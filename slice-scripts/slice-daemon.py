@@ -43,9 +43,9 @@ def createSlice(user, sliceName):
 #
 def deleteSlice(sliceName):
     try:
-        error_string = subprocess.check_output(['delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
+        error_string = subprocess.check_output(['./delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError:
-        logging.error('Error in creating slice: ' + sliceName + ': ' + error_string)
+        logging.error('Error in deleting slice: ' + sliceName + ': ' + error_string)
 #
 # service a request
 #
