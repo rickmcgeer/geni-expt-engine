@@ -33,6 +33,7 @@ def createSlice(user, sliceName):
     try:
         error_string = subprocess.check_output(['./create-slice.sh', sliceName], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
+        logging.info('slice ' + sliceName + ' created for user ' + user)
     except subprocess.CalledProcessError:
         logging.error('Error in creating slice: ' + sliceName + ': ' + error_string)
         slice_collection.update({"user": user}, {"$set": {"status":"Error"}})
@@ -44,12 +45,14 @@ def createSlice(user, sliceName):
 def deleteSlice(sliceName):
     try:
         error_string = subprocess.check_output(['./delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
+        logging.info('slice ' + sliceName + ' deleted')
     except subprocess.CalledProcessError:
         logging.error('Error in deleting slice: ' + sliceName + ': ' + error_string)
 #
 # service a request
 #
 def doRequest(aRequest):
+    logging.info("Performing request " + aRequest['action'] + + ' for user: ' + aRequest['user'] + ' and slice: ' + aRequest['sliceName'])
     if aRequest['action'] == 'create':
         createSlice(aRequest['user'], aRequest['sliceName'])
     else:
