@@ -31,7 +31,7 @@ def getNextOutstandingRequest():
 #
 def createSlice(user, sliceName):
     try:
-        error_string = subprocess.check_output(['create-slice.sh', sliceName], stderr=subprocess.STDOUT)
+        error_string = subprocess.check_output(['./create-slice.sh', sliceName], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
     except subprocess.CalledProcessError:
         logging.error('Error in creating slice: ' + sliceName + ': ' + error_string)
