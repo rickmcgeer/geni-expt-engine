@@ -11,7 +11,7 @@ import time
 #
 # Put in error-checking code when we read the docs
 #
-client = MongoClient('mongodb://mongo:27017/')
+client = MongoClient('mongodb://mongodb:27017/')
 db = client.gee_master
 request_collection = db.slice_requests
 slice_collection = db.slices
@@ -50,10 +50,10 @@ def deleteSlice(sliceName):
 # service a request
 #
 def doRequest(aRequest):
-    if request.action == 'create':
-        createSlice(aRequest.user, aRequest.sliceName)
+    if aRequest['action'] == 'create':
+        createSlice(aRequest['user'], aRequest['sliceName'])
     else:
-        deleteSlice(aRequest.sliceName)
+        deleteSlice(aRequest['sliceName'])
     request_collection.remove(aRequest)
 
 #
