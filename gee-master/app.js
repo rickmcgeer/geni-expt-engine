@@ -167,12 +167,35 @@ var slice_schema = mongoose.Schema({
   status: String
 })
 
+//
+// slice requests: {action, user, sliceName}
+// action: create or delete
+// user: user to do it for
+// sliceName: name to give the script
+// read by slice-daemon.py, so any change here must be accompanied by a change
+// there
+//
+var slice_request_schema = mongoose.Schema({
+    action: {
+        type: String,
+        default: 'delete'
+    },
+    user: {
+        type: String,
+        default: null
+    },
+    sliceName: {
+        type:String
+    }
+})
+
 // turn on auto-increment in the slice-number field
 slice_schema.plugin(autoIncrement.plugin, {model: 'slices', field: 'sliceNum'})
 
 // get the users out of the database
 var Users = mongoose.model('users', user_schema);
 var Slices = mongoose.model('slices', slice_schema)
+var SliceRequests = mongoose.model('slice_requests', slice_request_schema)
 
 // URLs to get, renew, and free slicelets, and download the tarball
 var get_slicelet_url = application_url + "/get_slicelet";
@@ -189,7 +212,7 @@ var urls = {
 
 
 
-require('./routes/')(app, passport, Users, Slices, urls, url, script_dir);
+require('./routes/')(app, passport, Users, Slices, SliceRequests, urls, url, script_dir);
 
 
 // Just a test to see if the bug report functionality works

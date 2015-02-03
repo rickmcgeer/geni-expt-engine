@@ -1,6 +1,5 @@
 // Routes related to users
-module.exports = function (app, utils, Users, Slices, urls, script_dir) {
-    console.log("In route/users.js, script dir is: " + script_dir)
+module.exports = function (app, utils, Users, Slices, urls) {
     // Successful login page.
     app.get('/user', function (req, res) {
         console.log(JSON.stringify(req.session));
@@ -28,10 +27,7 @@ module.exports = function (app, utils, Users, Slices, urls, script_dir) {
                     } else {
                         console.log("User " + req.session.user + " added");
                         req.session.admin = false;
-                        if (!script_dir) {
-                            console.log("In /user, script_dir is undefined!");
-                        }
-                        utils.get_user_dashboard(req, res, urls, Slices, script_dir);
+                        utils.get_user_dashboard(req, res, urls, Slices);
                     }
                 });
             } else {
@@ -40,10 +36,7 @@ module.exports = function (app, utils, Users, Slices, urls, script_dir) {
                 // session variable with the name and send him to his dashboard.
                 // Also note whether he is admin
                 req.session.admin = users[0].admin;
-                if (!script_dir) {
-                    console.log("In /user, script_dir is undefined!");
-                }
-                utils.get_user_dashboard(req, res, urls, Slices, script_dir);
+                utils.get_user_dashboard(req, res, urls, Slices);
             }
         });
     });
@@ -83,10 +76,8 @@ module.exports = function (app, utils, Users, Slices, urls, script_dir) {
                     } else {
                         console.log("User " + req.session.user + " added");
                         req.session.admin = false;
-                        if (!script_dir) {
-                            console.log("In /user, script_dir is undefined!");
-                        }
-                        utils.get_user_dashboard(req, res, urls, Slices, script_dir);
+                       
+                        utils.get_user_dashboard(req, res, urls, Slices);
 
                     }
                 });
@@ -96,10 +87,8 @@ module.exports = function (app, utils, Users, Slices, urls, script_dir) {
                 // session variable with the name and send him to his dashboard.
                 // Also note whether he is admin
                 req.session.admin = users[0].admin;
-                if (!script_dir) {
-                    console.log("In /user, script_dir is undefined!");
-                }
-                utils.get_user_dashboard(req, res, urls, Slices, script_dir);
+            
+                utils.get_user_dashboard(req, res, urls, Slices);
             }
         });
     });

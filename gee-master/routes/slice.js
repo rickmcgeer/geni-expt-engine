@@ -1,4 +1,4 @@
-module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
+module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, script_dir) {
     function makeTarfile(sliceName) {
 	return "/home/service_instageni/slice_files/" + sliceName + ".tgz";
     }
@@ -109,23 +109,39 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
             } else {
                 var sliceName = utils.makeSliceName(nextSliceNum)
                 var tarFile = makeTarfile(sliceName)
-                utils.render_in_progress(req, res, sliceName)
-                Slices.create({user:req.session.user,
-                              tarfile:makeTarfile(sliceName),
-                              expires:makeExpiryDate(),
-                              status:"Processing"
-                              },
-                              function(err, slice) {
-                                if (err) {
-                                    var message  = "Error in creating the Slice: " + sliceName + ": " + err;
-                                    console.log(message)
-                                    // utils.render_error_page(req, res, message)
-                                } else {
-                                    console.log("Slice " + sliceName + " entered for user " + req.session.user)
-                                    // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
-                                    invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], setSliceStatusToRunning, {}, setSliceStatusToError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
-                                }
-                              });
+                // utils.render_in_progress(req, res, sliceName)
+                SliceRequests.create({
+                    action:'create',
+                    user:req.session.user,
+                    sliceName:sliceName
+                    },
+                    function(err, slice) {
+                        if (err) {
+                            var message  = "Error in creating the Slice: " + sliceName + ": " + err;
+                            console.log(message)
+                            utils.render_error_page(req, res, message)
+                        } else {
+                            Slices.create({
+                                user:req.session.user,
+                                tarfile:makeTarfile(sliceName),
+                                expires:makeExpiryDate(),
+                                status:"Processing"
+                                },
+                                function(err, slice) {
+                                    if (err) {
+                                        var message  = "Error in creating the Slice: " + sliceName + ": " + err;
+                                        console.log(message)
+                                        utils.render_error_page(req, res, message)
+                                    } else {
+                                        console.log("Slice " + sliceName + " entered for user " + req.session.user)
+                                        res.redirect('/user')
+                                        // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
+                                        // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], setSliceStatusToRunning, {}, setSliceStatusToError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
+                                    }
+                                });
+                        }
+                    });
+        
             }
         });
     }
@@ -156,12 +172,23 @@ module.exports = function (app, utils, urls, url, Users, Slices, script_dir) {
                 }
                 var sliceName = utils.makeSliceName(slices[0].sliceNum)
                 var tarfile = slices[0].tarfile;
-                Slices.remove({user:req.session.user}, function(err) {
+                SliceRequests.create({
+                    action: 'delete',
+                    user: req.session.user,
+                    sliceName:sliceName
+                },
+                function(err) {
                     if(err) {
-                        utils.handleError(req, res, "Error removing slice for user " + req.session.user + " from the database: " + err)
+                        utils.handleError(req, res, "Error creating slice remove request for user " + req.session.user + ": " + err)
                     } else {
-                        res.redirect('/user')
-                        invokeCommand(req, res, 'delete-slice.sh', [sliceName, tarfile], doNothing, {}, utils.handleError)
+                        Slices.remove({user:req.session.user}, function(err) {
+                            if(err) {
+                                utils.handleError(req, res, "Error removing slice for user " + req.session.user + " from the database: " + err)
+                            } else {
+                                res.redirect('/user')
+                                //invokeCommand(req, res, 'delete-slice.sh', [sliceName, tarfile], doNothing, {}, utils.handleError)
+                            }
+                        })
                     }
                 })
             }

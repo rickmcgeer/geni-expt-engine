@@ -61,7 +61,7 @@ exports.render_slice_dashboard = function (req, res, slice_dictionary) {
 // the shell script find-gee-slice.plcsh  and
 // render the user dashboard
 // command is 
-exports.get_user_dashboard = function (req, res, urls, Slices, script_dir) {
+exports.get_user_dashboard = function (req, res, urls, Slices) {
     Slices.find({user:req.session.user},
 	function(err, slices) {
 	    if(err) {

@@ -17,11 +17,11 @@
 //WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 //OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS 
 //IN THE WORK.
-module.exports = function (app, passport, Users, Slices, urls, url, script_dir) {
+module.exports = function (app, passport, Users, Slices, SliceRequests, urls, url, script_dir) {
     var route_utils = require('./route_utils');
     require('./admin')(app, route_utils, Users, Slices, url, script_dir);
     require('./auth')(app, passport);
     require('./main')(app);
-    require('./slice')(app, route_utils, urls, url, Users, Slices, script_dir);
+    require('./slice')(app, route_utils, urls, url, Users, Slices, SliceRequests, script_dir);
     require('./user')(app, route_utils, Users, Slices, urls, script_dir);
 }
