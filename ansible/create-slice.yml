@@ -14,6 +14,7 @@
 
 - hosts: nodes
   sudo: no
+  gather_facts: no
   remote_user: "{{ dockeruser }}"
   tasks:
 
@@ -23,11 +24,14 @@
       image={{ docker_image | default("geeproject/phusion-baseimage:0.1") }}
       expose=22 
       publish_all_ports=yes
+    ignore_errors: yes
+    register: result
 
   - name: Inject ssh key
     sudo: yes
     copy: src={{ keyfile }}.pub
       dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
+    when: result|success
 
 #  - debug: var=docker_containers
 
@@ -35,6 +39,7 @@
     sudo: yes
     template: src=templates/etc-hosts
       dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/etc/workaround-docker-2267/hosts
+    when: result|success
 
 - hosts: localhost
   tasks:
