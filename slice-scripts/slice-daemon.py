@@ -37,7 +37,7 @@ def makeTarfile(sliceName):
 #
 def createSlice(user, sliceName):
     try:
-        error_string = subprocess.check_output(['./create-slice.sh', sliceName, makeTarfile(slicename)], stderr=subprocess.STDOUT)
+        error_string = subprocess.check_output(['./create-slice.sh', sliceName, makeTarfile(sliceName)], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
     except subprocess.CalledProcessError:
