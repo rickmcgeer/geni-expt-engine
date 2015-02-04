@@ -2,7 +2,7 @@
   {% if hostvars[host]['docker_containers'] is defined %}
 Host {{ slice }}.{{ host }}
   User root
-  HostName {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}
+  HostName {{ host }}
   Port {{ hostvars[host]['docker_containers'][0]['NetworkSettings']['Ports']['22/tcp'][0]['HostPort'] }}
   {% endif %}
 {% endfor %}
