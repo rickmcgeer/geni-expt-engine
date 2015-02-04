@@ -1,0 +1,61 @@
+// database schema:
+// mostly for documentation, since this is now shared between the portal and
+// the slice-daemon.py script
+// table is gee_master
+// general command to connect is
+// mongo --host <hostname> --port <port>
+// for us, <hostname> is typically mongodb, and
+// <port> is 27017 -- the default, omittable.
+
+// users: {email [String], admin [a boolean]}
+// email is a unique index for both the collections users and user_requests in
+// mongo (done from the command line) so we don't have to worry about duplicate entries
+{"user": {
+    "email": "String",
+    "admin": {
+        "type": "Boolean",
+        "default": false
+    }
+},
+// slices: {name, allocated, expires, tarfile}
+// name is just the slice name
+// user is the email of the user who owns the slice (null if not allocated)
+// expires is the date on which the slice expires
+// tarfile is the name of slice file
+// NOT SHOWN (and may need to be fixed).  Has an autoincrement COUNT field
+// implemented by a Mongoose plugin -- how do we get it from Mongo?
+"slice:": {
+  "user": {
+    "type": "String",
+    "default": null // no user for this slice
+  },
+  "expires": {
+    "type": "Date"
+  },
+  "tarfile": "String",
+  "status": "String"
+},
+
+
+//
+// slice requests: {action, user, sliceName}
+// action: create or delete
+// user: user to do it for
+// sliceName: name to give the script
+// read by slice-daemon.py, so any change here must be accompanied by a change
+// there
+//
+"slice_requests": {
+    "action": {
+        "type": "String",
+        "default": "delete"
+    },
+    "user": {
+        "type": "String",
+        "default": null
+    },
+    "sliceName": {
+        "type":"String"
+    }
+}
+}
