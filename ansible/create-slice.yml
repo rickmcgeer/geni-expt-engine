@@ -21,7 +21,7 @@
   - name: Create a slice
     docker: name={{ slice }}
       hostname={{ slice }}.{{ inventory_hostname }}
-      image={{ docker_image | default("geeproject/phusion-baseimage:0.2") }}
+      image={{ docker_image | default("geeproject/phusion-baseimage:0.3") }}
       expose=22 
       publish_all_ports=yes
     ignore_errors: yes
@@ -35,11 +35,11 @@
 
 #  - debug: var=docker_containers
 
-#  - name: Set up /etc/hosts in container
-#    sudo: yes
-#    template: src=templates/etc-hosts
-#      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/etc/workaround-docker-2267/hosts
-#    when: result|success
+  - name: Set up /etc/hosts in container
+    sudo: yes
+    template: src=templates/etc-hosts
+      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/etc/workaround-docker-2267/hosts
+    when: result|success
 
 - hosts: localhost
   tasks:
