@@ -41,7 +41,7 @@ def createSlice(user, sliceName):
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
     except subprocess.CalledProcessError:
-        logging.error('Error in creating slice: ' + sliceName + ': ' + error_string)
+        logging.error('Error in creating slice: ' + sliceName + ': ' + subprocess.CalledProcessError.output)
         slice_collection.update({"user": user}, {"$set": {"status":"Error"}})
         
 
