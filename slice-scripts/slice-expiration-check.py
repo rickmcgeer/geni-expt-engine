@@ -30,7 +30,7 @@ def findExpiredSlices():
     result = []
     slices = slice_collection.find()
     for slice in slices:
-        if (slice['expired'] < now):
+        if (slice['expires'] < now):
             result.append(slice)
     return result
 #
@@ -38,13 +38,15 @@ def findExpiredSlices():
 #
 def addDeleteRequest(slice):
     name = 'slice%d' % slice['sliceNum']
-    existingReqest = request_collection.findOne({'sliceNum':slice['sliceNum']})
+    existingRequest = request_collection.find_one({'sliceNum':slice['sliceNum']})
     if (existingRequest): return
-    logging.info("Deleting slice " + name  + ' which expired at ' + slice['expired'] + '.  Date is: ' + datetime.datetime.today())
-    request_collection.insert_one({'action':'delete', 'sliceName':name, 'user':slice['user']})
+    dateString = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+
+    logging.info("Deleting slice %s  which expired at %s.  Today is %s" % (name, slice['expires'], dateString))
+    request_collection.insert({'action':'delete', 'sliceName':name, 'user':slice['user']})
         
 
-#
+
 # main loop
 #
 
