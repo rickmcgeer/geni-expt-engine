@@ -38,7 +38,7 @@ def findExpiredSlices():
 #
 def addDeleteRequest(slice):
     name = 'slice%d' % slice['sliceNum']
-    existingRequest = request_collection.find_one({'sliceNum':slice['sliceNum']})
+    existingRequest = request_collection.find_one({'sliceName':name})
     if (existingRequest): return
     dateString = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -55,5 +55,6 @@ if __name__ == '__main__':
         expired = findExpiredSlices()
         for slice in expired:
             addDeleteRequest(slice)
+        time.sleep(900)
         
     
