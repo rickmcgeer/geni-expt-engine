@@ -1,8 +1,11 @@
+StrictHostKeyChecking no
 {% for host in groups['nodes'] %}
   {% if hostvars[host]['docker_containers'] is defined %}
+
 Host {{ slice }}.{{ host }}
   User root
   HostName {{ host }}
   Port {{ hostvars[host]['docker_containers'][0]['NetworkSettings']['Ports']['22/tcp'][0]['HostPort'] }}
+  IdentityFile ./id_rsa
   {% endif %}
 {% endfor %}
