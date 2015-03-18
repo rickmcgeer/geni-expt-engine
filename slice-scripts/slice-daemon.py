@@ -40,8 +40,8 @@ def createSlice(user, sliceName):
         error_string = subprocess.check_output(['./create-slice.sh', sliceName, makeTarfile(sliceName)], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
-    except subprocess.CalledProcessError:
-        logging.error('Error in creating slice: ' + sliceName + ': ' + subprocess.CalledProcessError.output)
+    except subprocess.CalledProcessError, e:
+        logging.error('Error in creating slice: ' + sliceName + ': ' + e.output)
         slice_collection.update({"user": user}, {"$set": {"status":"Error"}})
         
 
