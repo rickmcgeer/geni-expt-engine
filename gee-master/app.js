@@ -117,7 +117,12 @@ app.configure('production', function () {
 
 // Initialize the server
 var server = app.listen(real_application_port, function () {
-    console.log('Listening on port %d', server.address().port);
+    var entry = {
+        level: 'INFO',
+        message: 'Server Start',
+        data: server.address()
+    }
+    console.log(entry);
 });
 
 // OpenID strategy to call back to the GPO.
@@ -130,8 +135,13 @@ passport.use(new OpenIDStrategy({
     // Simplest login strategy -- just write out to the console.  We'll save the user
     // email in a session variable
     process.nextTick(function () {
-        console.log(JSON.stringify(profile));
-        console.log(JSON.stringify(profile.emails[0].value));
+        var entry = {
+            level: 'INFO',
+            message: 'Login successful',
+            data: profile
+        }
+        console.log(JSON.stringify(entry));
+        // console.log(JSON.stringify(profile.emails[0].value));
         return done(null, profile);
     });
 }));
