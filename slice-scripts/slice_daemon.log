@@ -1,0 +1,183 @@
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice296
+INFO:root:slice slice296 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice300
+INFO:root:slice slice300 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice300
+INFO:root:slice slice300 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice301
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice301
+INFO:root:slice slice301 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice301
+INFO:root:slice slice301 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice302
+INFO:root:slice slice302 created for user acb@princeton.edu
+INFO:root:Performing request create for user: rap@uvic.ca and slice: slice303
+INFO:root:slice slice303 created for user rap@uvic.ca
+INFO:root:Performing request delete for user: ahobden@uvic.ca and slice: slice44
+INFO:root:slice slice44 deleted
+INFO:root:Performing request create for user: ahobden@uvic.ca and slice: slice304
+INFO:root:slice slice304 created for user ahobden@uvic.ca
+INFO:root:Performing request create for user: dremesch@uvic.ca and slice: slice305
+INFO:root:slice slice305 created for user dremesch@uvic.ca
+INFO:root:Performing request create for user: hdawar@uvic.ca and slice: slice306
+INFO:root:slice slice306 created for user hdawar@uvic.ca
+INFO:root:Performing request create for user: gpritchi@uvic.ca and slice: slice307
+INFO:root:slice slice307 created for user gpritchi@uvic.ca
+INFO:root:Performing request create for user: prashant@uvic.ca and slice: slice308
+INFO:root:slice slice308 created for user prashant@uvic.ca
+INFO:root:Performing request create for user: deionyu@uvic.ca and slice: slice309
+INFO:root:slice slice309 created for user deionyu@uvic.ca
+INFO:root:Performing request delete for user: aircool3@uvic.ca and slice: slice35
+INFO:root:slice slice35 deleted
+INFO:root:Performing request create for user: aircool3@uvic.ca and slice: slice310
+INFO:root:slice slice310 created for user aircool3@uvic.ca
+INFO:root:Performing request delete for user: gpritchi@uvic.ca and slice: slice307
+INFO:root:slice slice307 deleted
+INFO:root:Performing request delete for user: dremesch@uvic.ca and slice: slice305
+INFO:root:slice slice305 deleted
+INFO:root:Performing request create for user: nkbahia@uvic.ca and slice: slice311
+INFO:root:slice slice311 created for user nkbahia@uvic.ca
+INFO:root:Performing request create for user: dmcilvan@uvic.ca and slice: slice312
+INFO:root:slice slice312 created for user dmcilvan@uvic.ca
+INFO:root:Performing request delete for user: mpoirier@uvic.ca and slice: slice288
+INFO:root:slice slice288 deleted
+INFO:root:Performing request create for user: mpoirier@uvic.ca and slice: slice313
+INFO:root:slice slice313 created for user mpoirier@uvic.ca
+INFO:root:Performing request create for user: dabolink@uvic.ca and slice: slice314
+INFO:root:slice slice314 created for user dabolink@uvic.ca
+INFO:root:Performing request create for user: alexcha@uvic.ca and slice: slice315
+INFO:root:slice slice315 created for user alexcha@uvic.ca
+INFO:root:Performing request create for user: nathanvn@uvic.ca and slice: slice316
+INFO:root:slice slice316 created for user nathanvn@uvic.ca
+INFO:root:Performing request delete for user: rmskelly@uvic.ca and slice: slice289
+INFO:root:slice slice289 deleted
+INFO:root:Performing request create for user: rmskelly@uvic.ca and slice: slice317
+INFO:root:slice slice317 created for user rmskelly@uvic.ca
+INFO:root:Performing request delete for user: rjhmart@uvic.ca and slice: slice287
+INFO:root:slice slice287 deleted
+INFO:root:Performing request create for user: rjhmart@uvic.ca and slice: slice318
+INFO:root:slice slice318 created for user rjhmart@uvic.ca
+INFO:root:Performing request delete for user: dmcilvan@uvic.ca and slice: slice312
+INFO:root:slice slice312 deleted
+INFO:root:Performing request delete for user: dabolink@uvic.ca and slice: slice314
+INFO:root:slice slice314 deleted
+INFO:root:Performing request create for user: sneadp@uvic.ca and slice: slice319
+INFO:root:slice slice319 created for user sneadp@uvic.ca
+INFO:root:Performing request create for user: yongjun@uvic.ca and slice: slice320
+INFO:root:slice slice320 created for user yongjun@uvic.ca
+INFO:root:Performing request delete for user: rjhmart@uvic.ca and slice: slice318
+INFO:root:slice slice318 deleted
+INFO:root:Performing request create for user: paulpro@uvic.ca and slice: slice321
+INFO:root:slice slice321 created for user paulpro@uvic.ca
+INFO:root:Performing request delete for user: mhemming@uvic.ca and slice: slice29
+INFO:root:slice slice29 deleted
+INFO:root:Performing request create for user: mhemming@uvic.ca and slice: slice322
+INFO:root:slice slice322 created for user mhemming@uvic.ca
+INFO:root:Performing request delete for user: rick@mcgeer.com and slice: slice295
+INFO:root:slice slice295 deleted
+INFO:root:Performing request create for user: rick@mcgeer.com and slice: slice323
+INFO:root:slice slice323 created for user rick@mcgeer.com
+INFO:root:Performing request delete for user: rmskelly@uvic.ca and slice: slice317
+INFO:root:slice slice317 deleted
+INFO:root:Performing request create for user: rmskelly@uvic.ca and slice: slice324
+INFO:root:slice slice324 created for user rmskelly@uvic.ca
+INFO:root:Performing request delete for user: rmskelly@uvic.ca and slice: slice324
+INFO:root:slice slice324 deleted
+INFO:root:Performing request delete for user: nkbahia@uvic.ca and slice: slice311
+INFO:root:Performing request delete for user: nkbahia@uvic.ca and slice: slice311
+INFO:root:Performing request delete for user: nkbahia@uvic.ca and slice: slice311
+INFO:root:Performing request delete for user: nkbahia@uvic.ca and slice: slice311
+INFO:root:slice slice311 deleted
+INFO:root:Performing request create for user: nkbahia@uvic.ca and slice: slice325
+INFO:root:slice slice325 created for user nkbahia@uvic.ca
+INFO:root:Performing request delete for user: jsheoran@uvic.ca and slice: slice36
+INFO:root:slice slice36 deleted
+INFO:root:Performing request create for user: jsheoran@uvic.ca and slice: slice326
+INFO:root:slice slice326 created for user jsheoran@uvic.ca
+INFO:root:Performing request create for user: gpritchi@uvic.ca and slice: slice327
+INFO:root:slice slice327 created for user gpritchi@uvic.ca
+INFO:root:Performing request create for user: dremesch@uvic.ca and slice: slice328
+INFO:root:slice slice328 created for user dremesch@uvic.ca
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice302
+INFO:root:slice slice302 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice329
+INFO:root:slice slice329 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: alexcha@uvic.ca and slice: slice315
+INFO:root:slice slice315 deleted
+INFO:root:Performing request create for user: alexcha@uvic.ca and slice: slice330
+INFO:root:slice slice330 created for user alexcha@uvic.ca
+INFO:root:Performing request delete for user: nkbahia@uvic.ca and slice: slice325
+INFO:root:slice slice325 deleted
+INFO:root:Performing request create for user: nkbahia@uvic.ca and slice: slice331
+INFO:root:slice slice331 created for user nkbahia@uvic.ca
+INFO:root:Performing request create for user: rjhmart@uvic.ca and slice: slice332
+INFO:root:slice slice332 created for user rjhmart@uvic.ca
+INFO:root:Performing request delete for user: rjhmart@uvic.ca and slice: slice332
+INFO:root:slice slice332 deleted
+INFO:root:Performing request create for user: rjhmart@uvic.ca and slice: slice333
+INFO:root:slice slice333 created for user rjhmart@uvic.ca
+INFO:root:Performing request delete for user: alexcha@uvic.ca and slice: slice330
+INFO:root:slice slice330 deleted
+INFO:root:Performing request create for user: alexcha@uvic.ca and slice: slice334
+INFO:root:slice slice334 created for user alexcha@uvic.ca
+INFO:root:Performing request create for user: dabolink@uvic.ca and slice: slice335
+INFO:root:slice slice335 created for user dabolink@uvic.ca
+INFO:root:Performing request delete for user: aircool3@uvic.ca and slice: slice310
+INFO:root:slice slice310 deleted
+INFO:root:Performing request create for user: aircool3@uvic.ca and slice: slice336
+INFO:root:slice slice336 created for user aircool3@uvic.ca
+INFO:root:Performing request create for user: rmskelly@uvic.ca and slice: slice337
+INFO:root:slice slice337 created for user rmskelly@uvic.ca
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice329
+INFO:root:slice slice329 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice338
+INFO:root:slice slice338 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: aircool3@uvic.ca and slice: slice336
+INFO:root:slice slice336 deleted
+INFO:root:Performing request create for user: aircool3@uvic.ca and slice: slice339
+INFO:root:slice slice339 created for user aircool3@uvic.ca
+INFO:root:Performing request create for user: sedwards@geni.net and slice: slice340
+INFO:root:slice slice340 created for user sedwards@geni.net
+INFO:root:Performing request delete for user: mpoirier@uvic.ca and slice: slice313
+INFO:root:slice slice313 deleted
+INFO:root:Performing request create for user: mpoirier@uvic.ca and slice: slice341
+INFO:root:slice slice341 created for user mpoirier@uvic.ca
+INFO:root:Performing request delete for user: rjhmart@uvic.ca and slice: slice333
+INFO:root:slice slice333 deleted
+INFO:root:Performing request create for user: rjhmart@uvic.ca and slice: slice342
+INFO:root:slice slice342 created for user rjhmart@uvic.ca
+INFO:root:Performing request delete for user: niko@uvic.ca and slice: slice297
+INFO:root:slice slice297 deleted
+INFO:root:Performing request create for user: niko@uvic.ca and slice: slice343
+INFO:root:slice slice343 created for user niko@uvic.ca
+INFO:root:Performing request delete for user: rick@mcgeer.com and slice: slice323
+INFO:root:slice slice323 deleted
+INFO:root:Performing request create for user: rick@mcgeer.com and slice: slice344
+INFO:root:slice slice344 created for user rick@mcgeer.com
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice338
+INFO:root:slice slice338 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice345
+INFO:root:slice slice345 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice345
+INFO:root:slice slice345 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice346
+INFO:root:slice slice346 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice346
+INFO:root:slice slice346 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice347
+INFO:root:slice slice347 created for user acb@princeton.edu
+INFO:root:Performing request delete for user: mhemming@uvic.ca and slice: slice322
+INFO:root:slice slice322 deleted
+INFO:root:Performing request create for user: mhemming@uvic.ca and slice: slice348
+INFO:root:slice slice348 created for user mhemming@uvic.ca
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice347
+INFO:root:slice slice347 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice349
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice349
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice349
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice349
+ERROR:root:Error in creating slice: slice349: 
+INFO:root:Performing request delete for user: acb@princeton.edu and slice: slice349
+INFO:root:slice slice349 deleted
+INFO:root:Performing request create for user: acb@princeton.edu and slice: slice350
+INFO:root:slice slice350 created for user acb@princeton.edu

@@ -21,7 +21,7 @@
   - name: Create a slice
     docker: name={{ slice }}
       hostname={{ slice }}.{{ inventory_hostname }}
-      image={{ docker_image | default("geeproject/phusion-baseimage:0.1") }}
+      image={{ docker_image | default("geeproject/phusion-baseimage:0.3") }}
       expose=22 
       publish_all_ports=yes
     ignore_errors: yes
@@ -49,6 +49,7 @@
     with_items:
     - name: ssh-config
     - name: ansible-hosts
+    - name: ansible.cfg
     - name: fabfile.py
     - name: README.txt
 

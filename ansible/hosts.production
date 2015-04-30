@@ -1,6 +1,6 @@
 [nodes]
 pcvm3-1.geni.case.edu                  docker_bip=10.0.0.1/16
-pcvm1-1.geni.it.cornell.edu            docker_bip=10.1.0.1/16
+#pcvm1-1.geni.it.cornell.edu            docker_bip=10.1.0.1/16
 pcvm3-1.instageni.metrodatacenter.com  docker_bip=10.2.0.1/16
 pcvm2-2.instageni.rnoc.gatech.edu      docker_bip=10.3.0.1/16
 pcvm3-2.instageni.illinois.edu         docker_bip=10.4.0.1/16
