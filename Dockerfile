@@ -14,7 +14,11 @@ ENV HOME /root
 
 # ...put your own build instructions here...
 RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
+
+RUN pip install pymongo
 
 ADD . /root/geni-experiment-engine
 ADD etc/portal.conf /etc/supervisor/conf.d/
