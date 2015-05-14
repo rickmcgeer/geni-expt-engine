@@ -24,6 +24,7 @@ RUN pip install pymongo
 ADD . /root/geni-expt-engine
 
 RUN cd /root/geni-expt-engine/gee-master; npm install
+RUN cd /root/geni-expt-engine/gee-master; npm install mongoose-auto-increment
 
 ADD etc/portal.conf /etc/supervisor/conf.d/
 ADD etc/rc.local /etc/rc.local
