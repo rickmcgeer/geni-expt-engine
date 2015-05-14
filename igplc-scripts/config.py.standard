@@ -1,9 +1,0 @@
-ig_names = {'last_name':'IGPL', 'email_pattern_string': 'instagenipl+gee%s@gmail.com', 'email_wildcard_string': 'instagenipl+gee*@gmail.com'}
-gee_script_path = '/home/service_instageni'
-user_script_path = '/home/service_instageni/user-scripts'
-slice_nodes = [
-    {'hostname':'pc3.instageni.rnoc.gatech.edu', 'label':'GATECH'},
-    {'hostname':'pc32.utahddc.geniracks.net', 'label':'UDAHDDC'},
-    {'hostname':'pc5.geni.it.cornell.edu', 'label':'CORNELL'}
-    ]
-tag_template = "[{'bridge': 'br-tun', 'vlan':'%d', 'IPADDR': '10.128.234.%d', 'PRIMARY': 'yes', 'NETMASK': '255.255.255.0', 'BOOTPROTO': 'static', 'DEVICE': 'eth0', 'ONBOOT': 'yes'}, {'DEVICE': 'eth1', 'BOOTPROTO': 'dhcp', 'ONBOOT': 'yes'}]"
