@@ -15,6 +15,16 @@ ENV HOME /root
 # ...put your own build instructions here...
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y npm
+RUN npm install express
+RUN npm install jade
+RUN npm install mongodb
+RUN npm install mongoose
+RUN npm install mongoose-auto-increment
+RUN npm install nconf
+RUN npm install passport
+RUN npm install passport-openid
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
 
