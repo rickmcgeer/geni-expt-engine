@@ -20,7 +20,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
 
 RUN pip install pymongo
 
-ADD . /root/geni-experiment-engine
+ADD . /root/geni-expt-engine
 ADD etc/portal.conf /etc/supervisor/conf.d/
 ADD etc/rc.local /etc/rc.local
 
