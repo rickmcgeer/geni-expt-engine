@@ -16,21 +16,15 @@ ENV HOME /root
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y npm
-RUN npm install express
-RUN npm install jade
-RUN npm install mongodb
-RUN npm install mongoose
-RUN npm install mongoose-auto-increment
-RUN npm install nconf
-RUN npm install passport
-RUN npm install passport-openid
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
 
 RUN pip install pymongo
 
 ADD . /root/geni-expt-engine
+
+RUN cd /root/geni-expt-engine/gee-master; npm install
+
 ADD etc/portal.conf /etc/supervisor/conf.d/
 ADD etc/rc.local /etc/rc.local
 
