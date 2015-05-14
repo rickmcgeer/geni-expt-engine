@@ -1,6 +1,6 @@
 module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, script_dir) {
     function makeTarfile(sliceName) {
-	return "/home/service_instageni/slice_files/" + sliceName + ".tgz";
+	return "/root/slice_files/" + sliceName + ".tgz";
     }
     
     function makeExpiryDate() {

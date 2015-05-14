@@ -30,7 +30,7 @@ def getNextOutstandingRequest():
 # the tarfile for the slice
 #
 def makeTarfile(sliceName):
-    return "/home/service_instageni/slice_files/" + sliceName + ".tgz"
+    return "/root/slice_files/" + sliceName + ".tgz"
 
 #
 # create a slice

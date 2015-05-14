@@ -4,6 +4,6 @@ slice=$1
 host=$2
 [ $# -eq 0 ] && { echo "Usage: $0 slice host"; exit 1; }
 
-slicedir=/home/service_instageni/slices/$slice
+slicedir=/root/slices/$slice
 
 ssh -F $slicedir/ssh-config -i $slicedir/id_rsa $slice.$host
