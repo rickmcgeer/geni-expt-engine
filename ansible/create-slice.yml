@@ -22,23 +22,29 @@
     docker: name={{ slice }}
       hostname={{ slice }}.{{ inventory_hostname }}
       image={{ docker_image | default("geeproject/phusion-baseimage:0.3") }}
-      expose=22 
       publish_all_ports=yes
+      restart_policy=always
     ignore_errors: yes
     register: result
 
-  - name: Inject ssh key
-    sudo: yes
-    copy: src={{ keyfile }}.pub
-      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
+  - name: Create user account for the slice
+    user: name={{ slice }}
+      shell=/usr/local/sbin/dosh
     when: result|success
 
-#  - debug: var=docker_containers
+  - name: Create user's .ssh directory
+    file: path=/home/{{ slice }}/.ssh
+      state=directory
+      owner={{ slice }}
+      mode=0700
+    when: result|success
 
-  - name: Set up /etc/hosts in container
-    sudo: yes
-    template: src=templates/etc-hosts
-      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/etc/workaround-docker-2267/hosts
+  - name: Inject ssh key
+    copy: src={{ keyfile }}.pub
+      dest={{ item }}
+    with_items:
+        - /var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
+        - /home/{{ slice }}/.ssh/authorized_keys
     when: result|success
 
 - hosts: localhost
