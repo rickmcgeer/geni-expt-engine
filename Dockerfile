@@ -19,6 +19,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y npm
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
 
+# Install Ansible
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
+RUN DEBIAN_FRONTEND=noninteractive apt-add-repository -y ppa:ansible/ansible
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ansible
+
 RUN pip install pymongo
 
 ADD . /root/geni-expt-engine
