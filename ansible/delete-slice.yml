@@ -11,6 +11,10 @@
       state=absent
     ignore_errors: yes
 
+  - name: Remove user account
+    sudo: yes
+    user: name={{ slice }} state=absent
+
 - hosts: localhost
   connection: local
   tasks:

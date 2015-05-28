@@ -28,23 +28,30 @@
     register: result
 
   - name: Create user account for the slice
+    sudo: yes
     user: name={{ slice }}
       shell=/usr/local/sbin/dosh
     when: result|success
 
   - name: Create user's .ssh directory
+    sudo: yes
     file: path=/home/{{ slice }}/.ssh
       state=directory
       owner={{ slice }}
       mode=0700
     when: result|success
 
-  - name: Inject ssh key
+  - name: Inject ssh key into container
     copy: src={{ keyfile }}.pub
-      dest={{ item }}
-    with_items:
-        - /var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
-        - /home/{{ slice }}/.ssh/authorized_keys
+      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
+    when: result|success
+
+  - name: SSH key for user account
+    sudo: yes
+    copy: src={{ keyfile }}.pub
+      dest=/home/{{ slice }}/.ssh/authorized_keys
+      owner={{ slice }}
+      mode=0600
     when: result|success
 
 - hosts: localhost
