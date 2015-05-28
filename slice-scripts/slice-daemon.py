@@ -5,6 +5,8 @@
 from pymongo import MongoClient
 import subprocess
 import time
+import os
+
 #
 # Connect to the db server on the mongo container.  This needs to be reset here
 # if it changes.  Really should read from config.json
@@ -33,11 +35,17 @@ def makeTarfile(sliceName):
     return "/root/slice_files/" + sliceName + ".tgz"
 
 #
+# get directory of this script
+def getScriptPath():
+    return os.path.dirname(os.path.realpath(sys.argv[0]))
+
+#
 # create a slice
 #
 def createSlice(user, sliceName):
     try:
-        error_string = subprocess.check_output(['./create-slice.sh', sliceName, makeTarfile(sliceName)], stderr=subprocess.STDOUT)
+        scriptdir = getScriptPath()
+        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName)], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
     except subprocess.CalledProcessError, e:
@@ -50,7 +58,8 @@ def createSlice(user, sliceName):
 #
 def deleteSlice(sliceName):
     try:
-        error_string = subprocess.check_output(['./delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
+        scriptdir = getScriptPath()
+        error_string = subprocess.check_output([scriptdir + '/delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
         logging.info('slice ' + sliceName + ' deleted')
     except subprocess.CalledProcessError:
         logging.error('Error in deleting slice: ' + sliceName + ': ' + error_string)
