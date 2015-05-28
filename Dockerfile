@@ -36,6 +36,7 @@ ADD etc/portal.conf /etc/supervisor/conf.d/
 ADD etc/rc.local /etc/rc.local
 
 RUN mkdir /var/log/gee
+RUN mkdir /root/slice_files
 
 EXPOSE 80
 
