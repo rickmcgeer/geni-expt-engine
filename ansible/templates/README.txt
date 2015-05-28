@@ -24,13 +24,13 @@ http://docs.ansible.com/
 Some sample Ansible commands that you can use with your GEE slice:
 
 # To make sure all the slivers are up and you can login:
-$ ansible nodes -i ansible-hosts --private-key id_rsa -u root -m ping
+$ ansible nodes -i ansible-hosts -m ping
 
 # To run the 'uptime' command in parallel on all slivers:
-$ ansible nodes -i ansible-hosts --private-key id_rsa -u root -m shell -a "uptime"
+$ ansible nodes -i ansible-hosts -m shell -a "uptime"
 
 # To install the 'iperf' package in all the slivers
-$ ansible nodes -i ansible-hosts --private-key id_rsa -u root -m apt -a "name=iperf state=present"
+$ ansible nodes -i ansible-hosts -m apt -a "name=iperf state=present"
 
 
 fabfile.py
@@ -59,8 +59,8 @@ ssh-config
 SSH configuration for each sliver in the slice.  You can SSH to any
 sliver using the label following the 'Host' definition, e.g.,:
 
-$ ssh -F ssh-config -i id_rsa {{ slice }}.pcvm3-1.instageni.metrodatacenter.com
+$ ssh -F ssh-config pcvm3-1.instageni.metrodatacenter.com
 
 Other commands like scp work in the same way, but it is necessary to
-specify the -F and -i options as above.
+specify the -F option as above.
 

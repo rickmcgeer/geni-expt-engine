@@ -1,10 +1,10 @@
 # Sample commands:
-# ansible nodes -i ansible-hosts --private-key id_rsa -u root -m ping
-# ansible nodes -i ansible-hosts --private-key id_rsa -u root -m shell -a "uptime"
+# ansible nodes -i ansible-hosts -m ping
+# ansible nodes -i ansible-hosts -m shell -a "uptime"
 
 [nodes]
 {% for host in groups['nodes'] %}
 {% if hostvars[host]['docker_containers'] is defined %}
-{{ slice }}.{{ host }} ansible_ssh_host={{ host }} ansible_ssh_port={{ hostvars[host]['docker_containers'][0]['NetworkSettings']['Ports']['22/tcp'][0]['HostPort'] }}
+{{ host }}
 {% endif %}
 {% endfor %}
