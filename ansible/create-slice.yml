@@ -30,6 +30,7 @@
   - name: Create user account for the slice
     user: name={{ slice }}
       shell=/usr/local/sbin/dosh
+      group=slices
     when: result|success
 
   - name: Create user's .ssh directory
