@@ -13,7 +13,7 @@
       creates={{ keyfile }}
 
 - hosts: nodes
-  sudo: no
+  sudo: yes
   gather_facts: no
   remote_user: "{{ dockeruser }}"
   tasks:
@@ -28,13 +28,11 @@
     register: result
 
   - name: Create user account for the slice
-    sudo: yes
     user: name={{ slice }}
       shell=/usr/local/sbin/dosh
     when: result|success
 
   - name: Create user's .ssh directory
-    sudo: yes
     file: path=/home/{{ slice }}/.ssh
       state=directory
       owner={{ slice }}
@@ -43,11 +41,10 @@
 
   - name: Inject ssh key into container
     copy: src={{ keyfile }}.pub
-      dest=/var/lib/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
+      dest=/mnt/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
     when: result|success
 
   - name: SSH key for user account
-    sudo: yes
     copy: src={{ keyfile }}.pub
       dest=/home/{{ slice }}/.ssh/authorized_keys
       owner={{ slice }}

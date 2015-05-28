@@ -2,7 +2,7 @@
 - hosts: nodes
   remote_user: "{{ dockeruser }}"
   gather_facts: no
-  sudo: no
+  sudo: yes
   tasks:
 
   - name: Delete a slice
@@ -12,7 +12,6 @@
     ignore_errors: yes
 
   - name: Remove user account
-    sudo: yes
     user: name={{ slice }} state=absent
 
 - hosts: localhost
