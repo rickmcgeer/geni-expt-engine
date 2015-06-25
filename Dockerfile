@@ -18,6 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y npm
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-clients
 
 # Install Ansible
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
@@ -42,4 +43,3 @@ EXPOSE 80
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
