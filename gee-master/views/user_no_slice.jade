@@ -1,5 +1,11 @@
 extends user_layout
 block userPageOptions
-	a.pageOptions(href='/slice/get') Get a Slicelet!
+    form(action = '/slice/get')
+        input(type='select', name='Image')
+        input(type='option', value='Image1')
+        input(type='option', value='Image2')
+        input(type='option', value='Image3')
+        button(type="submit") Get a Slicelet!
+
 block content
 	User #{user} logged in, and has no current slicelets.

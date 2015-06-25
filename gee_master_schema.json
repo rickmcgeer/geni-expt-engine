@@ -17,11 +17,12 @@
         "default": false
     }
 },
-// slices: {name, allocated, expires, tarfile}
+// slices: {name, allocated, expires, tarfile, imageName}
 // name is just the slice name
 // user is the email of the user who owns the slice (null if not allocated)
 // expires is the date on which the slice expires
 // tarfile is the name of slice file
+// imageName: is the name of the docker file
 // NOT SHOWN (and may need to be fixed).  Has an autoincrement COUNT field
 // implemented by a Mongoose plugin -- how do we get it from Mongo?
 "slice:": {
@@ -32,16 +33,18 @@
   "expires": {
     "type": "Date"
   },
+  "imageName": "String",
   "tarfile": "String",
   "status": "String"
 },
 
 
 //
-// slice requests: {action, user, sliceName}
+// slice requests: {action, user, sliceName, imageName}
 // action: create or delete
 // user: user to do it for
 // sliceName: name to give the script
+// imageName: is the name of the docker file.  Used only for create requests
 // read by slice-daemon.py, so any change here must be accompanied by a change
 // there
 //
@@ -56,6 +59,14 @@
     },
     "sliceName": {
         "type":"String"
-    }
+    },
+    "imageName": "String"
+},
+//
+// images: {name}
+// name: String
+// names of images which can be instantiated on GEE
+"images": {
+   "name": "String"
 }
 }
