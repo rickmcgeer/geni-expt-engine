@@ -43,10 +43,10 @@ def getScriptPath():
 #
 # create a slice
 #
-def createSlice(user, sliceName):
+def createSlice(user, sliceName, imageName):
     try:
         scriptdir = getScriptPath()
-        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName)], stderr=subprocess.STDOUT)
+        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName), imageName], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
     except subprocess.CalledProcessError, e:
@@ -68,9 +68,9 @@ def deleteSlice(sliceName):
 # service a request
 #
 def doRequest(aRequest):
-    logging.info("Performing request " + aRequest['action']  + ' for user: ' + aRequest['user'] + ' and slice: ' + aRequest['sliceName'])
+    logging.info("Performing request " + aRequest['action']  + ' for user: ' + aRequest['user'] + ' and slice: ' + aRequest['sliceName'] + ' with image: ' + aRequest['imageName'])
     if aRequest['action'] == 'create':
-        createSlice(aRequest['user'], aRequest['sliceName'])
+        createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'])
     else:
         deleteSlice(aRequest['sliceName'])
     request_collection.remove(aRequest)

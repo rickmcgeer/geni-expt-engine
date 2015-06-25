@@ -2,6 +2,7 @@
 
 SLICE=$1
 TARBALL=$2
+IMAGE=$3
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ANSIBLEDIR=$DIR/../ansible
 LOGDIR=/var/log/gee
@@ -11,7 +12,7 @@ LOGFILE=$LOGDIR/$SLICE-create.log
 
 mkdir -p $LOGDIR
 echo Run: `date` >> $LOGFILE
-ansible-playbook -f 20 -i $ANSIBLEDIR/hosts $ANSIBLEDIR/create-slice.yml --extra-vars "slice=$SLICE tarball=$TARBALL" >> $LOGFILE
+ansible-playbook -f 20 -i $ANSIBLEDIR/hosts $ANSIBLEDIR/create-slice.yml --extra-vars "slice=$SLICE tarball=$TARBALL docker_image=$IMAGE" >> $LOGFILE
 
 # Tolerate dark hosts (exit code 3 from Ansible)
 RESULT=$?

@@ -174,7 +174,8 @@ var slice_schema = mongoose.Schema({
     type: Date
   },
   tarfile: String,
-  status: String
+  status: String,
+  imageName: String
 })
 
 //
@@ -196,7 +197,8 @@ var slice_request_schema = mongoose.Schema({
     },
     sliceName: {
         type:String
-    }
+    },
+    imageName: String
 })
 
 // turn on auto-increment in the slice-number field

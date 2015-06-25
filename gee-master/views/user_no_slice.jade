@@ -1,11 +1,10 @@
 extends user_layout
 block userPageOptions
-    form(action = '/slice/get')
-        input(type='select', name='Image')
-        input(type='option', value='Image1')
-        input(type='option', value='Image2')
-        input(type='option', value='Image3')
+    form(method = 'get', action = '/slice/get')
+        select(name='image')
+            each image in images
+                option(value=image)  #{image}
         button(type="submit") Get a Slicelet!
 
 block content
-	User #{user} logged in, and has no current slicelets.
+     User #{user} logged in, and has no current slicelets.

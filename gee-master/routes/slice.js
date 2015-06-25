@@ -1,3 +1,4 @@
+var url = require('url')
 module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, script_dir) {
     function makeTarfile(sliceName) {
 	return "/root/slice_files/" + sliceName + ".tgz";
@@ -101,6 +102,8 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     }
     
     var createSlice = function(req, res) {
+        var queryData = url.parse(req.url, true).query;
+        var imageName = queryData.image;
         Slices.nextCount(function(err, nextSliceNum) {
             if (err) {
                 var message  = "Error in getting the next Slice Number: " + err
@@ -113,7 +116,8 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
                 SliceRequests.create({
                     action:'create',
                     user:req.session.user,
-                    sliceName:sliceName
+                    sliceName:sliceName,
+                    imageName: imageName
                     },
                     function(err, slice) {
                         if (err) {
@@ -125,7 +129,8 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
                                 user:req.session.user,
                                 tarfile:makeTarfile(sliceName),
                                 expires:makeExpiryDate(),
-                                status:"Processing"
+                                status:"Processing",
+                                imageName: imageName
                                 },
                                 function(err, slice) {
                                     if (err) {
@@ -133,7 +138,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
                                         console.log(message)
                                         utils.render_error_page(req, res, message)
                                     } else {
-                                        console.log("Slice " + sliceName + " entered for user " + req.session.user)
+                                        console.log("Slice " + sliceName + " entered for user " + req.session.user + " with image " + imageName)
                                         res.redirect('/user')
                                         // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], redirectToUser, {}, deleteSliceOnError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename
                                         // invokeCommand(req, res, 'create-slice.sh', [sliceName, tarFile, 'foo'], setSliceStatusToRunning, {}, setSliceStatusToError, {name:sliceName, tarfile:tarFile}) // need to fix the imagename

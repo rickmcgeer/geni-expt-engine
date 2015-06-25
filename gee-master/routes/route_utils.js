@@ -65,17 +65,18 @@ exports.get_user_dashboard = function (req, res, urls, Slices) {
     Slices.find({user:req.session.user},
 	function(err, slices) {
 	    if(err) {
-		var message = "Error in  slice lookup for " + req.session.user;
-		utils.render_error_page(req, res, message, message);
+            var message = "Error in  slice lookup for " + req.session.user;
+            utils.render_error_page(req, res, message, message);
 	    } else if (slices.length > 0) {
-		req.session.slice_data = slices[0];
-		req.session.filename = req.session.slice_data.tarfile;
-		exports.render_slice_dashboard(req, res, req.session.slice_data)
+            req.session.slice_data = slices[0];
+            req.session.filename = req.session.slice_data.tarfile;
+            exports.render_slice_dashboard(req, res, req.session.slice_data)
 	    } else {
-		res.render('user_no_slice', {
-                    user: req.session.user,
-                    get_url: urls.get_slicelet_url,
-                    admin: req.session.admin
+            res.render('user_no_slice', {
+                user: req.session.user,
+                get_url: urls.get_slicelet_url,
+                admin: req.session.admin,
+                images: ['A', 'B', 'C']
 		});
 	    }
 	});
