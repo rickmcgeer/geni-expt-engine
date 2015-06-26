@@ -52,6 +52,7 @@ exports.render_slice_dashboard = function (req, res, slice_dictionary) {
         admin: req.session.admin,
         date: slice_dictionary.expires,
         status: slice_dictionary.status,
+        image: slice_dictionary.imageName,
         color:colors[slice_dictionary.status]
     };
     res.render('user_with_slice', page_dictionary);
@@ -76,7 +77,7 @@ exports.get_user_dashboard = function (req, res, urls, Slices) {
                 user: req.session.user,
                 get_url: urls.get_slicelet_url,
                 admin: req.session.admin,
-                images: ['A', 'B', 'C']
+                images: ['geeproject/phusion-baseimage', 'ubuntu:15.10', 'centos:6', 'centos:7', 'fedora:21', 'fedora:22']
 		});
 	    }
 	});
