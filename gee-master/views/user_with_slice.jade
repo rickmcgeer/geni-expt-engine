@@ -1,6 +1,8 @@
 extends user_layout
+block custHead
+    meta(http-equiv="refresh", content="30")
 block userPageOptions
-    a.pageOptions(href='/slice/free') Free Slicelet #{slice}
+    a.pageOptions(href='/slice/free') Delete Slicelet #{slice}
     a.pageOptions(href='/slice/renew') Renew Slicelet #{slice}
     a.pageOptions(href='/slice/download') Download Slicelet File
 block content
