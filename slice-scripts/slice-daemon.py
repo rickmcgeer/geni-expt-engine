@@ -70,7 +70,7 @@ def deleteSlice(sliceName):
 def doRequest(aRequest):
     logString = "Performing request %s for user %s and slice %s" % (aRequest['action'], aRequest['user'], aRequest['sliceName'])
     if imageName in aRequest.keys():
-        logString += + ' with image: ' + aRequest['imageName']
+        logString += ' with image: ' + aRequest['imageName']
     logging.info(logString)
     if aRequest['action'] == 'create':
         createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'])
