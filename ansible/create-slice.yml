@@ -24,6 +24,7 @@
       image={{ docker_image | default("geeproject/phusion-baseimage:0.3") }}
       publish_all_ports=yes
       restart_policy=always
+      tty=yes
     ignore_errors: yes
     register: result
 
@@ -40,10 +41,11 @@
       mode=0700
     when: result|success
 
-  - name: Inject ssh key into container
-    copy: src={{ keyfile }}.pub
-      dest=/mnt/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
-    when: result|success
+#  Not needed with GEE v3
+#  - name: Inject ssh key into container
+#    copy: src={{ keyfile }}.pub
+#      dest=/mnt/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
+#    when: result|success
 
   - name: SSH key for user account
     copy: src={{ keyfile }}.pub
