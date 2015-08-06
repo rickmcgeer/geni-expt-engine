@@ -21,6 +21,11 @@ use.  For more information on Ansible, see:
 
 http://docs.ansible.com/
 
+NOTE: In order to use Ansible on GEE, openssh-clients must be installed
+in your GEE slice image.  The default image already has this installed,
+but other images may lack it.  The default fabfile.py provides an easy
+way to install openssh-clients; see the next section.
+
 Some sample Ansible commands that you can use with your GEE slice:
 
 # To make sure all the slivers are up and you can login:
@@ -38,7 +43,7 @@ fabfile.py
 A simple fabfile for use with Fabric, another open-source utility for
 running parallel SSH commands.  A fabfile is just Python code that
 defines Fabric "commands" which can be invoked from the shell.  For
-more information on Fabric, see: 
+more information on Fabric, see:
 
 http://www.fabfile.org/
 
@@ -49,6 +54,12 @@ $ fab uptime
 
 # To test that all slivers have connectivity to www.yahoo.com:
 $ fab pingtest
+
+# To install openssh-clients and any other Ansible dependencies
+$ fab ansible-setup-ubuntu
+-or-
+$ fab ansible-setup-centos
+...depending on your slice image.
 
 Use these examples to extend the fabfile according to the needs of
 your experiment.
@@ -63,4 +74,3 @@ $ ssh -F ssh-config pcvm3-1.instageni.metrodatacenter.com
 
 Other commands like scp work in the same way, but it is necessary to
 specify the -F option as above.
-

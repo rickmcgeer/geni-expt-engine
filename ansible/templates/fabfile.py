@@ -16,3 +16,9 @@ def pingtest():
 
 def uptime():
     run('uptime')
+
+def ansible-setup-ubuntu():
+    run('sudo apt-get -y install openssh-clients')
+
+def ansible-setup-centos():
+    run('sudo yum -y install openssh-clients')
