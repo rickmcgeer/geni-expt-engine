@@ -22,9 +22,14 @@ use.  For more information on Ansible, see:
 http://docs.ansible.com/
 
 NOTE: In order to use Ansible on GEE, openssh-clients must be installed
-in your GEE slice image.  The default image already has this installed,
-but other images may lack it.  The default fabfile.py provides an easy
-way to install openssh-clients; see the next section.
+in your GEE slice image.  Without this you will see an error like this
+when running Ansible:
+
+/bin/bash: scp: command not found
+
+The default image already has openssh-clients installed, but other images
+may lack it.  The default fabfile.py provides an easy way to install
+openssh-clients; see the next section.
 
 Some sample Ansible commands that you can use with your GEE slice:
 
@@ -56,9 +61,11 @@ $ fab uptime
 $ fab pingtest
 
 # To install openssh-clients and any other Ansible dependencies
-$ fab ansible-setup-ubuntu
+$ fab setup_ubuntu
 -or-
-$ fab ansible-setup-centos
+$ fab setup_centos_or_fedora21
+-or-
+$ fab setup_fedora22
 ...depending on your slice image.
 
 Use these examples to extend the fabfile according to the needs of
