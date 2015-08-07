@@ -12,9 +12,9 @@
     ignore_errors: yes
 
   - name: Remove user account
-    user: name={{ slice }} state=absent
+    user: name={{ slice }} state=absent remove=yes
 
-- hosts: localhost
+  - hosts: localhost
   connection: local
   tasks:
   - name: Remove slice directory

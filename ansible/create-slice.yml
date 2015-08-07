@@ -19,14 +19,22 @@
   tasks:
 
   - name: Create a slice
-    docker: name={{ slice }}
-      hostname={{ slice }}.{{ inventory_hostname }}
-      image={{ docker_image | default("geeproject/phusion-baseimage:0.3") }}
-      publish_all_ports=yes
-      restart_policy=always
-      tty=yes
+    docker:
+      name: "{{ slice }}"
+      hostname: "{{ slice }}.{{ inventory_hostname }}"
+      image: "{{ docker_image | default('geeproject/phusion-baseimage:0.3') }}"
+      publish_all_ports: yes
+      restart_policy: always
+      tty: yes
+      command: /bin/bash
+      dns:
+        - 8.8.8.8
     ignore_errors: yes
     register: result
+
+  - name: Remove old home directory if present
+    file: path=/home/{{ slice }}/.ssh
+      state=absent
 
   - name: Create user account for the slice
     user: name={{ slice }}
@@ -38,19 +46,15 @@
     file: path=/home/{{ slice }}/.ssh
       state=directory
       owner={{ slice }}
+      group=slices
       mode=0700
     when: result|success
-
-#  Not needed with GEE v3
-#  - name: Inject ssh key into container
-#    copy: src={{ keyfile }}.pub
-#      dest=/mnt/docker/{{ dockerfs }}/mnt/{{ docker_containers[0]['Id'] }}/{{ rootfs }}/root/.ssh/authorized_keys
-#    when: result|success
 
   - name: SSH key for user account
     copy: src={{ keyfile }}.pub
       dest=/home/{{ slice }}/.ssh/authorized_keys
       owner={{ slice }}
+      group=slices
       mode=0600
     when: result|success
 
