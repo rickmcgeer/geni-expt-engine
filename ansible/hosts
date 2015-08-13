@@ -1,22 +1,30 @@
+# docker_bip is the IP address of the Docker bridge
+# Each bridge is configured with docker_bip on 10/8 subnet
+# The IP addresses for the containers are from docker_bip/22
+# So all containers have L2 connectivity
 [nodes]
-pcvm3-1.geni.case.edu                  docker_bip=10.0.0.1/16
-pcvm1-1.geni.it.cornell.edu            docker_bip=10.1.0.1/16
-pcvm3-1.instageni.metrodatacenter.com  docker_bip=10.2.0.1/16
-pcvm2-2.instageni.rnoc.gatech.edu      docker_bip=10.3.0.1/16
-pcvm3-2.instageni.illinois.edu         docker_bip=10.4.0.1/16
-pcvm5-7.lan.sdn.uky.edu                docker_bip=10.5.0.1/16
-pcvm3-1.instageni.lsu.edu              docker_bip=10.6.0.1/16
-pcvm2-2.instageni.maxgigapop.net       docker_bip=10.7.0.1/16
-pcvm1-1.instageni.iu.edu               docker_bip=10.8.0.1/16
-pcvm3-4.instageni.rnet.missouri.edu    docker_bip=10.9.0.1/16
-pcvm3-7.instageni.nps.edu              docker_bip=10.10.0.1/16
-pcvm2-1.instageni.nysernet.org         docker_bip=10.11.0.1/16
-pcvm3-11.genirack.nyu.edu              docker_bip=10.12.0.1/16
-pcvm5-1.instageni.northwestern.edu     docker_bip=10.13.0.1/16
-pcvm5-2.instageni.cs.princeton.edu     docker_bip=10.14.0.1/16
-pcvm3-3.instageni.rutgers.edu          docker_bip=10.15.0.1/16
-pcvm1-6.instageni.sox.net              docker_bip=10.16.0.1/16
-pcvm3-1.instageni.stanford.edu         docker_bip=10.17.0.1/16
-pcvm2-1.instageni.idre.ucla.edu        docker_bip=10.18.0.1/16
-pcvm4-1.utahddc.geniracks.net          docker_bip=10.19.0.1/16
-pcvm1-1.instageni.wisc.edu             docker_bip=10.20.0.1/16
+pcvm1-2.instageni.cenic.net     docker_bip=10.0.0.1    label=ig-cenic
+pcvm1-2.geni.uchicago.edu     docker_bip=10.0.4.1    label=ig-chicago
+pcvm1-20.instageni.clemson.edu     docker_bip=10.0.8.1    label=ig-clemson
+pcvm2-1.geni.it.cornell.edu     docker_bip=10.0.12.1    label=ig-cornell
+pcvm3-17.instageni.metrodatacenter.com     docker_bip=10.0.16.1    label=ig-ohmetrodc
+pcvm5-4.instageni.rnoc.gatech.edu     docker_bip=10.0.20.1    label=ig-gatech
+pcvm3-9.instageni.illinois.edu     docker_bip=10.0.24.1    label=ig-illinois
+pcvm5-16.lan.sdn.uky.edu     docker_bip=10.0.28.1    label=ig-kentucky
+pcvm5-2.geni.kettering.edu     docker_bip=10.0.32.1    label=ig-kettering
+pcvm2-1.instageni.lsu.edu     docker_bip=10.0.36.1    label=ig-lsu
+pcvm1-24.instageni.maxgigapop.net     docker_bip=10.0.40.1    label=ig-max
+pcvm3-8.instageni.iu.edu     docker_bip=10.0.44.1    label=ig-moxi
+pcvm2-1.instageni.rnet.missouri.edu     docker_bip=10.0.48.1    label=ig-missouri
+pcvm2-9.instageni.nps.edu     docker_bip=10.0.52.1    label=ig-nps
+pcvm3-8.instageni.nysernet.org     docker_bip=10.0.56.1    label=ig-nysernet
+pcvm1-3.instageni.northwestern.edu     docker_bip=10.0.60.1    label=ig-northwestern
+pcvm5-1.instageni.cs.princeton.edu     docker_bip=10.0.64.1    label=ig-princeton
+pcvm2-6.instageni.rutgers.edu     docker_bip=10.0.68.1    label=ig-rutgers
+pcvm1-1.instageni.sox.net     docker_bip=10.0.72.1    label=ig-sox
+pcvm3-15.instageni.stanford.edu     docker_bip=10.0.76.1    label=ig-stanford
+pcvm1-1.pks2.sdn.uky.edu     docker_bip=10.0.80.1    label=ig-ukypks2
+pcvm1-1.instageni.washington.edu     docker_bip=10.0.84.1    label=ig-uwashington
+pcvm3-17.utah.geniracks.net     docker_bip=10.0.88.1    label=ig-utah
+pcvm5-2.utahddc.geniracks.net     docker_bip=10.0.92.1    label=ig-utahddc
+pcvm3-5.instageni.wisc.edu     docker_bip=10.0.96.1    label=ig-wisconsin
