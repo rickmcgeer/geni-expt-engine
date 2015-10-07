@@ -33,6 +33,9 @@
   "expires": {
     "type": "Date"
   },
+  "portMap": {
+    "type": []
+  }
   "imageName": "String",
   "tarfile": "String",
   "status": "String"

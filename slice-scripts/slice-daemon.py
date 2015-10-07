@@ -30,6 +30,19 @@ def getNextOutstandingRequest():
     return request_collection.find_one()
 
 #
+# Get all of the host ports being used by all of the slices
+#
+def getAllPorts():
+    var slices = slice_collection.find({})
+    ports = []
+    for slice in slices:
+        if slice['portMap']:
+            ports = ports +  [portMap['host'] for portMap in slice['portMap']]
+    print ports
+
+
+
+#
 # the tarfile for the slice
 #
 def makeTarfile(sliceName):
@@ -52,7 +65,7 @@ def createSlice(user, sliceName, imageName):
     except subprocess.CalledProcessError, e:
         logging.error('Error in creating slice: ' + sliceName + ': ' + e.output)
         slice_collection.update({"user": user}, {"$set": {"status":"Error"}})
-        
+
 
 #
 # delete a slice
@@ -88,5 +101,3 @@ if __name__ == '__main__':
         if request: doRequest(request)
         else:
             time.sleep(15)
-        
-    

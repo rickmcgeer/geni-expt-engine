@@ -1,21 +1,21 @@
-//Copyright (c) 2014 US Ignite 
-// 
-//Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-//and/or hardware specification (the ÒWorkÓ) to deal in the Work without restriction, including 
-//without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
-//sell copies of the Work, and to permit persons to whom the Work is furnished to do so, subject to 
-//the following conditions: 
-// 
-//The above copyright notice and this permission notice shall be included in all copies or 
-//substantial portions of the Work. 
-// 
-//THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-//OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
-//HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-//WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-//OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS 
+//Copyright (c) 2014 US Ignite
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+//and/or hardware specification (the ï¿½Workï¿½) to deal in the Work without restriction, including
+//without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//sell copies of the Work, and to permit persons to whom the Work is furnished to do so, subject to
+//the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in all copies or
+//substantial portions of the Work.
+//
+//THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+//OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 //IN THE WORK.
 /* Main webserver for the GENI Experiment Engine Compute Engine.  Major
  * Functions: Get  a Slicelet (/get_slicelet), Free a Slicelet (/free_slicelet)
@@ -57,7 +57,7 @@ nconf.defaults({
     session_secret: 'keyboard cat',
     script_dir: '/root',
     real_host_name: 'node56.stanford.vicci.org',
-    // need to use this because app.listen ignores port forwarding (EADDRINUSE errors because of plc webserver 
+    // need to use this because app.listen ignores port forwarding (EADDRINUSE errors because of plc webserver
     real_port: 80
 });
 
@@ -165,6 +165,8 @@ var user_schema = mongoose.Schema({
 // user is the email of the user who owns the slice (null if not allocated)
 // expires is the date on which the slice expires
 // tarfile is the name of slice file
+// imageName: name of the image to build the slice with
+// ports: list of port mappings for the slice, of the form host:hostPortNum, containerPort: containerPortNum
 var slice_schema = mongoose.Schema({
   user: {
     type: String,
@@ -175,7 +177,11 @@ var slice_schema = mongoose.Schema({
   },
   tarfile: String,
   status: String,
-  imageName: String
+  imageName: String,
+  ports: [{
+    host: String,
+    container: String
+  }]
 })
 
 //
@@ -183,6 +189,8 @@ var slice_schema = mongoose.Schema({
 // action: create or delete
 // user: user to do it for
 // sliceName: name to give the script
+// imageName: name of the image to build the slice with
+// ports: list of port mappings for the slice, of the form host:hostPortNum, containerPort: containerPortNum
 // read by slice-daemon.py, so any change here must be accompanied by a change
 // there
 //
@@ -198,7 +206,11 @@ var slice_request_schema = mongoose.Schema({
     sliceName: {
         type:String
     },
-    imageName: String
+    imageName: String,
+    ports: [{
+      host: String,
+      container: String
+    }]
 })
 
 // turn on auto-increment in the slice-number field
