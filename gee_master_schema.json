@@ -33,9 +33,13 @@
   "expires": {
     "type": "Date"
   },
-  "portMap": {
-    "type": []
-  }
+  "ports": {
+    "type": [
+      "host":"String",
+      "container": "String"
+    ],
+    "default": []
+  },
   "imageName": "String",
   "tarfile": "String",
   "status": "String"
@@ -63,7 +67,14 @@
     "sliceName": {
         "type":"String"
     },
-    "imageName": "String"
+    "imageName": "String",
+    "ports": {
+      "type": [
+        "host":"String",
+        "container": "String"
+      ],
+      "default": []
+    }
 },
 //
 // images: {name}
