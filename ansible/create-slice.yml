@@ -23,7 +23,8 @@
       name: "{{ slice }}"
       hostname: "{{ slice }}.{{ inventory_hostname }}"
       image: "{{ docker_image | default('geeproject/phusion-baseimage:0.3') }}"
-      publish_all_ports: yes
+      expose: "{{ expose }}"
+      ports: "{{ ports }}"
       restart_policy: always
       tty: yes
       command: /bin/bash
