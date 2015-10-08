@@ -33,12 +33,12 @@ def getNextOutstandingRequest():
 # Get all of the host ports being used by all of the slices
 #
 def getAllPorts():
-    var slices = slice_collection.find({})
+    slices = slice_collection.find({})
     ports = []
     for slice in slices:
-        if slice['portMap']:
-            ports = ports +  [portMap['host'] for portMap in slice['portMap']]
-    print ports
+        if slice['ports']:
+            ports = ports +  [portMap['host'] for portMap in slice['ports']]
+    return ports
 
 
 
@@ -54,17 +54,32 @@ def getScriptPath():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 #
+# get port string: from a port specification, get the ports and put them into a
+# form for create-slice.sh
+#
+def getPortString(ports=None):
+    if (ports == None): return "[]"
+    if (len(ports) == 0): return "[]"
+    portStringArray = ["'%d':'%d'" % (port['host'], port['container']) for port in ports]
+    return '[' + ','.join(portStringArray) + ']'
+
+
+#
 # create a slice
 #
-def createSlice(user, sliceName, imageName):
+def createSlice(user, sliceName, imageName, ports):
     try:
         scriptdir = getScriptPath()
-        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName), imageName], stderr=subprocess.STDOUT)
+        portString = getPortString(ports)
+        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName), imageName, portString], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
+        if (ports and len(ports) > 0):
+            slice_collection.update({"user": user}, {"$set": {"ports": ports}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
     except subprocess.CalledProcessError, e:
         logging.error('Error in creating slice: ' + sliceName + ': ' + e.output)
         slice_collection.update({"user": user}, {"$set": {"status":"Error"}})
+
 
 
 #
@@ -84,9 +99,11 @@ def doRequest(aRequest):
     logString = "Performing request %s for user %s and slice %s" % (aRequest['action'], aRequest['user'], aRequest['sliceName'])
     if 'imageName' in aRequest.keys():
         logString += ' with image: ' + aRequest['imageName']
+    if 'ports' in aRequest.keys():
+        logString += ' wth port request: ' + getPortString(aRequest['ports'])
     logging.info(logString)
     if aRequest['action'] == 'create':
-        createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'])
+        createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'], aRequest['ports'])
     else:
         deleteSlice(aRequest['sliceName'])
     request_collection.remove(aRequest)
