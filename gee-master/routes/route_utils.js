@@ -45,7 +45,7 @@ exports.makeSliceName = function(aNumber) {
 // {"slice": <slicename>", "slicelet_file": <filename>, "user": "<username>, "has_slicelet": true}
 exports.render_slice_dashboard = function (req, res, slice_dictionary) {
     var colors = {Running: 'Green', Processing: 'Orange', 'Error':'Red'};
-    
+
     var page_dictionary = {
         slice: exports.makeSliceName(slice_dictionary.sliceNum),
         user: req.session.user,
@@ -53,7 +53,8 @@ exports.render_slice_dashboard = function (req, res, slice_dictionary) {
         date: slice_dictionary.expires,
         status: slice_dictionary.status,
         image: slice_dictionary.imageName,
-        color:colors[slice_dictionary.status]
+        color:colors[slice_dictionary.status],
+        ports: slice_dictionary.ports
     };
     res.render('user_with_slice', page_dictionary);
 }
@@ -61,7 +62,7 @@ exports.render_slice_dashboard = function (req, res, slice_dictionary) {
 // get the data for the user dashboard from
 // the shell script find-gee-slice.plcsh  and
 // render the user dashboard
-// command is 
+// command is
 exports.get_user_dashboard = function (req, res, urls, Slices) {
     Slices.find({user:req.session.user},
 	function(err, slices) {

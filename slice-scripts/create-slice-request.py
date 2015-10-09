@@ -139,7 +139,7 @@ if __name__ == '__main__':
     newSliceNum = int(result['count'])
     print 'New slice num is %d' % newSliceNum
     sliceSpec['sliceNum'] = newSliceNum
-    sliceSpec['tarFile'] = sliceTarball(newSliceNum)
+    sliceSpec['tarfile'] = sliceTarball(newSliceNum)
     sliceRequestSpec = makeSliceRequest(sliceSpec)
     print 'Putting new slice in database: ' + json.dumps(sliceSpec, default=json_util.default)
     slice_collection.insert_one(sliceSpec)
