@@ -60,7 +60,7 @@ def getScriptPath():
 def getPortString(ports=None):
     if (ports == None): return "[]"
     if (len(ports) == 0): return "[]"
-    portStringArray = ["'%d':'%d'" % (port['host'], port['container']) for port in ports]
+    portStringArray = ["'%d:%d'" % (port['host'], port['container']) for port in ports]
     return '[' + ','.join(portStringArray) + ']'
 
 
@@ -71,6 +71,7 @@ def createSlice(user, sliceName, imageName, ports):
     try:
         scriptdir = getScriptPath()
         portString = getPortString(ports)
+        print (scriptdir + '/create-slice.sh %s %s %s %s' % (sliceName, makeTarfile(sliceName), imageName, portString))
         error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName), imageName, portString], stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
         if (ports and len(ports) > 0):
@@ -90,8 +91,8 @@ def deleteSlice(sliceName):
         scriptdir = getScriptPath()
         error_string = subprocess.check_output([scriptdir + '/delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
         logging.info('slice ' + sliceName + ' deleted')
-    except subprocess.CalledProcessError:
-        logging.error('Error in deleting slice: ' + sliceName + ': ' + error_string)
+    except subprocess.CalledProcessError, e:
+        logging.error('Error in deleting slice: ' + sliceName + ': ' + e.output)
 #
 # service a request
 #

@@ -19,6 +19,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y npm
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-clients
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libkrb5-dev
 
 # Install Ansible
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
@@ -29,6 +31,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ansible
 RUN pip install pymongo
 
 ADD . /root/geni-expt-engine
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 RUN cd /root/geni-expt-engine/gee-master; npm install
 RUN cd /root/geni-expt-engine/gee-master; npm install mongoose-auto-increment
