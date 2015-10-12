@@ -1,0 +1,94 @@
+extends layout
+block custHead
+   script(type='text/javascript').
+     // validate the action of the form, ensuring that the image at least looks valid
+     // (contains a '/') and the ports are all positive integers <= 65535.
+     // Also make sure that if a slice port is not -1, then the host port is
+     // valid.  Once the inputs are checked, prompt the user to confirm,
+     // then invoke the request which is passed in in the variable callback
+     function validateAndSubmit(formAction) {
+        // set up the defaults, get the value of the image, and make sure it's OK.
+        // if it isn't, set the image name (imageElement.value) to the default
+        // image.
+        var defaultImageName = 'geeproject/phusionbaseimage';
+        var imageElement = document.getElementById("image")
+        if (imageElement.value != null) {
+           var imageElements = imageElement.value.split('/')
+           if (imageElements.length != 2 || (imageElements[0].length == 0) || imageElements[1].length == 0) {
+               imageElement.value = defaultImageName
+           }
+        } else {
+           imageElement.value = defaultImageName;
+        }
+        // now parse and set up the ports.  Step 1 is to go through the port numbers,
+        // extracting valid combinations and putting them as {host: , container: }
+        // pairs in the port array.
+        // -1 is port-not-specified.  A valid value is anything in the range (0, 65535)
+        // if the slice port is invalid, set both slice and host ports to -1
+        // if the host port is invalid, set the host port value to the slice port value
+        // Once this is done, either both values are -1, or this is a valid map.  In the
+        // latter case put it into the port array
+        var ports = []
+        for(var i = 0; i < 5; i++) {
+           var hostPort = document.getElementById('host' + i)
+           var slicePort = document.getElementById('slice'+i)
+           if (slicePort.value < 0 || slicePort.value > 65535) {
+              hostPort.value = slicePort.value = -1;
+           } else if (hostPort.value < 0 || hostPort.value > 65535) {
+              hostPort.value = slicePort.value;
+           }
+           if (slicePort.value != -1) {
+              ports.push({host:hostPort.value, container:slicePort.value})
+           }
+        }
+        // Build the string to prompt the user/admin for confirmation
+        var portStrings = ports.map(function(aPort) {
+           return aPort.container + '->' + aPort.host
+        });
+        var portString = ' ports: ' + portStrings.join(', ')
+        // prompt the user for confirmation.  If confirmed, send the request to the server
+        var OK = confirm("Confirm request with image " + imageElement.value + portString);
+        // Only forms can submit a request(why?), so this is cookbook Javascript.
+        // build a form whose action is to do callback.  NOTE: a Post method.
+        // Build the parameters as hidden inputs and fill in the values, then submit.
+        // any callback from this must have a post method, and the values which get
+        // passed back are imageName (a string), and ports, a JSON structure which is
+        // an array of the form [{"host": hostPortNumber, "container": containerPortNumber}]
+        if (OK) {
+            var params = {imageName: imageElement.value, ports: JSON.stringify(ports)}
+             var form = document.createElement("form");
+             form.action = formAction
+             form.method = 'post'
+             for (var key in params) {
+                 var hiddenField = document.createElement("input");
+                 hiddenField.setAttribute("type", "hidden");
+                 hiddenField.setAttribute("name", key);
+                 hiddenField.setAttribute("value", params[key]);
+                 form.appendChild(hiddenField);
+             }
+             document.body.appendChild(form);
+             form.submit();
+        }
+      }
+
+
+
+block content
+
+     input(type='text', value="geeproject/phusionbaseimage", id="image")
+     br
+     | Image Name
+     p External Ports Requested (specify up to 5):
+     table
+        tr
+           th Host Port
+           th Slice Port
+        each val in [0, 1, 2, 3, 4]
+           - var host='host'+val
+           - var slice='slice'+val
+           tr
+              td
+                 input(type='number',  value=-1, id=host)
+              td
+                 input(type='number',  value=-1, id=slice)
+     button(type='submit' onclick="validateAndSubmit('#{callback}')"") OK

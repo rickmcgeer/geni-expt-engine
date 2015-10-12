@@ -82,5 +82,32 @@
 // names of images which can be instantiated on GEE
 "images": {
    "name": "String"
+},
+// Special slice requests -- requests for slices
+// that have been made by users but not acted upon
+// by administrators.  These involve open ports,
+// images not in the database, or both
+// user: email of user requesting special slice
+// imageName: text string with the image the user is requesting.
+//            The default should be in config.json, and specified there.
+// ports: port mappings the user is requesting.  should be in the form x:y,
+//        where x is the host port and y is the container port
+"special_slice_requests": {
+    "user": {
+        "type": "String",
+        "default": null
+    },
+    "imageName": {
+        "type": "String",
+        "default": null
+    },
+    "ports": {
+      "type": [
+        "host":"String",
+        "container": "String"
+      ],
+      "default": []
+    }
+
 }
 }

@@ -216,10 +216,41 @@ var slice_request_schema = mongoose.Schema({
 // turn on auto-increment in the slice-number field
 slice_schema.plugin(autoIncrement.plugin, {model: 'slices', field: 'sliceNum'})
 
+// Special slice requests -- requests for slices
+// that have been made by users but not acted upon
+// by administrators.  These involve open ports,
+// images not in the database, or both
+// user: email of user requesting special slice
+// imageName: text string with the image the user is requesting.
+//            The default should be in config.json, and specified there.
+// ports: port mappings the user is requesting.  should be in the form x:y,
+//        where x is the host port and y is the container port
+var special_slice_request_schema = mongoose.Schema( {
+    user: {
+        type: "String",
+        default: null
+    },
+    imageName: {
+        type: "String",
+        default: null
+    },
+    sliceName: {
+        type: "String"
+    },
+    ports: [{
+
+        host: String,
+        container: String
+    }],
+
+}
+});
+
 // get the users out of the database
 var Users = mongoose.model('users', user_schema);
 var Slices = mongoose.model('slices', slice_schema)
 var SliceRequests = mongoose.model('slice_requests', slice_request_schema)
+var CustomSliceRequests = mongoose.model('custom_slice_requests', special_slice_request_schema)
 
 // URLs to get, renew, and free slicelets, and download the tarball
 var get_slicelet_url = application_url + "/get_slicelet";
@@ -236,7 +267,7 @@ var urls = {
 
 
 
-require('./routes/')(app, passport, Users, Slices, SliceRequests, urls, url, script_dir);
+require('./routes/')(app, passport, Users, Slices, SliceRequests, CustomSliceRequests, urls, url, script_dir);
 
 
 // Just a test to see if the bug report functionality works
