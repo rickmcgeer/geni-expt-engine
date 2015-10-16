@@ -2,7 +2,8 @@ StrictHostKeyChecking no
 {% for host in groups['nodes'] %}
   {% if hostvars[host]['docker_containers'] is defined %}
 
-Host {{ host }}
+Host {{ hostvars[host]['label'] }}
+  Hostname {{ host }}
   User {{ slice }}
   IdentityFile ./id_rsa
   {% endif %}
