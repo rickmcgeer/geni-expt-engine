@@ -21,8 +21,8 @@ To set up a GEE portal (e.g., for development) follow these steps:
  * Decide what port you want the portal to listen on.  Change *application_port* and *real_port* in 
    *gee-master/config.json* to point to this port.
  * Build the Docker image: `$ docker build -t portal .`
- * Run *create-portal.sh*, providing an identifying label for this portal and the listen port as arguments.  
-   If the label is *dev* and the port is *8000*: `$ create-portal.sh dev 8000`
+ * Run *create-portal.sh*, providing an identifying label for this portal and the listen port as 
+   arguments.  If the label is *dev* and the port is *8000*: `$ create-portal.sh dev 8000`
  * Two containers will be launched, one running the portal code and the other containing the database.
    In the example above they would be *dev-portal* and *dev-mongodb*.
  * When you are ready, destroy the portal and mongodb containers using the label: `$ destroy-portal.sh dev`
