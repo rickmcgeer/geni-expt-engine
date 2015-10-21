@@ -167,6 +167,7 @@ var user_schema = mongoose.Schema({
 // tarfile is the name of slice file
 // imageName: name of the image to build the slice with
 // ports: list of port mappings for the slice, of the form host:hostPortNum, containerPort: containerPortNum
+// sliceName: naem of the slice
 var slice_schema = mongoose.Schema({
   user: {
     type: String,
@@ -181,7 +182,9 @@ var slice_schema = mongoose.Schema({
   ports: [{
     host: String,
     container: String
-  }]
+   }],
+   sliceName: String
+
 })
 
 //
@@ -238,12 +241,9 @@ var special_slice_request_schema = mongoose.Schema( {
         type: "String"
     },
     ports: [{
-
         host: String,
         container: String
-    }],
-
-}
+    }]
 });
 
 // get the users out of the database

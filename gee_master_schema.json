@@ -69,10 +69,10 @@
     },
     "imageName": "String",
     "ports": {
-      "type": [
+      "type": [{
         "host":"String",
         "container": "String"
-      ],
+      }],
       "default": []
     }
 },
@@ -102,10 +102,10 @@
         "default": null
     },
     "ports": {
-      "type": [
+      "type": [{
         "host":"String",
         "container": "String"
-      ],
+      }],
       "default": []
     }
 

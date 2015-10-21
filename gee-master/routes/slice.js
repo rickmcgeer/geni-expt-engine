@@ -97,9 +97,15 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
 
     app.get('/slice/get_custom', function (req, res) {
       // direct the user to a page where he can fill out a form for a custom slicelet
+      ports = []
+      for (var i = 0; i < 5; i++) {
+          ports.push({host:-1, container:-1})
+      }
       res.render('slice_request.jade', {
         user:req.session.user,
-        callback:'/slice/create_custom_request'
+        ports: ports,
+        callback:'/slice/create_custom_request',
+        params: {}
       })
     });
 

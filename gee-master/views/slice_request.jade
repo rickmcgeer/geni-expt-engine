@@ -6,7 +6,7 @@ block custHead
      // Also make sure that if a slice port is not -1, then the host port is
      // valid.  Once the inputs are checked, prompt the user to confirm,
      // then invoke the request which is passed in in the variable callback
-     function validateAndSubmit(formAction) {
+     function validateAndSubmit(numPorts) {
         // set up the defaults, get the value of the image, and make sure it's OK.
         // if it isn't, set the image name (imageElement.value) to the default
         // image.
@@ -29,7 +29,7 @@ block custHead
         // Once this is done, either both values are -1, or this is a valid map.  In the
         // latter case put it into the port array
         var ports = []
-        for(var i = 0; i < 5; i++) {
+        for(var i = 0; i < numPorts; i++) {
            var hostPort = document.getElementById('host' + i)
            var slicePort = document.getElementById('slice'+i)
            if (slicePort.value < 0 || slicePort.value > 65535) {
@@ -55,11 +55,12 @@ block custHead
         // passed back are imageName (a string), and ports, a JSON structure which is
         // an array of the form [{"host": hostPortNumber, "container": containerPortNumber}]
         if (OK) {
-            var params = {imageName: imageElement.value, ports: JSON.stringify(ports)}
-             var form = document.createElement("form");
-             form.action = formAction
-             form.method = 'post'
-             for (var key in params) {
+             var params = {
+                 imageName:imageElement.value,
+                 ports: JSON.stringify(ports)
+             }
+             var form = document.getElementById("formToSubmit");
+             for (var key in ['imageName', 'ports']) {
                  var hiddenField = document.createElement("input");
                  hiddenField.setAttribute("type", "hidden");
                  hiddenField.setAttribute("name", key);
@@ -70,25 +71,25 @@ block custHead
              form.submit();
         }
       }
-
-
-
 block content
-
      input(type='text', value="geeproject/phusionbaseimage", id="image")
+     - var numPorts = ports.length
      br
      | Image Name
-     p External Ports Requested (specify up to 5):
      table
         tr
            th Host Port
            th Slice Port
-        each val in [0, 1, 2, 3, 4]
-           - var host='host'+val
-           - var slice='slice'+val
+        each port, i in ports
+           - var host='host'+i
+           - var slice='slice'+i
            tr
               td
-                 input(type='number',  value=-1, id=host)
+                 input(type='number',  value=port.host, id=host)
               td
-                 input(type='number',  value=-1, id=slice)
-     button(type='submit' onclick="validateAndSubmit('#{callback}')"") OK
+                 input(type='number',  value=port.container, id=slice)
+     button(type='submit' onclick="validateAndSubmit(#{numPorts})") OK
+     form(id='formToSubmit', action='#{callback}', method='post')
+        each key in Object.keys(params)
+            - var val=params[key]
+            input(type='hidden',value = val, name=key)

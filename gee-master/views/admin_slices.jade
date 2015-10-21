@@ -8,9 +8,11 @@ block content
 			th Allocated
 			th File
 			th Expires
+			th Status
 		each slice, i in slices
 			tr
 				td #{slice.name}
 				td #{slice.allocated}
 				td #{slice.file}
 				td #{slice.expiry_date}
+				td #{slice.status}
