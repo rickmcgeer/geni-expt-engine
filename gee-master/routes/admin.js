@@ -227,9 +227,10 @@ module.exports = function (app, utils, Users, Slices, CustomSliceRequests, url, 
                 if (sliceRequests && sliceRequests.length > 0) {
                     var sliceRequestDictionary = sliceRequests.map(function(aRequest) {
                         var portString = aRequest.ports.map(function(aPortEntry){
-                            aPortEntry.container + '->' + aPortEntry.host
+                            return aPortEntry.container + '->' + aPortEntry.host
                         }).join(', ')
-                        return {name:aRequest.name,
+                        return {
+                            name:aRequest.sliceName,
                             user:aRequest.user,
                             imageName:aRequest.imageName,
                             ports: portString
@@ -256,7 +257,9 @@ module.exports = function (app, utils, Users, Slices, CustomSliceRequests, url, 
     })
 
     var renderCustomSliceEditPage = function(req, res) {
-        CustomSliceRequests.find({sliceName:req.body.sliceName}, function(err, sliceRequest){
+        var urlParts = url.parse(req.url, true)
+        var query = urlParts.query
+        CustomSliceRequests.findOne({sliceName:query.sliceName}, function(err, sliceRequest){
             if (err) {
                 utils.render_error_page(req, res, "Error in finding custom slice request " + req.body.sliceName, err)
             } else {

@@ -56,17 +56,17 @@ block custHead
         // an array of the form [{"host": hostPortNumber, "container": containerPortNumber}]
         if (OK) {
              var params = {
-                 imageName:imageElement.value,
+                 imageName: imageElement.value,
                  ports: JSON.stringify(ports)
              }
              var form = document.getElementById("formToSubmit");
-             for (var key in ['imageName', 'ports']) {
+             ['imageName', 'ports'].forEach(function (key) {
                  var hiddenField = document.createElement("input");
                  hiddenField.setAttribute("type", "hidden");
                  hiddenField.setAttribute("name", key);
                  hiddenField.setAttribute("value", params[key]);
                  form.appendChild(hiddenField);
-             }
+             });
              document.body.appendChild(form);
              form.submit();
         }

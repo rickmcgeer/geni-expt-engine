@@ -197,7 +197,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // callback
 
     var primitiveCreateCustomSliceRequest = function(req, res, sliceNum, imageName, ports) {
-        var sliceName = utils.makeSliceName(SliceNum)
+        var sliceName = utils.makeSliceName(sliceNum)
         var tarFile = makeTarfile(sliceName)
         // utils.render_in_progress(req, res, sliceName)
         CustomSliceRequests.create({
