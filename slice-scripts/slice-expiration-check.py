@@ -44,8 +44,8 @@ def addDeleteRequest(slice):
 
     logging.info("Deleting slice %s  which expired at %s.  Today is %s" % (name, slice['expires'], dateString))
     request_collection.insert({'action':'delete', 'sliceName':name, 'user':slice['user']})
-    slice_collection.remove(slice)
-        
+    # slice_collection.remove(slice)
+
 
 
 # main loop
@@ -57,5 +57,3 @@ if __name__ == '__main__':
         for slice in expired:
             addDeleteRequest(slice)
         time.sleep(900)
-        
-    

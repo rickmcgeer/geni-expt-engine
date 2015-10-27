@@ -1,4 +1,4 @@
-module.exports = function (app, utils, Users, Slices, CustomSliceRequests, url, script_dir) {
+module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSliceRequests, url, script_dir) {
 
     // Utility to lookup and render the users page -- called from /users and /add_users
     var render_users = function (req, res) {
@@ -264,11 +264,16 @@ module.exports = function (app, utils, Users, Slices, CustomSliceRequests, url, 
                 utils.render_error_page(req, res, "Error in finding custom slice request " + req.body.sliceName, err)
             } else {
                 res.render('slice_request', {
-                    title: 'Editing Customer Slice Request ' + req.body.sliceName,
+                    title: 'Editing Customer Slice Request ' + query.sliceName,
                     imageName: sliceRequest.imageName,
+                    sliceName: query.sliceName,
                     ports: sliceRequest.ports,
                     callback: '/admin/approve_custom_slice_request',
-                    params: {sliceName: req.body.sliceName}
+                    user: sliceRequest.user,
+                    params: {
+                        sliceName: query.sliceName,
+                        user: sliceRequest.user
+                    }
                 })
             }
         })
@@ -291,28 +296,35 @@ module.exports = function (app, utils, Users, Slices, CustomSliceRequests, url, 
             if (err) {
                 utils.render_error_page(req, res, 'Error modifying slice ' + req.body.sliceName)
             } else {
-                CustomSliceRequests.remove({sliceName: req.body.sliceName}, function(req, res) {
-                    // last thing -- must create the request to actually create the slice
-                    SliceRequests.create({
-                        action:'create',
-                        user:req.session.user,
-                        sliceName: req.body.sliceName,
-                        imageName: req.body.imageName,
-                        ports: ports
-                    }, function(req, res) {
-                        if (err) {
-                            utils.render_error_page(req, res, 'Error creating slice reqyest for ' + req.body.sliceName)
-                        } else {
-                            res.render('admin', {
-                                user: req.session.user
-                            })
-                        }
-
-                    });
+                CustomSliceRequests.remove({sliceName: req.body.sliceName}, function(err) {
+                    if (err) {
+                        utils.render_error_page(req, res, 'Error deleting custom slice request for ' + req.body.sliceName)
+                    } else {
+                        // last thing -- must create the request to actually create the slice
+                        SliceRequests.create({
+                            action:'create',
+                            user:req.body.user,
+                            sliceName: req.body.sliceName,
+                            imageName: req.body.imageName,
+                            ports: ports
+                        }, function(err) {
+                            if (err) {
+                                utils.render_error_page(req, res, 'Error creating slice request for ' + req.body.sliceName)
+                            } else {
+                                res.render('admin', {
+                                    user: req.session.user
+                                })
+                            }
+                        });
+                    }
                 })
             }
         })
     }
+
+    app.post('/admin/approve_custom_slice_request', function(req, res) {
+        adminCheckOrDo(req, res, approveCustomSliceRequest)
+    })
 
     app.get('/admin/users/requests', function (req, res) {
         if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null

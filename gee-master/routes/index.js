@@ -19,9 +19,9 @@
 //IN THE WORK.
 module.exports = function (app, passport, Users, Slices, SliceRequests, CustomSliceRequests, urls, url, script_dir) {
     var route_utils = require('./route_utils');
-    require('./admin')(app, route_utils, Users, Slices, url, script_dir);
+    require('./admin')(app, route_utils, Users, Slices, SliceRequests, url, script_dir);
     require('./auth')(app, passport);
     require('./main')(app);
-    require('./slice')(app, route_utils, urls, url, Users, Slices, SliceRequests, CustomSliceRequests, cript_dir);
+    require('./slice')(app, route_utils, urls, url, Users, Slices, SliceRequests, CustomSliceRequests, script_dir);
     require('./user')(app, route_utils, Users, Slices, CustomSliceRequests, urls, script_dir);
 }

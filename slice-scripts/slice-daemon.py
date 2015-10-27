@@ -60,7 +60,7 @@ def getScriptPath():
 def getPortString(ports=None):
     if (ports == None): return "[]"
     if (len(ports) == 0): return "[]"
-    portStringArray = ["'%d:%d'" % (port['host'], port['container']) for port in ports]
+    portStringArray = ["'%s:%s'" % (port['host'], port['container']) for port in ports]
     return '[' + ','.join(portStringArray) + ']'
 
 
