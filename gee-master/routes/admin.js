@@ -441,7 +441,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
                 title: 'Unauthorized Admin'
             });
         } else {
-            res.sendfile('gee_console.log');
+            res.sendfile('/var/log/gee/geePortal.out.log');
         }
     });
 
@@ -454,7 +454,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
                 title: 'Unauthorized Admin'
             });
         } else {
-            res.sendfile('gee_console_error.log');
+            res.sendfile('/var/log/gee/geePortal.err.log');
         }
     });
 }
