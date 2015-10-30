@@ -171,7 +171,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // callback
 
     var primitiveCreateSliceRequest = function(req, res, sliceNum, imageName) {
-        var sliceName = utils.makeSliceName(SliceNum)
+        var sliceName = utils.makeSliceName(sliceNum)
         var tarFile = makeTarfile(sliceName)
         // utils.render_in_progress(req, res, sliceName)
         SliceRequests.create({
@@ -245,6 +245,87 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
         });
     }
 
+    // delete a slice whose state is Processing.  It's already removed from the slice
+    // table, so remove it from the slice_requests table
+    var deleteSliceAwaitingCreation = function(req, res, slice) {
+        SliceRequests.remove({action:'create', sliceName:slice.sliceName}, function(err) {
+            if(err) {
+                utils.handleError(req, res, "Error removing slice  " + slice.sliceName + " from the create-slice-request queue: " + err)
+
+            } else {
+                res.redirect('/user')
+            }
+        })
+    }
+
+    // delete a slice whose state is Pending Approval.  It's already removed from the slice
+    // table, so remove it from the custom_slice_requests table
+    var deletePendingSlice = function(req, res, slice) {
+        CustomSliceRequests.remove({sliceName:slice.sliceName}, function(err) {
+            if(err) {
+                utils.handleError(req, res, "Error removing slice  " + slice.sliceName + " from the custom-slice-approval table: " + err)
+
+            } else {
+                res.redirect('/user')
+            }
+        })
+    }
+    // delete a slice whose state is Running.  It's already removed from the slice
+    // table, so simply add the delete action to the slice_requests queue
+    var deleteRunningSlice = function(req, res, slice) {
+        SliceRequests.create({
+            action: 'delete',
+            sliceName: slice.sliceName
+        },
+        function(err) {
+            if(err) {
+                utils.handleError(req, res, "Error creating slice remove request for user " + req.session.user + ": " + err)
+            } else {
+                res.redirect('/user')
+            }
+        });
+    }
+
+    // delete a slice.  This is a rewrite, because the code is fairly tricky.
+    // A slice can be in one of three states:
+    // 1. Pending Approval.  Delete the slice from the custom_slice_request and
+    //    slices table
+    // 2. Processing.  The slice has not yet been created.  Remove the create-slice
+    //    request from the slice request queue, and delete from the slices table
+    // 3. Running.  Delete from the slices table, and add a delete-slice request
+    //    to the slice request queue
+    // Note that in all three cases we need to delete the slice from the slices
+    // collection, so do that first and then call the appropriate routine to
+    // do the second db action
+    var deleteSlice = function(req, res, slice) {
+        Slices.remove({sliceName: slice.sliceName}, function(err) {
+            if(err) {
+                utils.handleError(req, res, "Error removing slice  " + slice.sliceName + " from the database: " + err)
+            } else {
+                if (slice.status == 'Pending Approval') {
+                    deletePendingSlice(req, res, slice)
+                } else if (slice.status == 'Processing') {
+                    deleteSliceAwaitingCreation(req, res, slice)
+                } else {
+                    deleteRunningSlice(req, res, slice)
+                }
+            }
+        })
+    }
+    // A utility for both /slice/free and /slice/delete.  Checks to see if
+    // we actually found a slice or got an error, and if an error handle it
+    // and if not delete the slice
+
+    var handleErrorOrDeleteFirstSlice = function (req, res, err, specString, slices) {
+        if(err) {
+            utils.handleError(req, res, "Error in finding slice for " + specString + ": " + err)
+        } else if (slices.length == 0) {
+            utils.handleError(req, res, "No slices found for  " + specString)
+        } else {
+            var slice = slices[0]
+            deleteSlice(req, res, slice)
+        }
+    }
     // free a slicelet.  Just deletes the slicelet from the db
     app.get('/slice/free', function (req, res) {
         console.log(req.url);
@@ -256,43 +337,24 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
             return;
         }
         Slices.find({user:req.session.user}, function(err, slices) {
-            if(err) {
-                utils.handleError(req, res, "Error in finding slice for user " + req.session.user + ": " + err)
-            } else if (slices.length == 0) {
-                utils.handleError(req, res, "No slices found for user " + req.session.user)
-            } else {
-                var slice = slices[0]
-                if (slice.status == "Processing") {
-                    res.render('user_delete_in_progress', {
-                        user: req.session.user,
-                        slice: sliceName
-                    });
-                    return;
-                }
-                var sliceName = utils.makeSliceName(slices[0].sliceNum)
-                var tarfile = slices[0].tarfile;
-                SliceRequests.create({
-                    action: 'delete',
-                    user: req.session.user,
-                    sliceName:sliceName
-                },
-                function(err) {
-                    if(err) {
-                        utils.handleError(req, res, "Error creating slice remove request for user " + req.session.user + ": " + err)
-                    } else {
-                        Slices.remove({user:req.session.user}, function(err) {
-                            if(err) {
-                                utils.handleError(req, res, "Error removing slice for user " + req.session.user + " from the database: " + err)
-                            } else {
-                                res.redirect('/user')
-                                //invokeCommand(req, res, 'delete-slice.sh', [sliceName, tarfile], doNothing, {}, utils.handleError)
-                            }
-                        })
-                    }
-                })
-            }
+            handleErrorOrDeleteFirstSlice(req, res, err, "user " + req.session.user, slices)
         })
     });
+
+    // delete a slice by the administrator.  This differs from /slice/free since the slice name is
+    // given in the body of the query
+
+    app.get('/slice/delete', function(req, res) {
+        var query = url.parse(req.url, true).query;
+        if (!query.sliceName) {
+            utils.handleError(req, res, "sliceName not specified for /slice/delete")
+        } else {
+            var sliceName = query.sliceName
+            Slices.find({sliceName:sliceName}, function(err, slices) {
+                handleErrorOrDeleteFirstSlice(req, res, err, "sliceName " + sliceName, slices)
+            })
+        }
+    })
 
     // A helper routine for slice expiration.  This is called after something has been done with
     // each expired slice.  We are done when the deleted and error slices are the total number of
