@@ -107,7 +107,7 @@ def doRequest(aRequest):
         createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'], aRequest['ports'])
     else:
         deleteSlice(aRequest['sliceName'])
-    request_collection.remove({'action':aRequest['action'], 'sliceName': aRequest['sliceName'])
+    request_collection.remove({'action':aRequest['action'], 'sliceName': aRequest['sliceName']})
 
 #
 # main loop
