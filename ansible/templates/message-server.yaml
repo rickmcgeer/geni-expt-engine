@@ -1,0 +1,21 @@
+---
+- hosts: message_server
+  remote_user: "{{ slice }}"
+  tasks:
+     - name: install beanstalk-server
+       apt: name=beanstalkd update_cache=yes
+
+     - name: set default to listen on the public interface
+       lineinfile: dest=/etc/default/beanstalkd regexp='127\.0\.0\.1' line='BEANSTALKD_LISTEN_ADDR=0.0.0.0'
+
+     - name: restart the beanstalk service
+       service: name=beanstalkd state=restarted
+
+     - name: install pip
+       apt: name=python-pip
+
+     - name: install beanstalkc
+       pip: name=beanstalkc
+
+     - name: install pyyaml
+       pip: name=pyyaml
