@@ -103,6 +103,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
       }
       res.render('slice_request.jade', {
         user:req.session.user,
+        imageName: 'geeproject/phusion-baseimage',
         ports: ports,
         callback:'/slice/create_custom_request',
         params: {}
