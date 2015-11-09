@@ -70,6 +70,7 @@
     - name: ansible.cfg
     - name: fabfile.py
     - name: README.txt
+    - name: slice-hosts.py
 
   - name: Create tarball
     shell: cd {{ slicedir }}; tar czf {{ tarball }} *
