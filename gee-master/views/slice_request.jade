@@ -72,6 +72,18 @@ block custHead
         }
       }
 block content
+     p.
+       Use this form to create a request for a custom slicelet -- one that either uses an
+       image other than one available from the pulldown, or exposes ports for public usage,
+       or both.  Enter the imageName in the textbox: it should be a valid dockerfile name of the
+       form <user>/<image> (e.g. geeproject/phusion-baseimage). A port request should contain a
+       port number from your slicelet (the port that the slicelet application listens on) in the Slice
+       field and the number of the port you want exposed to the world.  So entering 9001 80 in the
+       two fields will map port 80 in the slicelet to port 9001 on the host, and users should access
+       the service on port 9001.  When you click submit a popup will appear asking you to confirm this;
+       when you click OK it will go into the administrator bucket for Approval.  We may be in touch with you
+       about this if there are issues with your request.
+
      input(type='text', value=imageName, id="image")
      - var numPorts = ports.length
      br
