@@ -44,7 +44,7 @@ exports.makeSliceName = function(aNumber) {
 // all of the slice information is in slice_dictionary, and is of the form
 // {"slice": <slicename>", "slicelet_file": <filename>, "user": "<username>, "has_slicelet": true}
 exports.render_slice_dashboard = function (req, res, slice_dictionary) {
-    var colors = {Running: 'Green', Processing: 'Orange', 'Error':'Red'};
+    var colors = {Running: 'Green', Processing: 'Orange', 'Pending Approval': 'Purple', 'Error':'Red'};
 
     var page_dictionary = {
         slice: exports.makeSliceName(slice_dictionary.sliceNum),
