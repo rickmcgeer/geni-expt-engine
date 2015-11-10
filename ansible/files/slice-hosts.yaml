@@ -1,0 +1,11 @@
+---
+# Touch every node
+- hosts: nodes
+
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Creates slice-hosts.py from template
+    template: src=./slice-hosts.py.j2
+      dest=./slice-hosts.py
+

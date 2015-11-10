@@ -12,6 +12,13 @@ id_rsa.pub
 The public SSH key for use with your GEE slice.
 
 
+ansible.cfg
+-----------
+Contains some useful defaults for using Ansible on the GEE.  If you
+run Ansible from this directory then it will pick up the defaults in
+this file.
+
+
 ansible-hosts
 -------------
 An Ansible inventory file to make it easy to run commands across all
@@ -71,6 +78,28 @@ $ fab setup_fedora22
 Use these examples to extend the fabfile according to the needs of
 your experiment.
 
+message-client.yaml
+message-server.yaml
+-------------------
+These Ansible playbooks can be used to bring up the GEE Message
+Service inside a slicelet.  You will need to choose a node in your
+slicelete to install the message server on,  and edit the ansible-hosts
+file to point to it by adding a couple of lines at the bottom.  For
+example:
+
+[message_server]
+rutgers.gee-project.net
+
+
+slice-hosts.py.j2
+slice-hosts.yaml
+----------------
+Running the slice-hosts.yaml playbook will create a file called
+"slice-hosts.py" containing the private IP addresses of all the
+nodes in the slicelet:
+
+$ ansible-playbook -i ansible-hosts slice-hosts.yaml
+
 
 ssh-config
 ----------
@@ -81,3 +110,5 @@ $ ssh -F ssh-config pcvm3-1.instageni.metrodatacenter.com
 
 Other commands like scp work in the same way, but it is necessary to
 specify the -F option as above.
+
+

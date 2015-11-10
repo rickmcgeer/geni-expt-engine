@@ -70,9 +70,15 @@
     - name: ansible.cfg
     - name: fabfile.py
     - name: README.txt
-    - name: slice-hosts.py
+
+  - name: More helper files
+    copy: src=files/{{ item.name }}
+      dest={{ slicedir }}/{{ item.name }}
+    with_items:
     - name: message-client.yaml
     - name: message-server.yaml
+    - name: slice-hosts.py.j2
+    - name: slice-hosts.yaml
 
   - name: Create tarball
     shell: cd {{ slicedir }}; tar czf {{ tarball }} *

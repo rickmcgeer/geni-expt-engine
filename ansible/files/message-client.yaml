@@ -1,6 +1,5 @@
 ---
 - hosts: nodes
-  remote_user: "{{ slice }}"
   tasks:
      - name: install pip
        apt: name=python-pip update_cache=yes

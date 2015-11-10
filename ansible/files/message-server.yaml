@@ -1,6 +1,5 @@
 ---
 - hosts: message_server
-  remote_user: "{{ slice }}"
   tasks:
      - name: install beanstalk-server
        apt: name=beanstalkd update_cache=yes
