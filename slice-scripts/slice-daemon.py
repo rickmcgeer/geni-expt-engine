@@ -7,6 +7,7 @@ import subprocess
 import time
 import sys
 import os
+import json
 
 #
 # Connect to the db server on the mongo container.  This needs to be reset here
@@ -22,7 +23,10 @@ slice_collection = db.slices
 # Open the logfile
 #
 import logging
-logging.basicConfig(filename='slice_daemon.log',level=logging.DEBUG)
+# logging.basicConfig(filename='slice_daemon.log',level=logging.DEBUG)
+# supervisorctl expects logger output on stderr, so don't redirect if we're running
+# under supervisorctl
+logging.basicConfig(level=logging.DEBUG)
 #
 # Pull a slice request
 #
@@ -110,12 +114,30 @@ def doRequest(aRequest):
     request_collection.remove({'action':aRequest['action'], 'sliceName': aRequest['sliceName']})
 
 #
+# check a request
+#
+
+def checkRequest(aRequest):
+    requiredFields = ['action', 'user', 'sliceName']
+    fieldPresent = [field in aRequest.keys() for field in requiredFields]
+    ok = not (False in fieldPresent)
+    return ok
+
+
+
+#
 # main loop
 #
 
 if __name__ == '__main__':
     while True:
         request = getNextOutstandingRequest()
-        if request: doRequest(request)
+        if request:
+            if checkRequest(request):
+                doRequest(request)
+            else:
+                fieldsAsStrings = ["%s:%s" % (field, repr(request[field])) for field in request.keys()]
+                logging.error("Bad slice request found: " + ', '.join(fieldsAsStrings))
+                request_collection.remove({"_id": request["_id"]})
         else:
             time.sleep(15)
