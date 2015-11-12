@@ -1,0 +1,24 @@
+extends admin_layout
+
+block pageHeader
+    div.pageHeader Custom Slice Requests
+block content
+    center
+        table(border=1)
+            tr
+                th Slice
+                th User
+                th Image
+                th Port Map
+                th Edit
+                th Delete
+            each slice, i in slices
+                tr
+                    td #{slice.name}
+                    td #{slice.user}
+                    td #{slice.imageName}
+                    td #{slice.ports}
+                    td
+                        a(href='/admin/custom_slice_request_edit?sliceName=#{slice.name}') Edit #{slice.name}
+                    td
+                        a(href='/slice/delete?sliceName=#{slice.name}') Delete #{slice.name}
