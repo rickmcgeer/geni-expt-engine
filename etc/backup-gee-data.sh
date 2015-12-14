@@ -20,9 +20,10 @@ rm $fileName
 # Backup file for slices is slice-backup-<today's-date>.tgz
 fileName=slice-backup-$dateStr.tgz
 echo $fileName
-
 # tar up /root/slice-files and copy over to the backup server
-tar -czfP $fileName /root/slice_files
+# Warning!  We are using -P to use absolute pathnames.  This is allegedly a security
+# risk but it seems very small...
+tar -Pczf $fileName /root/slice_files
 scp -i /root/geni-expt-engine/.ssh/gee_rsa -o "StrictHostKeyChecking no" $fileName gee@142.104.69.88:backups
 # clean up
 rm $fileName
