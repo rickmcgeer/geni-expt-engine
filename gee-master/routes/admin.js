@@ -156,11 +156,15 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
         Slices.find({}, function(err, allSlices) {
             if (allSlices && allSlices.length > 0) {
                 var sliceDictionary = allSlices.map(function(aSliceEntry) {
+                    var portString = aSliceEntry.ports.map(function(aPortSpec) {
+                        return aPortSpec.container + '->' + aPortSpec.host
+                    }).join(', ')
                     return {name:utils.makeSliceName(aSliceEntry.sliceNum),
                         allocated:aSliceEntry.user,
                         file:aSliceEntry.tarfile,
                         expiry_date:aSliceEntry.expires,
-                        status: aSliceEntry.status
+                        status: aSliceEntry.status,
+                        ports:portString
                     }
                 })
                 next_function(req, res, err, sliceDictionary)

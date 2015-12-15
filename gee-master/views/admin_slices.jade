@@ -9,6 +9,7 @@ block content
 			th File
 			th Expires
 			th Status
+			th Ports
 		each slice, i in slices
 			tr
 				td #{slice.name}
@@ -16,3 +17,4 @@ block content
 				td #{slice.file}
 				td #{slice.expiry_date}
 				td #{slice.status}
+				td #{slice.ports}
