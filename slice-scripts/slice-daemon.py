@@ -94,6 +94,7 @@ def deleteSlice(sliceName):
     try:
         scriptdir = getScriptPath()
         error_string = subprocess.check_output([scriptdir + '/delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
+        slice_collection.remove({'sliceName': sliceName})
         logging.info('slice ' + sliceName + ' deleted')
     except subprocess.CalledProcessError, e:
         logging.error('Error in deleting slice: ' + sliceName + ': ' + e.output)
