@@ -1,8 +1,8 @@
-module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSliceRequests, url, script_dir) {
+module.exports = function (app, utils, DB, url, script_dir) {
 
     // Utility to lookup and render the users page -- called from /users and /add_users
     var render_users = function (req, res) {
-        Users.find(function (err, users) {
+        DB.users.find(function (err, users) {
             if (err) return console.error(err);
             console.log(users);
             req.userlist = users;
@@ -73,7 +73,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
     // out as a separate function to avoid the usual node deep nesting...
     var act_on_user_requests = function (req, res, confirm, to_delete) {
         // first, make sure that we are going to delete all the records we
-        // are confirming.  Also prepare the array for the batch add to Users.
+        // are confirming.  Also prepare the array for the batch add to DB.users.
         var new_users = [];
         // Should I check if this user is already in the DB?  That would be a pain, due
         // to the asynch nature of find...
@@ -89,7 +89,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
         console.log("users to be added: " + new_users);
         console.log("requests to be deleted: " + to_delete);
         if (new_users.length > 0) { // there are users to add
-            Users.create(new_users, function (err, updated) {
+            DB.users.create(new_users, function (err, updated) {
                 if (err) {
                     utils.render_error_page(req, res, "Error in updating users", err);
                     // note we won't do the deletes if we hit an error...
@@ -119,7 +119,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
 
     var setNewAndDeletedAdmins = function(req, res, newAdmins, deletedAdmins) {
         if (newAdmins.length > 0) {
-            Users.update({email: {$in: newAdmins}}, {$set:{admin:true}}, {multi:true}, function (err, numAffected, raw) {
+            DB.users.update({email: {$in: newAdmins}}, {$set:{admin:true}}, {multi:true}, function (err, numAffected, raw) {
                 if(err) {
                     utils.handleError(req, res, "Error in update_all_users: " + err)
                 } else {
@@ -133,7 +133,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
 
     var update_all_users = function (req, res, admins_from_form) {
         var admins = utils.ensure_items_in_a_list(admins_from_form)
-        Users.find({}, function(err, users) {
+        DB.users.find({}, function(err, users) {
             if(err) {
                 utils.handleError(req, res, "Error in update_all_users: " + err)
             } else {
@@ -153,7 +153,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
     // next_function is a function with signature
     // next_function(req, res, error, slices)
     var get_slicelet_data = function (req, res, next_function) {
-        Slices.find({}, function(err, allSlices) {
+        DB.slices.find({}, function(err, allSlices) {
             if (allSlices && allSlices.length > 0) {
                 var sliceDictionary = allSlices.map(function(aSliceEntry) {
                     var portString = aSliceEntry.ports.map(function(aPortSpec) {
@@ -224,7 +224,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
     }
 
     var renderCustomSliceRequests = function(req, res) {
-        CustomSliceRequests.find({}, function(err, sliceRequests) {
+        DB.customSliceRequests.find({}, function(err, sliceRequests) {
             if (err) {
                 utils.render_error_page(req, res, "Error in finding custom slice requests", err)
             } else {
@@ -263,7 +263,7 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
     var renderCustomSliceEditPage = function(req, res) {
         var urlParts = url.parse(req.url, true)
         var query = urlParts.query
-        CustomSliceRequests.findOne({sliceName:query.sliceName}, function(err, sliceRequest){
+        DB.customSliceRequests.findOne({sliceName:query.sliceName}, function(err, sliceRequest){
             if (err) {
                 utils.render_error_page(req, res, "Error in finding custom slice request " + req.body.sliceName, err)
             } else {
@@ -296,16 +296,16 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
                 ports: ports
             }
         }
-        Slices.update({sliceName: req.body.sliceName}, modifyCommand, {}, function(err, slice) {
+        DB.slices.update({sliceName: req.body.sliceName}, modifyCommand, {}, function(err, slice) {
             if (err) {
                 utils.render_error_page(req, res, 'Error modifying slice ' + req.body.sliceName)
             } else {
-                CustomSliceRequests.remove({sliceName: req.body.sliceName}, function(err) {
+                DB.customSliceRequests.remove({sliceName: req.body.sliceName}, function(err) {
                     if (err) {
                         utils.render_error_page(req, res, 'Error deleting custom slice request for ' + req.body.sliceName)
                     } else {
                         // last thing -- must create the request to actually create the slice
-                        SliceRequests.create({
+                        DB.sliceRequests.create({
                             action:'create',
                             user:req.body.user,
                             sliceName: req.body.sliceName,
@@ -411,14 +411,14 @@ module.exports = function (app, utils, Users, Slices, SliceRequests, CustomSlice
             } else {
                 // Look for the user in the db.  If he's already there, send an error.  If
                 // he's not, add him
-                Users.find({
+                DB.users.find({
                     email: username
                 }, function (err, users) {
                     if (err) {
                         res.send("Error in looking up " + username + ": " + err);
                     } else {
                         if (users.length == 0) { // go ahead and add the new user
-                            Users.create({
+                            DB.users.create({
                                 email: username
                             }, function (err, new_user) {
                                 if (err) {

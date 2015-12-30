@@ -1,5 +1,5 @@
 // Routes related to users
-module.exports = function (app, utils, Users, Slices, urls) {
+module.exports = function (app, utils, DB, urls) {
     // Successful login page.
     app.get('/user', function (req, res) {
         console.log(JSON.stringify(req.session));
@@ -11,7 +11,7 @@ module.exports = function (app, utils, Users, Slices, urls) {
             return;
         }
         // See if the user is in the database.  if he isn't, add him
-        Users.find({
+        DB.users.find({
             email: req.session.user
         }, function (err, users) {
             if (err) {
@@ -19,7 +19,7 @@ module.exports = function (app, utils, Users, Slices, urls) {
                 utils.render_error_page(req, res, message, message);
             } else if (users.length == 0) {
                 // res.render('unauthorized_user', {user:req.session.user, title:'Unauthorized User'});
-                Users.create([{
+                DB.users.create([{
                     email: req.session.user
                 }], function (err, updated) {
                     if (err) {
@@ -27,7 +27,7 @@ module.exports = function (app, utils, Users, Slices, urls) {
                     } else {
                         console.log("User " + req.session.user + " added");
                         req.session.admin = false;
-                        utils.get_user_dashboard(req, res, urls, Slices);
+                        utils.get_user_dashboard(req, res, urls, DB.slices);
                     }
                 });
             } else {
@@ -36,13 +36,13 @@ module.exports = function (app, utils, Users, Slices, urls) {
                 // session variable with the name and send him to his dashboard.
                 // Also note whether he is admin
                 req.session.admin = users[0].admin;
-                utils.get_user_dashboard(req, res, urls, Slices);
+                utils.get_user_dashboard(req, res, urls, DB.slices);
             }
         });
     });
 
     // repeat the code, basically, but for the demo, where we aren't authenticating.
-    // the only difference here is that this is 
+    // the only difference here is that this is
     // code for the demo login site.  This is a no-password site which pulls
     // users directly from the database.  User has entered an email in
     // a text box on a form, and all we have to do is make sure it's valid
@@ -57,7 +57,7 @@ module.exports = function (app, utils, Users, Slices, urls) {
             return;
         }
         req.session.user = req.body.demo_userid;
-        Users.find({
+        DB.users.find({
             email: req.session.user
         }, function (err, users) {
             if (err) {
@@ -68,7 +68,7 @@ module.exports = function (app, utils, Users, Slices, urls) {
                 // clear the userid so he can log in again
                 // req.session.user = null;
                 // we now add users automatically if they aren't in the db
-                Users.create([{
+                DB.users.create([{
                     email: req.session.user
                 }], function (err, updated) {
                     if (err) {
@@ -76,8 +76,8 @@ module.exports = function (app, utils, Users, Slices, urls) {
                     } else {
                         console.log("User " + req.session.user + " added");
                         req.session.admin = false;
-                       
-                        utils.get_user_dashboard(req, res, urls, Slices);
+
+                        utils.get_user_dashboard(req, res, urls, DB.slices);
 
                     }
                 });
@@ -87,8 +87,8 @@ module.exports = function (app, utils, Users, Slices, urls) {
                 // session variable with the name and send him to his dashboard.
                 // Also note whether he is admin
                 req.session.admin = users[0].admin;
-            
-                utils.get_user_dashboard(req, res, urls, Slices);
+
+                utils.get_user_dashboard(req, res, urls, DB.slices);
             }
         });
     });

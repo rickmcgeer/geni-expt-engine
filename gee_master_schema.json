@@ -25,7 +25,7 @@
 // imageName: is the name of the docker file
 // NOT SHOWN (and may need to be fixed).  Has an autoincrement COUNT field
 // implemented by a Mongoose plugin -- how do we get it from Mongo?
-"slice:": {
+"slice": {
   "user": {
     "type": "String",
     "default": null // no user for this slice
@@ -109,5 +109,47 @@
       "default": []
     }
 
-}
+},
+// Logging Documents.  These are not used for operations by the GEE Portal, but
+// are used for forensic purposes -- primarily, so administrators can find out
+// what the various tools have done
+// A slice creation record
+"slice_create": {
+    "user": "String",
+    "imageName": "String",
+    "ports": {
+        "type": [{
+            "host":"String",
+            "container":"String"
+        }]
+    },
+    "sliceName": "String",
+    "sliceNum": "String",
+    "expires": {
+      "type": "Date"
+    },
+    "date": {
+      "type": "Date"
+    }
+},
+// A slice deletion record
+"slice_delete": {
+    "date": {
+      "type": "Date"
+  },
+  "sliceName": "String",
+  "sliceNum": "String"
+},
+// A slice renewal record
+"slice_renew": {
+    "date": {
+      "type": "Date"
+  },
+  "new_expiration": {
+      "type": "Date"
+  },
+  "sliceName": "String",
+  "sliceNum": "String"
+},
+
 }

@@ -1,5 +1,5 @@
 var url = require('url')
-module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, CustomSliceRequests, cript_dir) {
+module.exports = function (app, utils, urls, url, DB, cript_dir) {
     function makeTarfile(sliceName) {
 	return "/root/slice_files/" + sliceName + ".tgz";
     }
@@ -49,17 +49,17 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     })
 
     var setSliceStatusToError = function(req, res, sliceObject) {
-        Slices.update({user:req.session.user}, {$set: {status:"Error"}}, {}, function() {return});
+        DB.slices.update({user:req.session.user}, {$set: {status:"Error"}}, {}, function() {return});
     }
 
     var setSliceStatusToRunning = function(req, res, sliceObject) {
-        Slices.update({user:req.session.user}, {$set: {status:"Running"}}, {}, function() {return});
+        DB.slices.update({user:req.session.user}, {$set: {status:"Running"}}, {}, function() {return});
     }
     var deleteSliceOnError = function(req, res, errorMessage, sliceObject) {
         invokeCommand(req, res, 'delete-slice.sh', [sliceObject.name, sliceObject.tarfile], deleteSliceFromDBOnError, {}, deleteSliceFromDBOnError)
     }
     var deleteSliceFromDBOnError = function(req, res, errorMessage) {
-       Slices.remove({user:req.session.user}, function(err, result) {
+       DB.slices.remove({user:req.session.user}, function(err, result) {
         /* if(err) {
             utils.handleError(req, res, "Double Error, requires administrator attention: " + errorMessage + " : " + err)
         } else {
@@ -84,7 +84,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
             utils.renderLoginPage(req, res)
             return;
         }
-        Slices.find({user:req.session.user}, function(err, slices) {
+        DB.slices.find({user:req.session.user}, function(err, slices) {
             if(err) {
                 utils.handleError(req, res, "Error in finding slice for user " + req.session.user + ": " + err)
             } else if (slices.length == 0) {
@@ -121,7 +121,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
           utils.renderLoginPage(req, res)
           return;
       }
-      Slices.find({user:req.session.user}, function(err, slices) {
+      DB.slices.find({user:req.session.user}, function(err, slices) {
           if(err) {
               utils.handleError(req, res, "Error in finding slice for user " + req.session.user + ": " + err)
           } else if (slices.length == 0) {
@@ -145,7 +145,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // callback
 
     var primitiveCreateSlice = function(req, res, sliceName, tarFile, imageName, status) {
-        Slices.create({
+        DB.slices.create({
             user: req.session.user,
             tarfile: tarFile,
             imageName: imageName,
@@ -175,7 +175,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
         var sliceName = utils.makeSliceName(sliceNum)
         var tarFile = makeTarfile(sliceName)
         // utils.render_in_progress(req, res, sliceName)
-        SliceRequests.create({
+        DB.sliceRequests.create({
             action:'create',
             user:req.session.user,
             sliceName:sliceName,
@@ -201,7 +201,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
         var sliceName = utils.makeSliceName(sliceNum)
         var tarFile = makeTarfile(sliceName)
         // utils.render_in_progress(req, res, sliceName)
-        CustomSliceRequests.create({
+        DB.customSliceRequests.create({
             user:req.session.user,
             sliceName:sliceName,
             imageName: imageName,
@@ -221,7 +221,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     var createCustomSliceRequest = function(req, res) {
         var ports = JSON.parse(req.body.ports)
         var imageName = req.body.imageName
-        Slices.nextCount(function(err, nextSliceNum) {
+        DB.slices.nextCount(function(err, nextSliceNum) {
             if (err) {
                 var message  = "Error in getting the next Slice Number: " + err
                 console.log(message);
@@ -235,7 +235,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     var createSlice = function(req, res) {
         var queryData = url.parse(req.url, true).query;
         var imageName = queryData.image;
-        Slices.nextCount(function(err, nextSliceNum) {
+        DB.slices.nextCount(function(err, nextSliceNum) {
             if (err) {
                 var message  = "Error in getting the next Slice Number: " + err
                 console.log(message);
@@ -249,7 +249,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // delete a slice whose state is Processing.  It's already removed from the slice
     // table, so remove it from the slice_requests table
     var deleteSliceAwaitingCreation = function(req, res, slice) {
-        SliceRequests.remove({action:'create', sliceName:slice.sliceName}, function(err) {
+        DB.sliceRequests.remove({action:'create', sliceName:slice.sliceName}, function(err) {
             if(err) {
                 utils.handleError(req, res, "Error removing slice  " + slice.sliceName + " from the create-slice-request queue: " + err)
 
@@ -262,7 +262,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // delete a slice whose state is Pending Approval.  It's already removed from the slice
     // table, so remove it from the custom_slice_requests table
     var deletePendingSlice = function(req, res, slice) {
-        CustomSliceRequests.remove({sliceName:slice.sliceName}, function(err) {
+        DB.customSliceRequests.remove({sliceName:slice.sliceName}, function(err) {
             if(err) {
                 utils.handleError(req, res, "Error removing slice  " + slice.sliceName + " from the custom-slice-approval table: " + err)
 
@@ -274,7 +274,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // delete a slice whose state is Running.  It's already removed from the slice
     // table, so simply add the delete action to the slice_requests queue
     var deleteRunningSlice = function(req, res, slice) {
-        SliceRequests.create({
+        DB.sliceRequests.create({
             action: 'delete',
             sliceName: slice.sliceName
         },
@@ -299,7 +299,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
     // collection, so do that first and then call the appropriate routine to
     // do the second db action
     var deleteSlice = function(req, res, slice) {
-        Slices.remove({sliceName: slice.sliceName}, function(err) {
+        DB.slices.remove({sliceName: slice.sliceName}, function(err) {
             if(err) {
                 utils.handleError(req, res, "Error removing slice  " + slice.sliceName + " from the database: " + err)
             } else {
@@ -337,7 +337,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
             utils.renderLoginPage(req, res)
             return;
         }
-        Slices.find({user:req.session.user}, function(err, slices) {
+        DB.slices.find({user:req.session.user}, function(err, slices) {
             handleErrorOrDeleteFirstSlice(req, res, err, "user " + req.session.user, slices)
         })
     });
@@ -351,7 +351,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
             utils.handleError(req, res, "sliceName not specified for /slice/delete")
         } else {
             var sliceName = query.sliceName
-            Slices.find({sliceName:sliceName}, function(err, slices) {
+            DB.slices.find({sliceName:sliceName}, function(err, slices) {
                 handleErrorOrDeleteFirstSlice(req, res, err, "sliceName " + sliceName, slices)
             })
         }
@@ -379,7 +379,7 @@ module.exports = function (app, utils, urls, url, Users, Slices, SliceRequests, 
             utils.renderLoginPage(req, res)
             return;
         }
-        Slices.findOne({user:req.session.user}, function(err, doc) {
+        DB.slices.findOne({user:req.session.user}, function(err, doc) {
             if (err) {
                 var message = "Error renewing slice for user " + req.session.user + ": " + err
                 console.log(message)

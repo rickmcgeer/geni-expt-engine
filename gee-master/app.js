@@ -247,10 +247,12 @@ var special_slice_request_schema = mongoose.Schema( {
 });
 
 // get the users out of the database
-var Users = mongoose.model('users', user_schema);
-var Slices = mongoose.model('slices', slice_schema)
-var SliceRequests = mongoose.model('slice_requests', slice_request_schema)
-var CustomSliceRequests = mongoose.model('custom_slice_requests', special_slice_request_schema)
+var DB = {
+    users: mongoose.model('users', user_schema),
+    slices: mongoose.model('slices', slice_schema),
+    sliceRequests: mongoose.model('slice_requests', slice_request_schema),
+    customSliceRequests: mongoose.model('custom_slice_requests', special_slice_request_schema)
+}
 
 // URLs to get, renew, and free slicelets, and download the tarball
 var get_slicelet_url = application_url + "/get_slicelet";
@@ -267,7 +269,7 @@ var urls = {
 
 
 
-require('./routes/')(app, passport, Users, Slices, SliceRequests, CustomSliceRequests, urls, url, script_dir);
+require('./routes/')(app, passport, DB, urls, url, script_dir);
 
 
 // Just a test to see if the bug report functionality works
