@@ -212,6 +212,53 @@ module.exports = function (app, utils, DB, url, script_dir) {
         }
     });
 
+    // get the slice renewal events, then render the log page
+    var getSliceRenewalEventsAndRender = function(req, res, createRecords, deleteRecords) {
+        DB.renewalLogs.find({}, function(err, renewalRecords) {
+            if (err) {
+                utils.render_error_page(req, res, "Error in finding slice renewal logs")
+            } else {
+                res.render('admin_logs', {
+                    sliceCreationEvents: createRecords,
+                    sliceDeletionEvents: deleteRecords,
+                    sliceRenewalEvents: renewalRecords
+                })
+            }
+        })
+    }
+
+    // get the deletion events, then get the renewal events and render the log page
+    // get the slice renewal events, then render the log page
+    var getSliceDeletionEventsAndRender = function(req, res, createRecords) {
+        DB.deleteLogs.find({}, function(err, deleteRecords) {
+            if (err) {
+                utils.render_error_page(req, res, "Error in finding slice deletion logs")
+            } else {
+                getSliceRenewalEventsAndRender(req, res, createRecords, deleteRecords)
+            }
+        })
+    }
+
+    // get the creation events, then get the deletion and renewal events and render the log page
+    // get the slice renewal events, then render the log page
+    var getSliceCreationEventsAndRender = function(req, res) {
+        DB.creationLogs.find({}, function(err, createRecords) {
+            if (err) {
+                utils.render_error_page(req, res, "Error in finding slice creation logs")
+            } else {
+                createRecords.forEach(function(aRecord) {
+                    if (aRecord.ports && aRecord.ports.length > 0) {
+                        aRecord.ports = aRecord.ports.map(function(aPort) {
+                            return aPort.container + '->' + aPort.host
+                        }).join(',')
+                    }
+                })
+                getSliceDeletionEventsAndRender(req, res, createRecords)
+            }
+        })
+    }
+
+
     var adminCheckOrDo = function(req, res, thenDo) {
         if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
             res.render('admin_only', {
@@ -255,6 +302,10 @@ module.exports = function (app, utils, DB, url, script_dir) {
         })
 
     }
+
+    app.get('/admin/show_events', function(req, res) {
+        adminCheckOrDo(req, res, getSliceCreationEventsAndRender)
+    })
 
     app.get('/admin/users/custom', function(req, res) {
         adminCheckOrDo(req, res, renderCustomSliceRequests)

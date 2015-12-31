@@ -246,6 +246,34 @@ var special_slice_request_schema = mongoose.Schema( {
     }]
 });
 
+// Logging Documents.  These are not used for operations by the GEE Portal, but
+// are used for forensic purposes -- primarily, so administrators can find out
+// what the various tools have done
+// A slice creation record
+var slice_create_log_schema =  {
+    user: String,
+    imageName: String,
+    ports: [{
+        host: String,
+        container: String
+    }],
+    sliceName: String,
+    sliceNum: String,
+    expires: {
+        type: Date
+    },
+    date: {
+        type: Date
+    }
+}
+// A slice deletion record
+var slice_delete_log_schema =  {
+    sliceName: String,
+    date: {
+        type: Date
+    }
+}
+
 // Renewal logs for slices.  This is a forensic collection.  Just keep track of
 // all of the renewals of slices...
 // date: date when the slice was renewed
@@ -275,7 +303,9 @@ var DB = {
     slices: mongoose.model('slices', slice_schema),
     sliceRequests: mongoose.model('slice_requests', slice_request_schema),
     customSliceRequests: mongoose.model('custom_slice_requests', special_slice_request_schema),
-    renewalLogs: mongoose.model('slice_renew_records', slice_renew_schema)
+    renewalLogs: mongoose.model('slice_renew_records', slice_renew_schema),
+    creationLogs: mongoose.model('slice_create_records', slice_create_log_schema),
+    deleteLogs: mongoose.model('slice_delete_records', slice_delete_log_schema)
 }
 
 // URLs to get, renew, and free slicelets, and download the tarball

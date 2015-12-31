@@ -1,0 +1,46 @@
+extends admin_layout
+block pageHeader
+	div.pageHeader GEE Events
+block content
+	center
+		table(border=1)
+			caption Slice Creation Events
+			tr
+				th User
+				th Image
+				th Slice Name
+				th Slice Number
+				th Expiration
+				th Date
+				th Ports
+			each sliceRecord, i in sliceCreationEvents
+				tr
+					td #{sliceRecord.user}
+					td #{sliceRecord.imageName}
+					td #{sliceRecord.sliceName}
+					td #{sliceRecord.sliceNum}
+					td #{sliceRecord.expires}
+					td #{sliceRecord.date}
+					td #{sliceRecord.ports}
+		table(border=1)
+			caption Slice Deletion Events
+			tr
+				th Slice Name
+				th Date
+			each sliceRecord, i in sliceDeletionEvents
+				tr
+					td #{sliceRecord.sliceName}
+					td #{sliceRecord.date}
+		table(border=1)
+			caption Slice Renewal Events
+			tr
+				th Slice Name
+				th Slice Number
+				th New Expiration
+				th Date
+			each sliceRecord, i in sliceRenewalEvents
+				tr
+					td #{sliceRecord.sliceName}
+					td #{sliceRecord.sliceNum}
+					td #{sliceRecord.new_expiration}
+					td #{sliceRecord.date}
