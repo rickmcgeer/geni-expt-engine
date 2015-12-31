@@ -8,6 +8,7 @@ import time
 import sys
 import os
 import json
+import datetime
 
 #
 # Connect to the db server on the mongo container.  This needs to be reset here
@@ -19,6 +20,9 @@ client = MongoClient('mongodb://mongodb:27017/')
 db = client.gee_master
 request_collection = db.slice_requests
 slice_collection = db.slices
+create_log_collection = db.slice_create_records
+delete_log_collection = db.slice_delete_records
+
 #
 # Open the logfile
 #
@@ -71,16 +75,23 @@ def getPortString(ports=None):
 #
 # create a slice
 #
-def createSlice(user, sliceName, imageName, ports):
+def createSlice(user, sliceName, imageName, date, ports):
     try:
         scriptdir = getScriptPath()
+        if (ports == None): ports = []
         portString = getPortString(ports)
         print (scriptdir + '/create-slice.sh %s %s %s %s' % (sliceName, makeTarfile(sliceName), imageName, portString))
-        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName), imageName, portString], stderr=subprocess.STDOUT)
+        error_string = subprocess.check_output([scriptdir + '/create-slice.sh', sliceName, makeTarfile(sliceName), imageName, portString],
+                                               stderr=subprocess.STDOUT)
         slice_collection.update({"user": user}, {"$set": {"status":"Running"}})
+        sliceRecord = slice_collection.find_one({"sliceName": sliceName})
+        # log the creation event
+        create_log_collection.insert_one({"user" : user, "sliceName": sliceName, "imageName":imageName, "ports": ports,
+                                          "sliceNum": sliceRecord['sliceNum'], "expires": sliceRecord['expires'], "date": date})
         if (ports and len(ports) > 0):
             slice_collection.update({"user": user}, {"$set": {"ports": ports}})
         logging.info('slice ' + sliceName + ' created for user ' + user)
+
     except subprocess.CalledProcessError, e:
         logging.error('Error in creating slice: ' + sliceName + ': ' + e.output)
         slice_collection.update({"user": user}, {"$set": {"status":"Error"}})
@@ -90,11 +101,12 @@ def createSlice(user, sliceName, imageName, ports):
 #
 # delete a slice
 #
-def deleteSlice(sliceName):
+def deleteSlice(sliceName, date):
     try:
         scriptdir = getScriptPath()
         error_string = subprocess.check_output([scriptdir + '/delete-slice.sh', sliceName], stderr=subprocess.STDOUT)
-        slice_collection.remove({'sliceName': sliceName})
+        sliceRecord = slice_collection.find_one({"sliceName": sliceName})
+        delete_log_collection.insert_one({'date': date, 'sliceName': sliceName})
         logging.info('slice ' + sliceName + ' deleted')
     except subprocess.CalledProcessError, e:
         logging.error('Error in deleting slice: ' + sliceName + ': ' + e.output)
@@ -108,10 +120,11 @@ def doRequest(aRequest):
     if 'ports' in aRequest.keys():
         logString += ' wth port request: ' + getPortString(aRequest['ports'])
     logging.info(logString)
+    date = datetime.datetime.now()
     if aRequest['action'] == 'create':
-        createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'], aRequest['ports'])
+        createSlice(aRequest['user'], aRequest['sliceName'], aRequest['imageName'], date, aRequest['ports'])
     else:
-        deleteSlice(aRequest['sliceName'])
+        deleteSlice(aRequest['sliceName'], date)
     request_collection.remove({'action':aRequest['action'], 'sliceName': aRequest['sliceName']})
 
 #
