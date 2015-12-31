@@ -246,12 +246,36 @@ var special_slice_request_schema = mongoose.Schema( {
     }]
 });
 
-// get the users out of the database
+// Renewal logs for slices.  This is a forensic collection.  Just keep track of
+// all of the renewals of slices...
+// date: date when the slice was renewed
+// new_expiration: new expiration date of the slice
+// sliceName: name of the slice being renewed
+// sliceNum: number of the slice being renewed
+var slice_renew_schema = mongoose.Schema({
+    date: {
+        type: "Date"
+    },
+    new_expiration: {
+        type: "Date"
+    },
+    sliceName: {
+        type: "String"
+    },
+    sliceNum: {
+        type: "String"
+    }
+})
+
+// A global structure to hold all the database tables.  Used primarily so we won't
+// have to do trivial mods to routes/index.js or the headers on the routes files
+// whenever we add a table.
 var DB = {
     users: mongoose.model('users', user_schema),
     slices: mongoose.model('slices', slice_schema),
     sliceRequests: mongoose.model('slice_requests', slice_request_schema),
-    customSliceRequests: mongoose.model('custom_slice_requests', special_slice_request_schema)
+    customSliceRequests: mongoose.model('custom_slice_requests', special_slice_request_schema),
+    renewalLogs: mongoose.model('slice_renew_records', slice_renew_schema)
 }
 
 // URLs to get, renew, and free slicelets, and download the tarball

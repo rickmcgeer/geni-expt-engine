@@ -5,7 +5,7 @@ module.exports = function (app, utils, urls, url, DB, cript_dir) {
     }
 
     function makeExpiryDate() {
-	var expiration = new Date() // gets doday
+	    var expiration = new Date() // gets doday
         var two_weeks = 1000 * 3600 * 24 * 7 * 2; // ms/sec * secs/hour * hours/day * days/week * 2 weeks
         expiration.setTime(expiration.getTime() + two_weeks)
         return expiration;
@@ -367,6 +367,24 @@ module.exports = function (app, utils, urls, url, DB, cript_dir) {
         }
     }
 
+    // log a slicelet renewal.
+
+    var logSliceletRenewal = function(req, res, sliceName, sliceNum, newExpiration, renewalLogs) {
+        var now = new Date()
+        var record = {date: now, new_expiration: newExpiration, sliceName: sliceName, sliceNum: sliceNum}
+        renewalLogs.create(record, function(err, doc) {
+            if (err ) {
+                var message = "Error logging slice renewal for user " + req.session.user + ": " + err
+                console.log(message)
+                res.redirect('/user')
+            } else {
+                console.log("Slice renewal for user " + req.session.user + " logged ")
+                res.redirect('/user')
+            }
+
+        })
+    }
+
 
     //
     // Renew a slicelet.  Just calls makeExpiryDate to set the session expiration two weeks into the
@@ -393,7 +411,7 @@ module.exports = function (app, utils, urls, url, DB, cript_dir) {
                         utils.render_error_page(req, res, message)
                     } else {
                         console.log("Slice for user " + req.session.user + " renewed ")
-                        res.redirect('/user')
+                        logSliceletRenewal(req, res, doc.sliceName, doc.sliceNum, doc.expires, DB.renewalLogs)
                     }
                 });
             }
