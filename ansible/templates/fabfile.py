@@ -10,6 +10,7 @@ env.hosts = [
 env.key_filename="./id_rsa"
 env.use_ssh_config = True
 env.ssh_config_path = './ssh-config'
+env.user = '{{ slice }}'
 
 def pingtest():
     run('ping -c 3 www.yahoo.com')
