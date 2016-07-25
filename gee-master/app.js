@@ -250,7 +250,7 @@ var special_slice_request_schema = mongoose.Schema( {
 // are used for forensic purposes -- primarily, so administrators can find out
 // what the various tools have done
 // A slice creation record
-var slice_create_log_schema =  {
+var slice_create_log_schema =  mongoose.Schema({
     user: String,
     imageName: String,
     ports: [{
@@ -265,14 +265,14 @@ var slice_create_log_schema =  {
     date: {
         type: Date
     }
-}
+})
 // A slice deletion record
-var slice_delete_log_schema =  {
+var slice_delete_log_schema =  mongoose.Schema({
     sliceName: String,
     date: {
         type: Date
     }
-}
+})
 
 // Renewal logs for slices.  This is a forensic collection.  Just keep track of
 // all of the renewals of slices...
@@ -295,6 +295,25 @@ var slice_renew_schema = mongoose.Schema({
     }
 })
 
+// A node record.  These are the nodes in the GEE.
+// date_added: date when this node was added to the GEE (optional)
+// ipAddress: the IP address, v4 or v6, as a string.  Note that the scripts should check for validity
+// siteName: name of the site, chosen arbitrarily
+// dnsName: should be <siteName>.gee-project.net, but set separately
+// sshNickname: will in general be <aggregatehandle>-<siteName>, eg., ig-uwashington, but settable.
+//              note that users will use this on an ssh line, $ ssh -F ./ssh-config <sshNickname>,
+//              so it shouldn't cause heartburn for bash.
+var node_record_schema =  mongoose.Schema({
+    date_added: {
+        type: "Date"
+    },
+    ipAddress: "String",
+    siteName: "String",
+    dnsName: "String",
+    sshNickname: "String",
+},
+});
+
 // A global structure to hold all the database tables.  Used primarily so we won't
 // have to do trivial mods to routes/index.js or the headers on the routes files
 // whenever we add a table.
@@ -303,6 +322,7 @@ var DB = {
     slices: mongoose.model('slices', slice_schema),
     sliceRequests: mongoose.model('slice_requests', slice_request_schema),
     customSliceRequests: mongoose.model('custom_slice_requests', special_slice_request_schema),
+    nodes: mongoose.model('nodes', node_record_schema),
     renewalLogs: mongoose.model('slice_renew_records', slice_renew_schema),
     creationLogs: mongoose.model('slice_create_records', slice_create_log_schema),
     deleteLogs: mongoose.model('slice_delete_records', slice_delete_log_schema)
