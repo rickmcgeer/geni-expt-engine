@@ -153,7 +153,7 @@
 
 // A node record.  These are the nodes in the GEE
 "nodes" : {
-    "date_added" {
+    "date" : {
         "type": "Date"
     },
     "ipAddress": "String",

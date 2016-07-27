@@ -304,7 +304,7 @@ var slice_renew_schema = mongoose.Schema({
 //              note that users will use this on an ssh line, $ ssh -F ./ssh-config <sshNickname>,
 //              so it shouldn't cause heartburn for bash.
 var node_record_schema =  mongoose.Schema({
-    date_added: {
+    date: {
         type: "Date"
     },
     ipAddress: "String",

@@ -51,6 +51,7 @@ def checkName(aString, fieldName):
     for char in aString[1:]:
         if allChars.find(char) < 0:
             raise ValidationError('Characters in %s must be from the set %s, not %s' % (fieldName, allChars, char))
+    return aString
 
 #
 # makeDNSName(aName): make aName into aName.gee-project.net if aName.gee-project.net won't give dns heartburn.
