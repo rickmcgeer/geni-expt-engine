@@ -85,7 +85,7 @@ def printUsage(args, tossedException = None):
 #
 
 
-def parseCommandLineAndReturnRequests():
+def parseCommandLineAndReturnRequest():
     if (len(sys.argv) != 5 ):
         numArgs = len(sys.argv) - 1
         printUsage(sys.argv, ValidationError('Expected 4 arguments, got %d' % numArgs))
@@ -117,7 +117,7 @@ node_collection = db.nodes
 
 
 if __name__ == '__main__':
-    nodeRequestSpec = parseCommandLine()
+    nodeRequestSpec = parseCommandLineAndReturnRequest()
     print json.dumps(nodeRequestSpec, default=json_util.default)
     print 'Putting new slice in database: ' + json.dumps(nodeRequestSpec, default=json_util.default)
     node_collection.insert_one(nodeRequestSpec)
