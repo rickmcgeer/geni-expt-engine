@@ -91,7 +91,10 @@ def parseCommandLineAndReturnRequests():
         printUsage(sys.argv, ValidationError('Expected 4 arguments, got %d' % numArgs))
         sys.exit(1)
     try:
-        result = {'action': 'create'}
+        result = {
+            'action': 'create',
+            'date': datetime.datetime.utcnow()
+        }
         result['ipAddress'] = checkIP(sys.argv[1])
         result['siteName'] = sys.argv[2]
         result['dnsName'] = makeDNSName(sys.argv[3])
@@ -116,5 +119,5 @@ node_collection = db.nodes
 if __name__ == '__main__':
     nodeRequestSpec = parseCommandLine()
     print json.dumps(nodeRequestSpec, default=json_util.default)
-    printing 'Putting new slice in database: ' + json.dumps(nodeRequestSpec, default=json_util.default)
+    print 'Putting new slice in database: ' + json.dumps(nodeRequestSpec, default=json_util.default)
     node_collection.insert_one(nodeRequestSpec)
