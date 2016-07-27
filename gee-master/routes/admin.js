@@ -174,6 +174,19 @@ module.exports = function (app, utils, DB, url, script_dir) {
         });
     }
 
+    // A utility function that gets nodes data, and passes it to next_function.
+    // next_function is a function with signature
+    // next_function(req, res, error, nodes)
+    var get_nodes = function (req, res, next_function) {
+        DB.nodes.find({}, function(err, nodes) {
+            if (nodes && nodes.length > 0) {
+                next_function(req, res, err, nodes)
+            } else {
+                next_function(req, res, err, [])
+            }
+        });
+    }
+
 
     // Administrator actions and options.  Only available
     // through the admin console
@@ -190,6 +203,28 @@ module.exports = function (app, utils, DB, url, script_dir) {
         }
     });
 
+    app.get('/admin/nodes', function (req, res) {
+        if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+            res.render('admin_only', {
+                user: req.session.user,
+                title: 'Unauthorized Admin'
+            });
+        } else {
+            console.log("Getting all slices")
+            get_nodes(req, res, function (req, res, error, nodes) {
+                if (error) {
+                    utils.render_error_page(req, res, "Error in getting node data", error);
+                } else {
+                    console.log(slices);
+                    res.render('admin_nodes', {
+                        nodes: nodes,
+                        title: 'Node List'
+                    });
+                }
+            });
+        }
+    });
+
     app.get('/admin/slices', function (req, res) {
         if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
             res.render('admin_only', {
@@ -200,7 +235,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
             console.log("Getting all slices")
             get_slicelet_data(req, res, function (req, res, error, slices) {
                 if (error) {
-                    utils.render_error_page(req, res, "Error in renewing slicelet " + req.session.slice_data.slice, error);
+                    utils.render_error_page(req, res, "Error in finding slice data", error);
                 } else {
                     console.log(slices);
                     res.render('admin_slices', {

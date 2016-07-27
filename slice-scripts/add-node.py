@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# add-node ipAddress siteName dnsName  sshNickname'
+# add-node ipAddress siteName dnsName  sshNickname
 # add-node 148.73.65.127 washington.edu washington ig-uwashington
 # generates a node with ipAddress 148.73.65.127 and name washington.gee-project.net which will appear as ig-uwashington in the ssh file
 # just updates the database; a daemon will have to update the ssh/ansible file
@@ -35,7 +35,8 @@ def checkIP(aString):
     return aString
 
 #
-# Make sure a name is a valid hostname for dnsName.  Raises a ValidationError if invalid
+# Make sure a name (aString) is a valid hostname for dnsName or an sshNickname.  Raises a ValidationError if invalid.
+# fieldName is for error-reporting: it's the field we're checking (either dnsName or sshNickname)
 #
 def checkName(aString, fieldName):
     firstChar = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -58,9 +59,6 @@ def checkName(aString, fieldName):
 def makeDNSName(aName):
     checkName(aName, 'DNSName')
     return aName + '.gee-project.net'
-
-
-
 
 
 
@@ -114,7 +112,6 @@ def parseCommandLineAndReturnRequest():
 client = MongoClient('mongodb://mongodb:27017/')
 db = client.gee_master
 node_collection = db.nodes
-
 
 if __name__ == '__main__':
     nodeRequestSpec = parseCommandLineAndReturnRequest()
