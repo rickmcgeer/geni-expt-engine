@@ -310,8 +310,7 @@ var node_record_schema =  mongoose.Schema({
     ipAddress: "String",
     siteName: "String",
     dnsName: "String",
-    sshNickname: "String",
-},
+    sshNickname: "String"
 });
 
 // A global structure to hold all the database tables.  Used primarily so we won't
