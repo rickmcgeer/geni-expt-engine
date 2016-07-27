@@ -215,7 +215,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
                 if (error) {
                     utils.render_error_page(req, res, "Error in getting node data", error);
                 } else {
-                    console.log(slices);
+                    console.log(nodes);
                     res.render('admin_nodes', {
                         nodes: nodes,
                         title: 'Node List'
