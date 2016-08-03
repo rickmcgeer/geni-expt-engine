@@ -1,0 +1,89 @@
+extends admin_layout
+block custhead
+script(type='text/javascript').
+     function checkIP(aString) {
+         var components = aString.split('.')
+         if (components.length != 4) return false;
+         return components.reduce(function(prev, aComponent) {
+             return prev && isNumber(aComponent) && 0 <= int(aComponent) && int(aComponent) < 256
+         }, true)
+     }
+     function checkOK(aString, dotOK) {
+         if (aString.length == 0) {
+             return false;
+         }
+         var okChars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-'
+         if (dotOK) okChars += '.'
+         var chars = aString.split('')
+         return chars.reduce(function(prev, aChar) {
+             return prev && okChars.indexOf(aChar) >= 0
+         }, true)
+     }
+     // Check the inputDNS
+     function getDNSName(inputDNSName) {
+         var myDNSName = inputDNSName;
+         if (inputDNSName.endsWith('.gee-project.net')) {
+             myDNSName = inputDNSName.substring(0, inputDNSName.indexOf('.gee-project.net'))
+         }
+         if (checkOK(myDNSName, false)) {
+             return (myDNSName + '.gee-project.net', true)
+         } else {
+             return (inputDNSName, false)
+         }
+     }
+     // Confirm deleting an IP address, and calling /node/delete to delete it
+     function confirmDelete(ipAddress) {
+        var form = document.forms['addNodeForm']
+        var ipAddress = form['ipAddress']
+        if (!checkIP(ipAddress)) {
+            alert('Invalid IP Address ' + ipAddress)
+            return false;
+        }
+        var sshNickname = form['sshNickname']
+        if (!checkOK(sshNickName, true)) {
+            alert('Invalid SSHNickName ' + sshNickname)
+            return false;
+        }
+        var siteName = form['siteName']
+        if (siteName == '') {
+            alert('Sitename cannot be empty!')
+            return false;
+        }
+        var dnsName = form['dnsName']
+        var ok, fullName;
+        (ok, fullName) = getDNSName(dnsName)
+        if (ok) {
+             form['dnsName'] = fullName
+        } else {
+            alert('Invalid DNS Name ' + dnsName)
+            return false;
+        }
+        var confirmString = 'Add Node at ipAddress ' + ipAddress
+        confirmString += '.  With DNS Name: ' + fullname
+        confirmString += ', SSH Nickname ' + sshNickname  + ' at site ' + siteName
+        return confirm(confirmString)
+
+     }
+block pageHeader
+	div.pageHeader GEE Nodes
+block content
+	form(name = 'addNodeForm', action='/admin/node/addNode', method='post')
+	    table
+		    tr
+		        td IP Address
+		        td
+		            input(type = 'text', name='ipAddress')
+		    tr
+		        td Site Name
+		        td
+		            input(type = 'text', name='siteName')
+		    tr
+		        td SSH Nickname
+		        td
+		            input(type = 'text', name='sshNickname')
+		    tr
+		        td DNS Name
+		        td
+		            input(type = 'text', name='dnsName')
+		input(type='Submit', label='Add Node')
+	

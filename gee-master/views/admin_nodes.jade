@@ -1,4 +1,22 @@
 extends admin_layout
+block custhead
+script(type='text/javascript').
+     // Confirm deleting an IP address, and calling /node/delete to delete it
+     function confirmDelete(ipAddress) {
+         var OK = confirm("Confirm delete GEE Node with address " + ipAddress);
+         if (OK) {
+            var form = document.createElement("form");
+            form.action = '/admin/node/delete'
+            form.method = 'post'
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", 'ipAddress');
+            hiddenField.setAttribute("value", ipAddress);
+            form.appendChild(hiddenField);
+            document.body.appendChild(form);
+            form.submit();
+        }
+     }
 block pageHeader
 	div.pageHeader GEE Nodes
 block content
@@ -9,6 +27,7 @@ block content
 			th IP Address
 			th SSH Nickname
 			th created
+			th 
 		each node, i in nodes
 			tr
 				td #{node.siteName}
@@ -16,3 +35,6 @@ block content
 				td #{node.ipAddress}
 				td #{node.sshNickname}
 				td #{node.date}
+				td 
+				    button(type='submit' onclick="confirmDelete('#{node.ipAddress}')"") Delete)
+	a(href='/admin/node/addForm')Add A Node

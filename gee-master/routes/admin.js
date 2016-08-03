@@ -149,6 +149,17 @@ module.exports = function (app, utils, DB, url, script_dir) {
         })
     }
 
+    var adminCheckOrDo = function(req, res, thenDo) {
+        if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
+            res.render('admin_only', {
+                user: req.session.user,
+                title: 'Unauthorized Admin'
+            });
+        } else {
+            thenDo(req, res)
+        }
+    }
+
     // A utility function that gets slice data, and passes it to next_function.
     // next_function is a function with signature
     // next_function(req, res, error, slices)
@@ -203,27 +214,68 @@ module.exports = function (app, utils, DB, url, script_dir) {
         }
     });
 
+    var showNodes = function(req, res) {
+        console.log("Getting all nodes")
+        get_nodes(req, res, function (req, res, error, nodes) {
+            if (error) {
+                utils.render_error_page(req, res, "Error in getting node data", error);
+            } else {
+                // console.log(nodes);
+                res.render('admin_nodes', {
+                    nodes: nodes,
+                    title: 'Node List'
+                });
+            }
+        });
+
+    }
+
     app.get('/admin/nodes', function (req, res) {
-        if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-            res.render('admin_only', {
-                user: req.session.user,
-                title: 'Unauthorized Admin'
-            });
-        } else {
-            console.log("Getting all slices")
-            get_nodes(req, res, function (req, res, error, nodes) {
-                if (error) {
-                    utils.render_error_page(req, res, "Error in getting node data", error);
-                } else {
-                    console.log(nodes);
-                    res.render('admin_nodes', {
-                        nodes: nodes,
-                        title: 'Node List'
-                    });
-                }
-            });
-        }
+       adminCheckOrDo(req, res, showNodes)
     });
+
+    var deleteNode = function(req, res) {
+        DB.nodes.remove({ipAddress: req.body.ipAddress}, function(err) {
+            if (err) {
+                utils.render_error_page(req, res, 'Error deleting node ' + req.body.ipAddress)
+            } else {
+                showNodes(req, res)
+            }
+        });
+    }
+
+    app.post('/admin/node/delete', function(req, res) {
+        adminCheckOrDo(req, res, deleteNode)
+    })
+
+    var renderAddNodeForm = function(req, res) {
+        res.render('add_node_form.jade')
+    }
+
+    app.get('/admin/node/addForm', function(req, res) {
+        adminCheckOrDo(req, res, renderAddNodeForm)
+    })
+
+    var addNode = function(req, res) {
+        var doc = {
+            ipAddress: req.body.ipAddress,
+            siteName: req.body.siteName,
+            sshNickName: req.body.sshNickName,
+            dnsName: req.body.dnsName
+        }
+        DB.nodes.insertOne(doc, function(err) {
+            if (err) {
+                utils.render_error_page('Error adding node with IP Address ' + doc.ipAddress + ' and dnsName ' + doc.dnsName)
+            } else {
+                showNodes(req, res)
+            }
+        })
+
+    }
+
+    app.post('/admin/node/addNode', function(req, res) {
+        adminCheckOrDo(req, res, addNode)
+    })
 
     app.get('/admin/slices', function (req, res) {
         if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
@@ -294,16 +346,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
     }
 
 
-    var adminCheckOrDo = function(req, res, thenDo) {
-        if (!req.session.admin) { // lovely Javascript -- does the right thing even when req.session.admin is null
-            res.render('admin_only', {
-                user: req.session.user,
-                title: 'Unauthorized Admin'
-            });
-        } else {
-            thenDo(req, res)
-        }
-    }
+    
 
     var renderCustomSliceRequests = function(req, res) {
         DB.customSliceRequests.find({}, function(err, sliceRequests) {
@@ -411,6 +454,8 @@ module.exports = function (app, utils, DB, url, script_dir) {
             }
         })
     }
+
+    
 
     app.post('/admin/approve_custom_slice_request', function(req, res) {
         adminCheckOrDo(req, res, approveCustomSliceRequest)
