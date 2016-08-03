@@ -67,7 +67,7 @@ script(type='text/javascript').
 block pageHeader
     div.pageHeader GEE Nodes
 block content
-    form(name = 'addNodeForm', action='/admin/node/addNode', method='post')
+    form(name = 'addNodeForm', action='/admin/node/addNode', onsubmit="return confirmDelete()", method='post')
         table
             tr
                 td IP Address
