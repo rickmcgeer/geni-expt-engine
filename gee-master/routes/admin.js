@@ -249,7 +249,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
     })
 
     var renderAddNodeForm = function(req, res) {
-        res.render('add_node_form.jade')
+        res.render('admin_node_addForm.jade')
     }
 
     app.get('/admin/node/addForm', function(req, res) {
@@ -263,7 +263,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
             sshNickName: req.body.sshNickName,
             dnsName: req.body.dnsName
         }
-        DB.nodes.insertOne(doc, function(err) {
+        DB.nodes.insert(doc, function(err) {
             if (err) {
                 utils.render_error_page('Error adding node with IP Address ' + doc.ipAddress + ' and dnsName ' + doc.dnsName)
             } else {
