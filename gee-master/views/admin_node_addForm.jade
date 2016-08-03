@@ -65,25 +65,25 @@ script(type='text/javascript').
 
      }
 block pageHeader
-	div.pageHeader GEE Nodes
+    div.pageHeader GEE Nodes
 block content
-	form(name = 'addNodeForm', action='/admin/node/addNode', method='post')
-	    table
-		    tr
-		        td IP Address
-		        td
-		            input(type = 'text', name='ipAddress')
-		    tr
-		        td Site Name
-		        td
-		            input(type = 'text', name='siteName')
-		    tr
-		        td SSH Nickname
-		        td
-		            input(type = 'text', name='sshNickname')
-		    tr
-		        td DNS Name
-		        td
-		            input(type = 'text', name='dnsName')
-		input(type='Submit', label='Add Node')
-	
+    form(name = 'addNodeForm', action='/admin/node/addNode', method='post')
+        table
+            tr
+                td IP Address
+                td
+                    input(type = 'text', name='ipAddress')
+            tr
+                td Site Name
+                td
+                    input(type = 'text', name='siteName')
+            tr
+                td SSH Nickname
+                td
+                    input(type = 'text', name='sshNickname')
+            tr
+                td DNS Name
+                td
+                    input(type = 'text', name='dnsName')
+        input(type='Submit', label='Add Node')
+    

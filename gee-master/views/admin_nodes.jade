@@ -18,23 +18,23 @@ script(type='text/javascript').
         }
      }
 block pageHeader
-	div.pageHeader GEE Nodes
+    div.pageHeader GEE Nodes
 block content
-	table(border=1)
-		tr
-			th Site
-			th Node Name
-			th IP Address
-			th SSH Nickname
-			th created
-			th 
-		each node, i in nodes
-			tr
-				td #{node.siteName}
-				td #{node.dnsName}
-				td #{node.ipAddress}
-				td #{node.sshNickname}
-				td #{node.date}
-				td 
-				    button(type='submit' onclick="confirmDelete('#{node.ipAddress}')"") Delete)
-	a(href='/admin/node/addForm')Add A Node
+    table(border=1)
+        tr
+            th Site
+            th Node Name
+            th IP Address
+            th SSH Nickname
+            th created
+            th 
+        each node, i in nodes
+            tr
+                td #{node.siteName}
+                td #{node.dnsName}
+                td #{node.ipAddress}
+                td #{node.sshNickname}
+                td #{node.date}
+                td 
+                    button(type='submit' onclick="confirmDelete('#{node.ipAddress}')"") Delete)
+    a(href='/admin/node/addForm')Add A Node
