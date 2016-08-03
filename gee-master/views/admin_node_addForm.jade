@@ -1,14 +1,14 @@
 extends admin_layout
-block custhead
-script(type='text/javascript').
-     function checkIP(aString) {
+block custHead
+    script(type='text/javascript').
+       function checkIP(aString) {
          var components = aString.split('.')
          if (components.length != 4) return false;
          return components.reduce(function(prev, aComponent) {
              return prev && isNumber(aComponent) && 0 <= int(aComponent) && int(aComponent) < 256
          }, true)
-     }
-     function checkOK(aString, dotOK) {
+       }
+       function checkOK(aString, dotOK) {
          if (aString.length == 0) {
              return false;
          }
@@ -18,9 +18,9 @@ script(type='text/javascript').
          return chars.reduce(function(prev, aChar) {
              return prev && okChars.indexOf(aChar) >= 0
          }, true)
-     }
-     // Check the inputDNS
-     function getDNSName(inputDNSName) {
+       }
+       // Check the inputDNS
+       function getDNSName(inputDNSName) {
          var myDNSName = inputDNSName;
          if (inputDNSName.endsWith('.gee-project.net')) {
              myDNSName = inputDNSName.substring(0, inputDNSName.indexOf('.gee-project.net'))
@@ -30,9 +30,9 @@ script(type='text/javascript').
          } else {
              return (inputDNSName, false)
          }
-     }
-     // Confirm deleting an IP address, and calling /node/delete to delete it
-     function confirmDelete(ipAddress) {
+       }
+       // Confirm deleting an IP address, and calling /node/delete to delete it
+       function confirmDelete(ipAddress) {
         var form = document.forms['addNodeForm']
         var ipAddress = form['ipAddress']
         if (!checkIP(ipAddress)) {
@@ -63,7 +63,7 @@ script(type='text/javascript').
         confirmString += ', SSH Nickname ' + sshNickname  + ' at site ' + siteName
         return confirm(confirmString)
 
-     }
+       }
 block pageHeader
     div.pageHeader GEE Nodes
 block content
