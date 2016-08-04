@@ -25,11 +25,12 @@ block custHead
          if (inputDNSName.endsWith('.gee-project.net')) {
              myDNSName = inputDNSName.substring(0, inputDNSName.indexOf('.gee-project.net'))
          }
+         var result = {ok: false, value:inputDNSName}
          if (checkOK(myDNSName, false)) {
-             return (myDNSName + '.gee-project.net', true)
-         } else {
-             return (inputDNSName, false)
+             result.ok = true;
+             result.value = myDNSName + '.gee-project.net'
          }
+         return result;
        }
        // Confirm deleting an IP address, and calling /node/delete to delete it
        function confirmDelete(ipAddress) {
