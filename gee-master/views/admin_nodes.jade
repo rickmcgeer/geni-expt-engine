@@ -1,8 +1,8 @@
 extends admin_layout
 block custHead
-script(type='text/javascript').
-     // Confirm deleting an IP address, and calling /node/delete to delete it
-     function confirmDelete(ipAddress) {
+    script(type='text/javascript').
+       // Confirm deleting an IP address, and calling /node/delete to delete it
+       function confirmDelete(ipAddress) {
          var OK = confirm("Confirm delete GEE Node with address " + ipAddress);
          if (OK) {
             var form = document.createElement("form");
@@ -16,7 +16,7 @@ script(type='text/javascript').
             document.body.appendChild(form);
             form.submit();
         }
-     }
+       }
 block pageHeader
     div.pageHeader GEE Nodes
 block content
