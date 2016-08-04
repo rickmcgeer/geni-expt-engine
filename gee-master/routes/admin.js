@@ -263,7 +263,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
             sshNickName: req.body.sshNickName,
             dnsName: req.body.dnsName
         }
-        DB.nodes.insert(doc, function(err) {
+        DB.nodes.create(doc, function(err) {
             if (err) {
                 utils.render_error_page('Error adding node with IP Address ' + doc.ipAddress + ' and dnsName ' + doc.dnsName)
             } else {
