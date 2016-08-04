@@ -1,11 +1,13 @@
 extends admin_layout
 block custHead
     script(type='text/javascript').
+       function checkInteger(aString, minVal, maxVal) {
+         return (!isNaN(aString)) && Number(aString) >= minVal && Number(aString) <= maxVal
        function checkIP(aString) {
          var components = aString.split('.')
          if (components.length != 4) return false;
          return components.reduce(function(prev, aComponent) {
-             return prev && (!isNaN(aComponent)) && 0 <= int(aComponent) && int(aComponent) < 256
+             return prev && checkInteger(aComponent, 0, 255)
          }, true)
        }
        function checkOK(aString, dotOK) {
