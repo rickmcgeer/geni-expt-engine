@@ -257,10 +257,12 @@ module.exports = function (app, utils, DB, url, script_dir) {
     })
 
     var addNode = function(req, res) {
+        var date = new Date()
         var doc = {
+            date: date,
             ipAddress: req.body.ipAddress,
             siteName: req.body.siteName,
-            sshNickName: req.body.sshNickName,
+            sshNickName: req.body.sshNickname,
             dnsName: req.body.dnsName
         }
         DB.nodes.create(doc, function(err) {
