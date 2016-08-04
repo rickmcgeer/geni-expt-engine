@@ -56,13 +56,13 @@ block custHead
         var dnsName = form['dnsName'].value
         var result = getDNSName(dnsName)
         if (result.ok) {
-             form['dnsName'].value = result.fullName
+             form['dnsName'].value = result.value
         } else {
             alert('Invalid DNS Name ' + dnsName)
             return false;
         }
         var confirmString = 'Add Node at ipAddress ' + ipAddress
-        confirmString += '.  With DNS Name: ' + fullname
+        confirmString += '.  With DNS Name: ' + result.value
         confirmString += ', SSH Nickname ' + sshNickname  + ' at site ' + siteName
         return confirm(confirmString)
 
