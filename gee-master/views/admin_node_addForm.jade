@@ -5,7 +5,7 @@ block custHead
          var components = aString.split('.')
          if (components.length != 4) return false;
          return components.reduce(function(prev, aComponent) {
-             return prev && isNumber(aComponent) && 0 <= int(aComponent) && int(aComponent) < 256
+             return prev && (!isNaN(aComponent)) && 0 <= int(aComponent) && int(aComponent) < 256
          }, true)
        }
        function checkOK(aString, dotOK) {
