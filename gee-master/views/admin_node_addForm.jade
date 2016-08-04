@@ -32,28 +32,28 @@ block custHead
          }
          return result;
        }
-       // Confirm deleting an IP address, and calling /node/delete to delete it
-       function confirmDelete(ipAddress) {
+       // Confirm adding a node, checking the values are OK first and making sure it has a good dns name
+       function confirmAdd(ipAddress) {
         var form = document.forms['addNodeForm']
-        var ipAddress = form['ipAddress']
+        var ipAddress = form['ipAddress'].value
         if (!checkIP(ipAddress)) {
             alert('Invalid IP Address ' + ipAddress)
             return false;
         }
-        var sshNickname = form['sshNickname']
+        var sshNickname = form['sshNickname'].value
         if (!checkOK(sshNickName, true)) {
             alert('Invalid SSHNickName ' + sshNickname)
             return false;
         }
-        var siteName = form['siteName']
+        var siteName = form['siteName'].value
         if (siteName == '') {
             alert('Sitename cannot be empty!')
             return false;
         }
-        var dnsName = form['dnsName']
+        var dnsName = form['dnsName'].value
         var result = getDNSName(dnsName)
         if (result.ok) {
-             form['dnsName'] = result.fullName
+             form['dnsName'].value = result.fullName
         } else {
             alert('Invalid DNS Name ' + dnsName)
             return false;
@@ -67,7 +67,7 @@ block custHead
 block pageHeader
     div.pageHeader GEE Nodes
 block content
-    form(name = 'addNodeForm', action='/admin/node/addNode', onsubmit="return confirmDelete()", method='post')
+    form(name = 'addNodeForm', action='/admin/node/addNode', onsubmit="return confirmAdd()", method='post')
         table
             tr
                 td IP Address
