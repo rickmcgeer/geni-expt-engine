@@ -51,10 +51,9 @@ block custHead
             return false;
         }
         var dnsName = form['dnsName']
-        var ok, fullName;
-        (ok, fullName) = getDNSName(dnsName)
-        if (ok) {
-             form['dnsName'] = fullName
+        var result = getDNSName(dnsName)
+        if (result.ok) {
+             form['dnsName'] = result.fullName
         } else {
             alert('Invalid DNS Name ' + dnsName)
             return false;
