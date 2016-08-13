@@ -55,7 +55,7 @@ module.exports = function (app, utils, DB, urls) {
 
 	}
 	var sshChars = dnsChars + '.'
-	var checkSSHNickame(aString) {
+	var checkSSHNickame = function(aString) {
 		return stringOK(aString, sshChars)
 	}
 	// addNodeHelper.  Added as  a callback to addNode, the better to prevent nesting.  Should not be called by any routine except
