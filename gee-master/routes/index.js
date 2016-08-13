@@ -24,4 +24,5 @@ module.exports = function (app, passport, DB, urls, url, script_dir) {
     require('./main')(app);
     require('./slice')(app, route_utils, urls, url, DB, script_dir);
     require('./user')(app, route_utils, DB, urls, script_dir);
+    require('./rest')(app, route_utils, DB, urls);
 }
