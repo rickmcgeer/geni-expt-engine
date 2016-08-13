@@ -1,0 +1,21 @@
+extends layout
+block content
+    table
+        tr
+            th Call
+            th Purpose
+        tr
+            td /rest/add_node?ipAddress=<address_to_add>&sshNickname=<nickname>&dnsName=<dns_Name>&siteName=<siteName>
+            td Add a node
+        tr
+            td /rest/delete_node?ipAddress=<address_to_delete>
+            td Delete the node at ipAddress <address_to_delete>
+        tr
+            td /rest/node_list
+            td list all the nodes in the database
+
+        tr
+            td /rest/help
+            td print this
+    p dnsName and sshNickname must contain only the characters A-Za-z0-9.-_.  If dnsName does not end in '.gee-project.net', '.gee-project.net' will be added.  IP address must be a valid IPv4 address.  All methods return JSON structures with a success true/false flag, the result, and (if a failure) the error message in the field Message
+
