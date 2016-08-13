@@ -3,31 +3,7 @@ module.exports = function (app, utils, DB, urls) {
 	var renderJSONError = function(req, res, message) {
 		res.json({success: false, message:message})
 	}
-	// generate a randome hash key for IP address
-	var genKey = function(ipAddress) {
-		// use a secure random hash of IP address.  For the moment, placeholder, just a random number in the range (0, 2^256)
-		return 'fjksjdfoisj;okasjfa;sofjjsfsjsdjfasjjasodkjfcosjf'
-	}
-	// get the key for IP address, creating it if it doesn't exist.
-	var getKey = function(ipAddress, req, res) {
-		DB.nodeKeys.find({ipAddress:ipAddress}, function(err, records) {
-			if (err) {
-				renderJSONError(req, res, 'Error ' + err + ' in finding hashkey for ' + ipAddress)
-			} else if (records.length == 0) {
-				var key = genKey(ipAddress)
-				DB.nodeKeys.create({ipAddress:ipAddress, key:key}, function(err) {
-					if (err) {
-						renderJSONError(req, res, 'Error ' + err + ' in creating hashkey for ' + ipAddress)
-					} else {
-						res.json({success: true, ipAddress: ipAddress, key:key})
-					}
-
-				})
-			} else {
-				res.json({success: true, ipAddress: ipAddress, key:key})
-			}
-		})
-	}
+	
 	// authenticate a node and then do the function desired, with the optional argument structure.
 	// The arguments are:
 	// req, res: obvious
