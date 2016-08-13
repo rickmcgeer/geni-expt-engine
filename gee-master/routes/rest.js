@@ -13,7 +13,7 @@ module.exports = function (app, utils, DB, urls) {
 	// thenDo: a callback to implement the authenticated request, which should be a function of the
 	//         form thenDo(req, res, ipAddress, args)
 	// thenDoArgs: optional arguments to pass to the callback.  Opaque to this function
-	var authenticateThenDo(req, res, fromCall, ipAddress, key, thenDo, thenDoArgs) {
+	var authenticateThenDo = function(req, res, fromCall, ipAddress, key, thenDo, thenDoArgs) {
 		// turning off authentication for testing.  Remove this code once we have authentication in place
 		thenDo(req, res, ipAddress, args)
 		return
