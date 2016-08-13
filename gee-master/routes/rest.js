@@ -63,7 +63,7 @@ module.exports = function (app, utils, DB, urls) {
 	var addNodeHelper = function(req, res, argStruct) {
 		if (!argStruct.sshNickname) {
 			renderJSONError(req, res, 'Error: sshNickname to addNode must be specified')
-		} else if (!checkSSHNickame(argStruct.sshNickname) {
+		} else if (!checkSSHNickame(argStruct.sshNickname)) {
 			renderJSONError(req, res, 'Error: sshNickname to addNode must be valid.  ' + argStruct.sshNickname + ' Is invalid')
 		} else if (!argStruct.siteName) {
 			renderJSONError(req, res, 'Error: siteName to addNode must be specified')
