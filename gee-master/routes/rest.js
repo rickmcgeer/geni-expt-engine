@@ -140,3 +140,4 @@ module.exports = function (app, utils, DB, urls) {
 	app.get('/rest/help', function(req, res) {
 		res.render('rest_help.jade')
 	})
+}
