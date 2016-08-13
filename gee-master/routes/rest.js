@@ -42,7 +42,7 @@ module.exports = function (app, utils, DB, urls) {
 	}
 	var dnsChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789'
 	// Error check a DNS name, and return the right one
-	var checkAndGetDNSName(aString) {
+	var checkAndGetDNSName = function(aString) {
 		var testString = aString
 		if (testString.endswith('.gee-project.net')) {
 			testString = testString.substring(testString.indexOf('.gee-project.net'))
@@ -129,7 +129,7 @@ module.exports = function (app, utils, DB, urls) {
 		addNode(req, res, req.query)
 
 	})
-	app.get('/res/delete_node', function(req, res) {
+	app.get('/rest/delete_node', function(req, res) {
 		var ip = getRequestorIP(req)
 		// put in authentication later
 		addNode(req, res, req.query.ip)
