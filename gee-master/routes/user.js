@@ -33,13 +33,19 @@ module.exports = function (app, utils, DB, urls) {
             } else {
                 // he's a valid user.  If he doesn't have a slice, send him to a page where
                 // he can allocate a slicelet.  If he does have a slice, initialize the slicename
-                // session variable with the name and send him to his dashboard.
+                // session variable with the name and send him to hßis dashboard.
                 // Also note whether he is admin
                 req.session.admin = users[0].admin;
                 utils.get_user_dashboard(req, res, urls, DB.slices);
             }
         });
     });
+
+    // logout.  Just clears the cookies and renders the login page
+    app.get('/logout', function(req, res) {
+        req.session.destroy()
+        res.render('main')
+    })
 
     // repeat the code, basically, but for the demo, where we aren't authenticating.
     // the only difference here is that this is

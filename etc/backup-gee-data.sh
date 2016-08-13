@@ -3,6 +3,10 @@
 cd /tmp
 # Date is on the form MM-DD-YYYY
 dateStr=`date +%D | sed "s/\//-/g"`
+host=ops.emulab.net
+user=mcgeer
+backup_dir=gee/backups
+key=/root/geni-expt-engine/.ssh/gee_rsa
 # Backup the database
 # Backup file for database is dbbackup-<today's-date>.tgz
 fileName=dbbackup-$dateStr.tgz
@@ -12,7 +16,7 @@ mongodump --host mongodb --port 27017 -d gee_master
 # Tar it up
 tar -czf $fileName dump/gee_master
 # Copy to the offsite backup server
-scp -i /root/geni-expt-engine/.ssh/gee_rsa -o "StrictHostKeyChecking no" $fileName gee@142.104.69.88:backups
+scp -i $key -o "StrictHostKeyChecking no" $fileName $user@$host:$backup_dir
 # Clean up
 rm -rf dump
 rm $fileName
@@ -24,6 +28,6 @@ echo $fileName
 # Warning!  We are using -P to use absolute pathnames.  This is allegedly a security
 # risk but it seems very small...
 tar -Pczf $fileName /root/slice_files
-scp -i /root/geni-expt-engine/.ssh/gee_rsa -o "StrictHostKeyChecking no" $fileName gee@142.104.69.88:backups
+scp -i $key -o "StrictHostKeyChecking no" $fileName $user@$host:$backup_dir
 # clean up
 rm $fileName
