@@ -16,7 +16,7 @@ EXPOSE=$( echo $PORTS|sed 's/[0-9]*://g' - )
 export ANSIBLE_CONFIG=$ANSIBLEDIR/ansible.cfg
 mkdir -p $LOGDIR
 echo Run: `date` >> $LOGFILE
-ansible-playbook -f 20 -i $ANSIBLEDIR/hosts $ANSIBLEDIR/create-slice.yml --extra-vars "slice=$SLICE tarball=$TARBALL docker_image=$IMAGE ports=$PORTS expose=$EXPOSE" >> $LOGFILE
+ansible-playbook -f 20 -i $ANSIBLEDIR/dynInventory.py $ANSIBLEDIR/create-slice.yml --extra-vars "slice=$SLICE tarball=$TARBALL docker_image=$IMAGE ports=$PORTS expose=$EXPOSE" >> $LOGFILE
 
 # Tolerate dark hosts (exit code 3 from Ansible)
 RESULT=$?

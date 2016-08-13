@@ -11,7 +11,7 @@ LOGFILE=$LOGDIR/$SLICE-delete.log
 export ANSIBLE_CONFIG=$ANSIBLEDIR/ansible.cfg
 mkdir -p $LOGDIR
 echo Run: `date` >> $LOGFILE
-ansible-playbook -f 20 -i $ANSIBLEDIR/hosts $ANSIBLEDIR/delete-slice.yml --extra-vars "slice=$SLICE" >> $LOGFILE
+ansible-playbook -f 20 -i $ANSIBLEDIR/dynInventory.py $ANSIBLEDIR/delete-slice.yml --extra-vars "slice=$SLICE" >> $LOGFILE
 
 # Tolerate dark hosts (exit code 3 from Ansible)
 RESULT=$?
