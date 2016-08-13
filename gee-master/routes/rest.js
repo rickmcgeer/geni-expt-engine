@@ -133,7 +133,7 @@ module.exports = function (app, utils, DB, urls) {
 		var ip = getRequestorIP(req)
 		// put in authentication later
 		addNode(req, res, req.query.ip)
-	}
+	})
 	app.get('/rest/node_list', function(req, res) {
 		nodeList(req, res)
 	})
