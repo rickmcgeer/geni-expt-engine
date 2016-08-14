@@ -36,7 +36,9 @@ module.exports = function (app, utils, DB, urls) {
 	}
 	// make sure a string contains only valid characters
 	var stringOK = function(candidateString, charSet) {
-		return candidateString.reduce(function(prev, aChar) {
+		if (!candidateString || candidateString.length == 0) return false;
+		var charList = candidateString.split('')
+		return charList.reduce(function(prev, aChar) {
 			return prev && charSet.indexOf(aChar) >= 0
 		}, true)
 	}
