@@ -46,7 +46,7 @@ def getAllNodes():
 #
 def getDictionary(args):
     if (args.host):
-        specifier = {'dnsName' {'$in': args.host}}
+        specifier = {'dnsName': {'$in': args.host}}
     else:
         specifier = {}
     return node_collection.find({})
