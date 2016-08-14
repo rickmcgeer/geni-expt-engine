@@ -27,6 +27,7 @@ var express = require("express");
 
 var passport = require('passport');
 var OpenIDStrategy = require('passport-openid').Strategy;
+require('string.prototype.endswith');
 
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -47,6 +48,7 @@ var app = express();
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var nconf = require('nconf');
+const crypto = require('crypto')
 
 // We use nconf to read configuration options.  Command line arguments override config file options which override default options.
 nconf.argv().file('./config.json');

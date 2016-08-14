@@ -46,7 +46,7 @@ module.exports = function (app, utils, DB, urls) {
 	// Error check a DNS name, and return the right one
 	var checkAndGetDNSName = function(aString) {
 		var testString = aString
-		if (testString.endsWith('.gee-project.net')) {
+		if (testString.endswith('.gee-project.net')) {
 			testString = testString.substring(testString.indexOf('.gee-project.net'))
 		}
 		if (stringOK(testString, dnsChars)) {

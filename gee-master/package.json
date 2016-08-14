@@ -13,5 +13,6 @@
     "mongodb": "latest",
     "mongoose":"latest",
     "nconf": "latest"
+    "string.prototype.endwith": "latest"
   }
 }
