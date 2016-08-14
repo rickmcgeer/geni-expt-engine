@@ -43,10 +43,13 @@ module.exports = function (app, utils, DB, urls) {
 		}, true)
 	}
 	var dnsChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789'
+	var endsIn = function(str, suffix) {
+		return str.indexOf(suffix) + suffix.length == str.length
+	}
 	// Error check a DNS name, and return the right one
 	var checkAndGetDNSName = function(aString) {
 		var testString = aString
-		if (testString.endswith('.gee-project.net')) {
+		if (endsIn(testString, '.gee-project.net')) {
 			testString = testString.substring(testString.indexOf('.gee-project.net'))
 		}
 		if (stringOK(testString, dnsChars)) {
