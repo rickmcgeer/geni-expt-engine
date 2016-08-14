@@ -12,7 +12,7 @@
     "passport-google-oauth": "latest",
     "mongodb": "latest",
     "mongoose":"latest",
-    "nconf": "latest"
+    "nconf": "latest",
     "string.prototype.endwith": "latest"
   }
 }
