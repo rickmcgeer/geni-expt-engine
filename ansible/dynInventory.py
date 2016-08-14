@@ -46,7 +46,7 @@ def getAllNodes():
 #
 def getDictionary(args):
     if (args.host):
-        specifier = {'$in': args.host}
+        specifier = {'dnsName' {'$in': args.host}}
     else:
         specifier = {}
     return node_collection.find({})
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     args = parse_args()
     nodes  = getDictionary(args)
     if (args.host or args.hostAll):
-        print json.dumps(nodes)
+        print json.dumps([node for node in nodes])
     elif args.generateInventory:
         print '[nodes]'
         for node in nodes: print node['dnsName']
