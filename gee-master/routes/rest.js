@@ -43,16 +43,10 @@ module.exports = function (app, utils, DB, urls) {
 		}, true)
 	}
 	var dnsChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789'
-	var endsIn = function(str, suffix) {
-		var result = str.match(suffix + '$') == suffix
-		return result
-	}
 	// Error check a DNS name, and return the right one
 	var checkAndGetDNSName = function(aString) {
-		var testString = aString
-		if (endsIn(testString, '.gee-project.net')) {
-			testString = testString.substring(testString.indexOf('.gee-project.net'))
-		}
+		var checkForFullDNS = aString.match('(^.*).gee-project.net$')
+		var testString = checkForFullDNS?checkForFullDNS[1]:aString
 		if (stringOK(testString, dnsChars)) {
 			return {success: true, dnsName: testString + '.gee-project.net'}
 		} else {
