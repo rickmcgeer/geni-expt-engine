@@ -110,9 +110,9 @@ module.exports = function (app, utils, DB, urls) {
 	var addNode = function(req, res, argStruct) {
 		var record = DB.nodes.find({ipAddress: argStruct.ipAddress}, function(err, records) {
 			if (err) {
-				renderJSONError(req, res, 'Error in doing database lookup for record with ipAddress ' + ipAddress)
+				renderJSONError(req, res, 'Error in doing database lookup for record with ipAddress ' + argStruct.ipAddress)
 			} else if (records.length > 0) {
-				renderJSONError(req, res, 'Error: node with ipAddress ' + ipAddress + ' already in the database')
+				renderJSONError(req, res, 'Error: node with ipAddress ' + argStruct.ipAddress + ' already in the database')
 			} else {
 				addNodeHelper(req, res, argStruct)
 			}
