@@ -49,7 +49,7 @@ def getDictionary(args):
         specifier = {'dnsName': {'$in': args.host}}
     else:
         specifier = {}
-    return node_collection.find({})
+    return node_collection.find(specifier)
 
 if __name__ == '__main__':
     args = parse_args()
