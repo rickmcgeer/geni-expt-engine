@@ -22,7 +22,7 @@ from pymongo import MongoClient, ReturnDocument
 def parse_args():
     parser = argparse.ArgumentParser(description='Dynamic Inventory From GEE Database')
     group = parser.add_mutually_exclusive_group(required=True)
-    parser.add_argument('--generateInventory', action='store_true',
+    group.add_argument('--generateInventory', action='store_true',
                         help='Generate a static inventory file')
     group.add_argument('--list', action='store_true',
                        help='List active servers')
