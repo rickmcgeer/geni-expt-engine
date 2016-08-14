@@ -55,7 +55,8 @@ if __name__ == '__main__':
     args = parse_args()
     nodes  = getDictionary(args)
     if (args.host or args.hostAll):
-        print json.dumps([node for node in nodes])
+        result = [{'dnsName': node['dnsName'], 'sshNickName':node['sshNickName'], 'ipAddress': node['ipAddress']} for node in nodes]
+        print json.dumps(result)
     elif args.generateInventory:
         print '[nodes]'
         for node in nodes: print node['dnsName']
