@@ -44,7 +44,8 @@ module.exports = function (app, utils, DB, urls) {
 	}
 	var dnsChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789'
 	var endsIn = function(str, suffix) {
-		return str.indexOf(suffix) + suffix.length == str.length
+		var result = str.match(suffix + '$') == suffix
+		return result
 	}
 	// Error check a DNS name, and return the right one
 	var checkAndGetDNSName = function(aString) {
@@ -154,7 +155,7 @@ module.exports = function (app, utils, DB, urls) {
 	app.get('/rest/delete_node', function(req, res) {
 		var ip = getRequestorIP(req)
 		// put in authentication later
-		addNode(req, res, req.query.ipAddress)
+		deleteNode(req, res, req.query.ipAddress)
 	})
 	app.get('/rest/node_list', function(req, res) {
 		nodeList(req, res)
