@@ -26,7 +26,7 @@ def parse_args():
                         help='Generate a static inventory file')
     group.add_argument('--list', action='store_true',
                        help='List active servers')
-    group.add_argument('--host', nargs='+', help='List details about the specific host')
+    group.add_argument('--host', nargs='1', help='List details about the specific host')
     group.add_argument('--hostAll', action = 'store_true', help='List details about all hosts')
     return parser.parse_args()
 
@@ -54,7 +54,11 @@ def getDictionary(args):
 if __name__ == '__main__':
     args = parse_args()
     nodes  = getDictionary(args)
-    if (args.host or args.hostAll):
+    if (args.host):
+        node = nodes[0]
+        result = {'dnsName': node['dnsName'], 'sshNickname':node['sshNickname'], 'ipAddress': node['ipAddress']}
+        print json.dumps(result)
+    elif (args.hostAll):
         result = [{'dnsName': node['dnsName'], 'sshNickname':node['sshNickname'], 'ipAddress': node['ipAddress']} for node in nodes]
         print json.dumps(result)
     elif args.generateInventory:
