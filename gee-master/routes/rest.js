@@ -95,7 +95,7 @@ module.exports = function (app, utils, DB, urls) {
 			var dnsRecord = checkAndGetDNSName(argStruct.dnsName)
 			if (dnsRecord.success) {
 				var newRecord = {
-					ipAddress:ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: dnsRecord.dnsName, date: new Date()
+					ipAddress:argStruct.ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: dnsRecord.dnsName, date: new Date()
 				}
 				DB.nodes.create(newRecord, function(err) {
 					if (err) {
