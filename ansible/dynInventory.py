@@ -26,7 +26,7 @@ def parse_args():
                         help='Generate a static inventory file')
     group.add_argument('--list', action='store_true',
                        help='List active servers')
-    group.add_argument('--host', nargs='1', help='List details about the specific host')
+    group.add_argument('--host', nargs=1, help='List details about the specific host')
     group.add_argument('--hostAll', action = 'store_true', help='List details about all hosts')
     return parser.parse_args()
 
