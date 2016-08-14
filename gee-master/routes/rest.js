@@ -136,7 +136,7 @@ module.exports = function (app, utils, DB, urls) {
 		})
 	}
 	var getRequestorIP = function(req) {
-		return request.headers['x-forwarded-for']
+		return req.headers['x-forwarded-for']
 		// do some magic to pull the requesting IP address from the req -- check the documentation
 	}
 	// the actual REST interface
@@ -149,7 +149,7 @@ module.exports = function (app, utils, DB, urls) {
 	app.get('/rest/delete_node', function(req, res) {
 		var ip = getRequestorIP(req)
 		// put in authentication later
-		addNode(req, res, req.query.ip)
+		addNode(req, res, req.query.ipAddress)
 	})
 	app.get('/rest/node_list', function(req, res) {
 		nodeList(req, res)
