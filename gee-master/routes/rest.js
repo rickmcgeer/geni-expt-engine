@@ -36,7 +36,7 @@ module.exports = function (app, utils, DB, urls) {
 	}
 	// make sure a string contains only valid characters
 	var stringOK = function(candidateString, charSet) {
-		return candidateString.reduce(prev, function(aChar) {
+		return candidateString.reduce(function(prev, aChar) {
 			return prev && charSet.indexOf(aChar) >= 0
 		}, true)
 	}
@@ -58,14 +58,31 @@ module.exports = function (app, utils, DB, urls) {
 	var checkSSHNickame = function(aString) {
 		return stringOK(aString, sshChars)
 	}
+	var checkIPAddress = function(aString) {
+		var components = aString.split('.')
+		if (components.length != 4) {
+			return false
+		}
+		return components.reduce(function(prev, aComponent) {
+			if (isNaN(aComponent)) {
+				return false;
+			}
+			var val = Number(aComponent)
+			return prev && 0 <= val && val <= 255
+		}, true)
+	}
 	// addNodeHelper.  Added as  a callback to addNode, the better to prevent nesting.  Should not be called by any routine except
 	// addNode.
 	var addNodeHelper = function(req, res, argStruct) {
-		if (!argStruct.sshNickname) {
+		if (!argStruct.ipAddress) {
+			renderJSONError(req, res, 'Error: ipAddress to addNode must be specified')
+		} else if (!checkIPAddress(argStruct.ipAddress)) {
+			renderJSONError(req, res, 'Error: bad ipAddress ' + argStruct.ipAddress + ' to addNode')
+		} else if (!argStruct.sshNickname) {
 			renderJSONError(req, res, 'Error: sshNickname to addNode must be specified')
 		} else if (!checkSSHNickame(argStruct.sshNickname)) {
 			renderJSONError(req, res, 'Error: sshNickname to addNode must be valid.  ' + argStruct.sshNickname + ' Is invalid')
-		} else if (!argStruct.siteName) {
+		} else if (!argStruct.siteName || argStruct.siteName.length == 0) {
 			renderJSONError(req, res, 'Error: siteName to addNode must be specified')
 		} else if (!argStruct.dnsName) {
 			renderJSONError(req, res, 'Error: dnsName to addNode must be specified.  ')
