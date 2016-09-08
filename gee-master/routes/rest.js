@@ -71,50 +71,137 @@ module.exports = function (app, utils, DB, urls) {
 			return prev && 0 <= val && val <= 255
 		}, true)
 	}
-	// addNodeHelper.  Added as  a callback to addNode, the better to prevent nesting.  Should not be called by any routine except
-	// addNode.
-	var addNodeHelper = function(req, res, argStruct) {
+	// from a header, get a good add-node request.  This must have either the appropriate fields with validity, namely:
+	// an ssh-friendly sshNickname
+	// a valid URL, which is either unqualified (e.g. 'toronto'), or valid if an FQDN ('toronto.gee-project.net')
+	// a sitename, which can be anything (documentation only)
+	var validateAddNodeRequest = function(argStruct) {
+		// resutl will be returned in an object; set defaults here
+		var result = {success: false}
 		if (!argStruct.ipAddress) {
-			renderJSONError(req, res, 'Error: ipAddress to addNode must be specified')
+			result.message = 'Error: ipAddress to addNode must be specified';
 		} else if (!checkIPAddress(argStruct.ipAddress)) {
-			renderJSONError(req, res, 'Error: bad ipAddress ' + argStruct.ipAddress + ' to addNode')
+			result.message = 'Error: bad ipAddress ' + argStruct.ipAddress;
 		} else if (!argStruct.sshNickname) {
-			renderJSONError(req, res, 'Error: sshNickname to addNode must be specified')
+			result.message = 'Error: sshNickname to addNode must be specified';
 		} else if (!checkSSHNickame(argStruct.sshNickname)) {
-			renderJSONError(req, res, 'Error: sshNickname to addNode must be valid.  ' + argStruct.sshNickname + ' Is invalid')
+			result.message = 'Error: sshNickname to addNode must be valid.  ' + argStruct.sshNickname + ' Is invalid';
 		} else if (!argStruct.siteName || argStruct.siteName.length == 0) {
-			renderJSONError(req, res, 'Error: siteName to addNode must be specified')
+			result.message =  'Error: siteName to addNode must be specified';
 		} else if (!argStruct.dnsName) {
-			renderJSONError(req, res, 'Error: dnsName to addNode must be specified.  ')
+			rresult.message =  'Error: dnsName to addNode must be specified.  ';
 		} else {
 			var dnsRecord = checkAndGetDNSName(argStruct.dnsName)
 			if (dnsRecord.success) {
-				var newRecord = {
+				result.record = {
 					ipAddress:argStruct.ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: dnsRecord.dnsName, date: new Date()
 				}
-				DB.nodes.create(newRecord, function(err) {
-					if (err) {
-						renderJSONError(req, res, 'Error ' + err + ' entering record for ipAddress ' + ipAddress + ' into the database')
-					} else {
-						res.json({success: true, result: newRecord})
-					}
-				})
+				result.success = true;
 			} else {
-				renderJSONError(req, res, 'Bad DNS Name to addNode: ' + argStruct.dnsName)
+				result.message = 'Error: bad DNS Name ' + argStruct.dnsName + ' specified'
 			}
 		}
+		// by this time, either we have succeeded in which case result.success is true and the corresponding good record is in
+		// result.record or we have failed, in which case the reason is in result.message.  In either case just return
+		return result;
 	}
-	// add a node
-	var addNode = function(req, res, argStruct) {
-		var record = DB.nodes.find({ipAddress: argStruct.ipAddress}, function(err, records) {
+
+	// check the database record and lock.  We're going to use a dictionary of in-process requests.  Mongo doesn't have 
+	// locking semantics, so we can't use the DB -- and if we went to a load-balanced implementation with nginx in front of 
+	// this, this wouldn't work.  But for the moment it does.
+
+	// IPs we are currently checking.  The semantics are that we will add an IP to lockedIPs immediately before we check the DB, 
+	// and release when we are done checking/manipulating the DB for this IP
+	var lockedIPs = []
+
+	var isLocked = function(anIPAddress) {
+		return lockedIPs.indexOf(anIPAddress) >= 0
+	}
+
+	var lockIP = function(anIPAddress) {
+		if (lockedIPs.indexOf(anIPAddress) == -1) {
+			lockedIPs.push(anIPAddress)
+			return true;
+		} else {
+			// already locked!
+			return false;
+		}
+	}
+
+	var unlockIP = function(anIPAddress) {
+		var ipIndex = lockedIPs.indexOf(anIPAddress)
+		if (ipIndex == -1) {
+			return false;
+		}
+		lockedIPs.splice(ipIndex, 1) 
+		return true;
+	}
+
+	// add a node to the database and unlock on completion or error, issuing an appropriate JSON record to the 
+	// caller
+	var addNodeToDBAndUnlock = function(req, res, argStruct) {
+		var newRecord = {
+			ipAddress:argStruct.ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: dnsRecord.dnsName, date: new Date()
+		}
+		DB.nodes.create(newRecord, function(err) {
+			unlockIP(argStruct.ipAddress)
 			if (err) {
-				renderJSONError(req, res, 'Error in doing database lookup for record with ipAddress ' + argStruct.ipAddress)
-			} else if (records.length > 0) {
-				renderJSONError(req, res, 'Error: node with ipAddress ' + argStruct.ipAddress + ' already in the database')
+				renderJSONError(req, res, 'Error ' + err + ' entering record for ipAddress ' + ipAddress + ' into the database')
 			} else {
-				addNodeHelper(req, res, argStruct)
+				res.json({success: true, result: newRecord})
 			}
 		})
+	}
+
+	// when we add callback, put it in this routine.  The pseudo-code is:
+	// call argStruct.ipAddress for confirmation
+	// if Yes, call addNodetoDBAndUnlock. If No/Timeout, error and unlock
+
+	var doCallbackThenAdd(req, res, argStruct) {
+		// ATM, just a pass-through to addNodeToDBAndUnlock
+		addNodeToDBAndUnlock(req, res, argStruct)
+
+	}
+
+	// check to see if a node is in the database and lock it.  This routine does not return; it can be made pluggable by passing in
+	// in functions for error, node in DB, node not in DB.  for the moment these are hardcoded
+
+	var checkNodeInDBLockAndAdd = function(req, res, argStruct) {
+		// the assumption here is that argStruct is a valid record
+		if (lockIP(argStruct.ipAddress)) {
+			var searchRecord = {$or: [
+				{sshNickname: argStruct.sshNickname},
+			    {ipAddress: argStruct.ipAddress},
+			    {dnsName: argStruct.dnsName}
+			]}
+			DB.nodes.find(searchRecord, function(err, records) {
+				if (err) {
+					unlockIP(argStruct.ipAddress)
+					renderJSONError(req, res, 'Error in database lookup for ' + JSON.stringify(searchRecord))
+				} else if (records.length > 0) {
+					unlockIP(argStruct.ipAddress)
+					renderJSONError(req, res, 'Already in database: node ' + JSON.stringify(records[0]))
+				} else {
+					doCallbackThenAdd(req, res, argStruct)
+				}
+			})
+		}
+	}
+
+
+
+	
+	// add a node.  Very simple.  Just validate the arguments.  if it's a valid request, a good argument structure is in 
+	// checkResult.record, and call checkNodeInDBLockAndAdd on that record.  This executes the pipeline: lock the ip Address,
+	// check to see if there's a DB conflict, call the node back.  If everything is OK, add the node to the DB and send back success.
+	// If anything fails, render an error.  In all cases, unlock immediately after the LAST DB access.
+	var addNode = function(req, res, argStruct) {
+		var checkResult = validateAddNodeRequest(argStruct)
+		if (checkResult.success) {
+			checkNodeInDBLockAndAdd(req, res, checkResult.record)
+		} else {
+			renderJSONError(req, res, checkResult.message)
+		}
 	}
 	// delete a node
 	var deleteNode = function(req, res, givenAddress) {
