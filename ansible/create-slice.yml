@@ -51,6 +51,9 @@
       mode=0700
     when: result|success
 
+  - name: Pause 5 seconds (workaround)
+    pause: seconds=5
+
   - name: SSH key for user account
     copy: src={{ keyfile }}.pub
       dest=/home/{{ slice }}/.ssh/authorized_keys
