@@ -43,12 +43,13 @@ module.exports = function (app, utils, DB, urls) {
 		}, true)
 	}
 	var dnsChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789'
+	var domainName = '.planet-ignite.net'
 	// Error check a DNS name, and return the right one
 	var checkAndGetDNSName = function(aString) {
-		var checkForFullDNS = aString.match('(^.*).gee-project.net$')
+		var checkForFullDNS = aString.match('(^.*)' + domainName + '$')
 		var testString = checkForFullDNS?checkForFullDNS[1]:aString
 		if (stringOK(testString, dnsChars)) {
-			return {success: true, dnsName: testString + '.gee-project.net'}
+			return {success: true, dnsName: testString + domainName}
 		} else {
 			return {success: false}
 		}
@@ -73,7 +74,7 @@ module.exports = function (app, utils, DB, urls) {
 	}
 	// from a header, get a good add-node request.  This must have either the appropriate fields with validity, namely:
 	// an ssh-friendly sshNickname
-	// a valid URL, which is either unqualified (e.g. 'toronto'), or valid if an FQDN ('toronto.gee-project.net')
+	// a valid URL, which is either unqualified (e.g. 'toronto'), or valid if an FQDN ('toronto'<domainName>)
 	// a sitename, which can be anything (documentation only)
 	var validateAddNodeRequest = function(argStruct) {
 		// resutl will be returned in an object; set defaults here

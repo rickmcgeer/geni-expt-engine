@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # add-node-self.py -dnsName <dnsName> -siteName siteName -nickname <sshNickname>
-# DNSName for the new node.  Should be a single name or, if fully-qualified, end in .gee-project.net
+# DNSName for the new node.  Should be a single name or, if fully-qualified, end in <domainName>
 # add-node-self.py -dnsName washington -siteName washington -nickname ig-uwashington
-# add-node-self.py -dnsName washington.gee-project.net -siteName washington -nickname ig-uwashington
-# Both generate a node with  washington.gee-project.net which will appear as ig-uwashington in the ssh file
+# add-node-self.py -dnsName washington<domainName> -siteName washington -nickname ig-uwashington
+# Both generate a node with  washington<domainName> which will appear as ig-uwashington in the ssh file
 # siteName and/or nickname can be omitted; if so they will default to the unqualified dns name
 # add-node-self.py -dnsName washington
-# add-node-self.py -dnsName washington.gee-project.net 
-# Both generate a node with  washington.gee-project.net which will appear as washington in the ssh file
+# add-node-self.py -dnsName washington<domainName> 
+# Both generate a node with  washington<domainName> which will appear as washington in the ssh file
 # just updates the database; a daemon will have to update the ssh/ansible file
 
 import sys
@@ -15,7 +15,7 @@ import json
 import argparse
 import urllib2
 
-
+domainName = '.planet-ignite.net'
 #
 # Get my ipaddress
 #
@@ -70,30 +70,30 @@ def checkName(aString, fieldName):
             raise ValidationError('Characters in %s must be from the set %s, not %s' % (fieldName, allChars, char))
     return aString
 #
-# Return the stripped version of an FQDN ending in '.gee-project.net'.  If it doesn't end in '.gee-project.net'
+# Return the stripped version of an FQDN ending in domainName.  If it doesn't end in domainName
 # just return the string itself
 #
 def stripDNSName(aName):
-    if (aName.endswith('.gee-project.net')):
-        return aName[:-len('.gee-project.net')]
+    if (aName.endswith(domainName)):
+        return aName[:-len(domainName)]
     else:
         return aName
 
 
 #
-# makeDNSName(aName): make aName into aName.gee-project.net if aName.gee-project.net won't give dns heartburn.
+# makeDNSName(aName): make aName into aName<domainName> if aName<domainName> won't give dns heartburn.
 # uses checkName for that, and throws a ValidationError otherwise
 #
 def makeDNSName(aName):
     aName = stripDNSName(aName)
     checkName(aName, 'DNSName')
-    return aName + '.gee-project.net'
+    return aName + domainName
 
 requestHeader = 'http://www.gee-project.org:9999/rest/add_node'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Add myself to the GEE')
-    parser.add_argument('-dnsName', type=str, nargs=1, required=True, help='DNSName for the new node.  Should be a single name or, if fully-qualified, end in .gee-project.net')
+    parser.add_argument('-dnsName', type=str, nargs=1, required=True, help='DNSName for the new node.  Should be a single name or, if fully-qualified, end in <domainName>')
     parser.add_argument('-nickname', type=str, nargs=1, required=False, help='SSH Nickname for the new node.  Should be shell-friendly as it will be used in command lines')
     parser.add_argument('-siteName', type=str, nargs=1, required=False, help='Site name for the new node.  For documentation purposes only')
     args = parser.parse_args()
