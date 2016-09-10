@@ -1,14 +1,15 @@
 #!/usr/bin/python
 #
 # Delete nodes by name or by ipAddress, e.g.
-# delete-node 148.73.256.29 washington northwestern.gee-project.net will delete the nodes
-# at ip address 148.73.256.29 washington.gee-project.net and northwestern.gee-project.net.  Note 
-# that .gee-project.net is appended to a name if it isn't already there.
+# delete-node 148.73.256.29 washington northwestern<domainName> will delete the nodes
+# at ip address 148.73.256.29 washington<domainName> and northwestern<domainName>.  Note 
+# that <domainName> is appended to a name if it isn't already there.
 #
 import json
 from pymongo import MongoClient, ReturnDocument
 import argparse
 import sys
+domainName = '.planet-ignite.net'
 
 #
 # Test to see if aString is a valid part of an IP address: an integer that is between 0 and 255
@@ -30,14 +31,14 @@ def isIPAddress(aString):
 	return reduce(lambda x, y: x and isComponent(y), components)
 
 #
-# Check to see if a name ends with '.gee-project.net', and if it doesn't append '.gee-project.net'
+# Check to see if a name ends with <domainName>, and if it doesn't append <domainName>
 #
 def completeName(aString):
-	if aString.endswith('.gee-project.net'): return aString
-	return aString + '.gee-project.net'
+	if aString.endswith(domainName): return aString
+	return aString + domainName
 
 #
-# Sort the arguments into ipAddresses and names, and ensure that all the names end in '.gee-project.net'.
+# Sort the arguments into ipAddresses and names, and ensure that all the names end in <domainName>.
 # Returns a dictionary where the IP Addresses are a list under the key addresses and names are under the key names
 #
 
@@ -84,7 +85,7 @@ def formQuery(parsedArgumentDict):
 def printUsage():
 	print 'delete-node [-h] <spec1> <spec2>...<specN>'
 	print '  <spec_i> is either an IP address or a name that is interpreted as a DNS Name'
-	print '  names that do not end with .gee-project.org are completed to form <name>.gee-project.org'
+	print '  names that do not end with %s are completed to form <name>%s' % (domainName, domainName)
 
 # Initialize the database client and get the node collection out
 
@@ -100,7 +101,7 @@ node_collection = db.nodes
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Delete some nodes.')
 	parser.add_argument('specifications', metavar='Spec',  nargs='+',
-                    help='<spec_i> is either an IP address or a name that is interpreted as a DNS Name.  Names that do not end with .gee-project.org are completed to form <name>.gee-project.org')
+                    help='<spec_i> is either an IP address or a name that is interpreted as a DNS Name.  Names that do not end with %s are completed to form <name>%s' % (domainName, domainName))
 	args = parser.parse_args().specifications
 	if (len(args) == 0):
 		printUsage()

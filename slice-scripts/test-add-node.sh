@@ -26,7 +26,7 @@ echo 'Bad ssh Nickname: Bad subsequent digit'
 ./add-node.py 255.255.255.255 a b_- 0c
 echo 'Bad ssh Nickname: Bad subsequent digit'
 ./add-node.py 255.255.255.255 a b_- c+
-echo 'OK.  node should be 255.255.255.255, b_-.gee-project.net, c4'
+echo 'OK.  node should be 255.255.255.255, b_-.planet-ignite.net, c4'
 ./add-node.py 255.255.255.255 a b_- c4
 
 

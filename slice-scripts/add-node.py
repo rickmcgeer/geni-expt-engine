@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # add-node ipAddress siteName dnsName  sshNickname
 # add-node 148.73.65.127 washington.edu washington ig-uwashington
-# generates a node with ipAddress 148.73.65.127 and name washington.gee-project.net which will appear as ig-uwashington in the ssh file
+# generates a node with ipAddress 148.73.65.127 and name washington<domainName> which will appear as ig-uwashington in the ssh file
 # just updates the database; a daemon will have to update the ssh/ansible file
 
 import sys
@@ -9,6 +9,7 @@ import json
 from pymongo import MongoClient, ReturnDocument
 import datetime
 from bson import json_util
+domainName = '.planet-ignite.net'
 
 #
 # An exception that is tossed for an error
@@ -54,12 +55,12 @@ def checkName(aString, fieldName):
     return aString
 
 #
-# makeDNSName(aName): make aName into aName.gee-project.net if aName.gee-project.net won't give dns heartburn.
+# makeDNSName(aName): make aName into aName<domainName> if aName<domainName> won't give dns heartburn.
 # uses checkName for that, and throws a ValidationError otherwise
 #
 def makeDNSName(aName):
     checkName(aName, 'DNSName')
-    return aName + '.gee-project.net'
+    return aName + domainName
 
 
 
@@ -71,7 +72,7 @@ def makeDNSName(aName):
 def printUsage(args, tossedException = None):
     print 'Usage: add-node ipAddress siteName dnsName  sshNickname'
     print '  e.g: add-node 148.73.65.127 washington.edu washington ig-uwashington'
-    print '       generates a node with ipAddress 148.73.65.127 and name washington.gee-project.net which will appear as ig-uwashington in the ssh file'
+    print '       generates a node with ipAddress 148.73.65.127 and name washington%s which will appear as ig-uwashington in the ssh file' % domainName
     print 'Got: ' + ' '.join(args)
     if (tossedException):
         print(tossedException.message)
