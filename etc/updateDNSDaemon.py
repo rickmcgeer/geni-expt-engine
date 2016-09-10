@@ -77,8 +77,8 @@ if __name__ == '__main__':
 		newHosts = hostsFromDB()
 		if (len(newHosts) != len(lastHosts)):
 			doUpdate(newHosts)
-		else if (listsChanged(newHosts, lastHosts)):
-			doUpdate(newHosts)
+		elif (listsChanged(newHosts, lastHosts)):
+				doUpdate(newHosts)
 		lastHosts = newHosts
 		time.sleep(60)
 
