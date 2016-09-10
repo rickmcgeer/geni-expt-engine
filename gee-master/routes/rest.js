@@ -158,7 +158,7 @@ module.exports = function (app, utils, DB, urls) {
 	// call argStruct.ipAddress for confirmation
 	// if Yes, call addNodetoDBAndUnlock. If No/Timeout, error and unlock
 
-	var doCallbackThenAdd(req, res, argStruct) {
+	var doCallbackThenAdd = function(req, res, argStruct) {
 		// ATM, just a pass-through to addNodeToDBAndUnlock
 		addNodeToDBAndUnlock(req, res, argStruct)
 
