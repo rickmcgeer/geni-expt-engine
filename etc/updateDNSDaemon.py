@@ -5,6 +5,7 @@ import sys
 from xml.dom.minidom import parseString
 import json
 from pymongo import MongoClient, ReturnDocument
+import time
 
 host = 'http://api.sandbox.namecheap.com/xml.response'
 authentication = 'ApiUser=rick1&ApiKey=0a1a2799eed246f791af0f2d941808b0&UserName=rick1'
