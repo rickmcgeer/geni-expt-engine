@@ -96,11 +96,11 @@ if __name__ == '__main__':
     parser.add_argument('-dnsName', type=str, nargs=1, required=True, help='DNSName for the new node.  Should be a single name or, if fully-qualified, end in <domainName>')
     parser.add_argument('-nickname', type=str, nargs=1, required=False, help='SSH Nickname for the new node.  Should be shell-friendly as it will be used in command lines')
     parser.add_argument('-siteName', type=str, nargs=1, required=False, help='Site name for the new node.  For documentation purposes only')
-    parser.add_argument('-ipAddress', type=str, narg=1, require=False, help='ip Address for the new node')
+    parser.add_argument('-ipAddress', type=str, nargs=1, required=False, help='ip Address for the new node')
     args = parser.parse_args()
     if args.ipAddress:
-        if (args.ipAddress.startsWith('127.0')"
-            ip - getIp()
+        if (args.ipAddress[0].startswith('127.0')):
+            ip = getIp()
         else: ip = args.ipAddress
     else : ip = getIP()
     # ip = getIP()
@@ -123,4 +123,3 @@ if __name__ == '__main__':
             print 'Could not determine local IP address, aborting'
     except Exception as e:
         print 'Failed to add node, exception is %s' % str(e)
-
