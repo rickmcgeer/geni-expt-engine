@@ -230,6 +230,7 @@ module.exports = function (app, utils, DB, urls) {
 	// the actual REST interface
 	app.get('/rest/add_node', function(req, res) {
 		var ip = getRequestorIP(req)
+		req.query.ipAddress = ip;
 		// put in authentication later
 		addNode(req, res, req.query)
 
