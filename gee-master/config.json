@@ -1,7 +1,7 @@
 {
 	"host_name": "gee-project.org",
-	"application_port": 80,
-	"real_port": 80,
+	"application_port": 9999,
+	"real_port": 9999,
 	"mongo_url": "mongodb://mongodb/gee_master",
 	"session_secret": "keyboard cat",
 	"script_dir":"/root/geni-expt-engine/slice-scripts"
