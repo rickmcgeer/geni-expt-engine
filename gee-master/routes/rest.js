@@ -76,13 +76,13 @@ module.exports = function (app, utils, DB, urls) {
 	// an ssh-friendly sshNickname
 	// a valid URL, which is either unqualified (e.g. 'toronto'), or valid if an FQDN ('toronto'<domainName>)
 	// a sitename, which can be anything (documentation only)
-	var validateAddNodeRequest = function(argStruct, ip) {
+	var validateAddNodeRequest = function(argStruct) {
 		// resutl will be returned in an object; set defaults here
 		var result = {success: false}
-		if (!ip) {
+		if (!argStruct.ipAddress) {
 			result.message = 'Error: Could not find ip address in addnode';
-		} else if (!checkIPAddress(ip)) {
-			result.message = 'Error: bad ipAddress ' + ip;
+		} else if (!checkIPAddress(argStruct.ipAddress)) {
+			result.message = 'Error: bad ipAddress ' + argStruct.ipAddress;
 		} else if (!argStruct.sshNickname) {
 			result.message = 'Error: sshNickname to addNode must be specified';
 		} else if (!checkSSHNickame(argStruct.sshNickname)) {
@@ -95,7 +95,7 @@ module.exports = function (app, utils, DB, urls) {
 			var dnsRecord = checkAndGetDNSName(argStruct.dnsName)
 			if (dnsRecord.success) {
 				result.record = {
-					ipAddress:ip, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: dnsRecord.dnsName, date: new Date()
+					ipAddress:argStruct.ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: dnsRecord.dnsName, date: new Date()
 				}
 				result.success = true;
 			} else {
@@ -196,8 +196,11 @@ module.exports = function (app, utils, DB, urls) {
 	// checkResult.record, and call checkNodeInDBLockAndAdd on that record.  This executes the pipeline: lock the ip Address,
 	// check to see if there's a DB conflict, call the node back.  If everything is OK, add the node to the DB and send back success.
 	// If anything fails, render an error.  In all cases, unlock immediately after the LAST DB access.
-	var addNode = function(req, res, argStruct, ip) {
-		var checkResult = validateAddNodeRequest(argStruct, ip)
+	var addNode = function(req, res, argStruct) {
+		if (!argStruct.ipAddress) {
+			argStruct.ipAddress = getRequestorIP()
+		}
+		var checkResult = validateAddNodeRequest(argStruct)
 		if (checkResult.success) {
 			checkNodeInDBLockAndAdd(req, res, checkResult.record)
 		} else {
@@ -237,10 +240,8 @@ module.exports = function (app, utils, DB, urls) {
 	}
 	// the actual REST interface
 	app.get('/rest/add_node', function(req, res) {
-		var ip = getRequestorIP(req)
-		req.query.ipAddress = ip;
 		// put in authentication later
-		addNode(req, res, req.query, ip)
+		addNode(req, res, req.query)
 
 	})
 	app.get('/rest/delete_node', function(req, res) {
