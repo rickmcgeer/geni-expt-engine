@@ -101,7 +101,7 @@ if __name__ == '__main__':
     if args.ipAddress:
         if (args.ipAddress[0].startswith('127.0')):
             ip = getIp()
-        else: ip = args.ipAddress
+        else: ip = args.ipAddress[0]
     else : ip = getIP()
     # ip = getIP()
     try:
