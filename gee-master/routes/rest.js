@@ -224,7 +224,15 @@ module.exports = function (app, utils, DB, urls) {
 		})
 	}
 	var getRequestorIP = function(req) {
-		return req.headers['x-forwarded-for']
+		var ip;
+		if (req.headers['x-forwarded-for']) {
+			ip = req.headers['x-forwarded-for'].split(",")[0];
+		} else if (req.connection && req.connection.remoteAddress) {
+			ip = req.connection.remoteAddress;
+		} else {
+			ip = req.ip;
+		}
+		return ip;
 		// do some magic to pull the requesting IP address from the req -- check the documentation
 	}
 	// the actual REST interface
