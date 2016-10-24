@@ -30,7 +30,7 @@ class HostRecord:
 		return 'HostName%d=%s&Address%d=%s&RecordType%d=%s&TTL%d=%s' % (i, self.hostName, i, self.address, i, self.recordType, i, self.TTL)
 
 sandboxKeepRecords = []
-realKeepRecords = [[HostRecord(u'www', u'parkingpage.namecheap.com.', u'CNAME', u'1800'), HostRecord(u'@', u'http://www.planet-ignite.net/', u'URL', u'1800')]
+realKeepRecords = [HostRecord(u'www', u'parkingpage.namecheap.com.', u'CNAME', u'1800'), HostRecord(u'@', u'http://www.planet-ignite.net/', u'URL', u'1800')]
 
 keepRecords = realKeepRecords
 def mainRecords(hostRecords):
