@@ -14,6 +14,7 @@ import sys
 import json
 import argparse
 import urllib2
+import netaddr
 
 domainName = '.planet-ignite.net'
 #
@@ -99,9 +100,9 @@ if __name__ == '__main__':
     parser.add_argument('-ipAddress', type=str, nargs=1, required=False, help='ip Address for the new node')
     args = parser.parse_args()
     if args.ipAddress:
-        if (args.ipAddress[0].startswith('127.0')):
-            ip = getIp()
-        else: ip = args.ipAddress
+        if (netaddr.IPAddress(args.ipAddress[0]).is_private()):
+            ip = getIP()
+        else: ip = args.ipAddress[0]
     else : ip = getIP()
     # ip = getIP()
     try:
