@@ -1,0 +1,7 @@
+sandboxHost = 'https://api.sandbox.namecheap.com/xml.response'
+sandboxAuthentication = 'ApiUser=aUserName&ApiKey=apiKeyString&UserName=aUserName'
+realHost = 'https://api.namecheap.com/xml.response'
+realAuthentication = 'ApiUser=aUserName&ApiKey=apiKeyString&UserName=aUserName'
+domainInfo = 'SLD=planet-ignite&TLD=net'
+clientIP='clientIP=171.67.92.194'
+autoDomainName = '.planet-ignite.net'
