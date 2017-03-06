@@ -108,6 +108,7 @@ def deleteSlice(sliceName, date):
         sliceRecord = slice_collection.find_one({"sliceName": sliceName})
         delete_log_collection.insert_one({'date': date, 'sliceName': sliceName})
         logging.info('slice ' + sliceName + ' deleted')
+	slice_collection.remove(slice)
     except subprocess.CalledProcessError, e:
         logging.error('Error in deleting slice: ' + sliceName + ': ' + e.output)
 #
