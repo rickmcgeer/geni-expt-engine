@@ -263,7 +263,8 @@ module.exports = function (app, utils, DB, url, script_dir) {
             ipAddress: req.body.ipAddress,
             siteName: req.body.siteName,
             sshNickname: req.body.sshNickname,
-            dnsName: req.body.dnsName
+            dnsName: req.body.dnsName,
+            permanent: false
         }
         DB.nodes.create(doc, function(err) {
             if (err) {
