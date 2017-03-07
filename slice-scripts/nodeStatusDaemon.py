@@ -1,4 +1,4 @@
-#!/Users/rick/anaconda/bin/python
+#!/usr/bin/python
 import requests
 import os
 import os.path
