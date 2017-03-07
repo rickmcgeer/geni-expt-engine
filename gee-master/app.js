@@ -305,6 +305,7 @@ var slice_renew_schema = mongoose.Schema({
 // sshNickname: will in general be <aggregatehandle>-<siteName>, eg., ig-uwashington, but settable.
 //              note that users will use this on an ssh line, $ ssh -F ./ssh-config <sshNickname>,
 //              so it shouldn't cause heartburn for bash.
+// permanent: true for permanent nodes (e.g., www.planet-ignite.net), false for others.  All added nodes have this as false
 var node_record_schema =  mongoose.Schema({
     date: {
         type: "Date"
@@ -312,7 +313,8 @@ var node_record_schema =  mongoose.Schema({
     ipAddress: "String",
     siteName: "String",
     dnsName: "String",
-    sshNickname: "String"
+    sshNickname: "String",
+    permanent: "Boolean"
 });
 
 // A global structure to hold all the database tables.  Used primarily so we won't

@@ -151,14 +151,16 @@
   "sliceNum": "String"
 },
 
-// A node record.  These are the nodes in the GEE
+// A node record.  These are the nodes in PlanetIgnite
 "nodes" : {
+    // date added
     "date" : {
         "type": "Date"
     },
     "ipAddress": "String",
-    "siteName": "String",
-    "dnsName": "String",
-    "sshNickname": "String",
+    "siteName": "String",  // name of the site, e.g. 'washington'
+    "dnsName": "String",   // something.planet-ignite.net (e.g., 'washington.gee-project.net')
+    "sshNickname": "String", // for ansible and ssh -- e.g., 'ig-washington'
+    "permanent": "Boolean"  // only true for nodes which should persist -- all added nodes have this as False
 },
 }

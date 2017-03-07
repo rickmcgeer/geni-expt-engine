@@ -142,7 +142,7 @@ module.exports = function (app, utils, DB, urls) {
 	// caller
 	var addNodeToDBAndUnlock = function(req, res, argStruct) {
 		var newRecord = {
-			ipAddress:argStruct.ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: argStruct.dnsName, date: new Date()
+			ipAddress:argStruct.ipAddress, sshNickname:argStruct.sshNickname, siteName:argStruct.siteName, dnsName: argStruct.dnsName, date: new Date(), permanent: false
 		}
 		DB.nodes.create(newRecord, function(err) {
 			unlockIP(argStruct.ipAddress)

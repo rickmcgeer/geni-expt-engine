@@ -36,5 +36,6 @@ block content
                 td #{node.sshNickname}
                 td #{node.date}
                 td 
-                    button(type='submit' onclick="confirmDelete('#{node.ipAddress}')") Delete
+                    unless node.permanent
+                        button(type='submit' onclick="confirmDelete('#{node.ipAddress}')") Delete
     a(href='/admin/node/addForm') Add A Node
