@@ -99,6 +99,7 @@ def parseCommandLineAndReturnRequest():
         result['siteName'] = sys.argv[2]
         result['dnsName'] = makeDNSName(sys.argv[3])
         result['sshNickname'] = checkName(sys.argv[4], 'sshNickname')
+        result['permanent'] = False
         return result
     except ValidationError as e:
         printUsage(sys.argv, e)
@@ -118,5 +119,5 @@ node_collection = db.nodes
 if __name__ == '__main__':
     nodeRequestSpec = parseCommandLineAndReturnRequest()
     print json.dumps(nodeRequestSpec, default=json_util.default)
-    print 'Putting new slice in database: ' + json.dumps(nodeRequestSpec, default=json_util.default)
+    print 'Putting new node in database: ' + json.dumps(nodeRequestSpec, default=json_util.default)
     node_collection.insert_one(nodeRequestSpec)
