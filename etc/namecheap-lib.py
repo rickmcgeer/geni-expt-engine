@@ -8,6 +8,7 @@ from xml.dom.minidom import parseString
 import json
 from pymongo import MongoClient, ReturnDocument
 import time
+import urllib3
 
 #
 # Import authentication information and hostnames, etc., from the config file.
