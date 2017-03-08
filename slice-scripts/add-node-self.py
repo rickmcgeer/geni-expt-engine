@@ -100,7 +100,7 @@ if __name__ == '__main__':
     parser.add_argument('-ipAddress', type=str, nargs=1, required=False, help='ip Address for the new node')
     args = parser.parse_args()
     if args.ipAddress:
-        if (netaddr.IPAddress(args.ipAddress[0]).is_private() and netaddr.IPAddress(args.ipAddress[0]).is_loopback()):
+        if (netaddr.IPAddress(args.ipAddress[0]).is_private() or netaddr.IPAddress(args.ipAddress[0]).is_loopback()):
             ip = getIP()
         else: ip = args.ipAddress[0]
     else : ip = getIP()
