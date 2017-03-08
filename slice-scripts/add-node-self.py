@@ -88,7 +88,7 @@ def stripDNSName(aName):
 def makeDNSName(aName):
     aName = stripDNSName(aName)
     checkName(aName, 'DNSName')
-    return aName + domainName
+    return (aName + domainName).lower()
 
 requestHeader = 'http://www.gee-project.org:9999/rest/add_node'
 
