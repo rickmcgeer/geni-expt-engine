@@ -94,7 +94,7 @@ def doUpdate(hostRecords):
     
 def updateAndPrint(hostRecords):
     doUpdate(hostRecords)
-    printString = "(" + "), (", join([rec.toString() for rec in hostRecords]) + ")"
+    printString = "(" + "), (".join([rec.toString() for rec in hostRecords]) + ")"
     print "Updated DNS Server with: " + printString
 
 def updateAll():
