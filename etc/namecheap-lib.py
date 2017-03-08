@@ -34,6 +34,9 @@ class HostRecord:
     def specString(self, i):
         return 'HostName%d=%s&Address%d=%s&RecordType%d=%s&TTL%d=%s' % (i, self.hostName, i, self.address, i, self.recordType, i, self.TTL)
         
+    def toString(self):
+        return 'HostName=%s&Address=%s&RecordType=%s&TTL=%s' % (self.hostName, self.address, self.recordType, self.TTL)
+        
 #
 # Records which should never be deleted.  This will move into the DB eventually
 #
@@ -88,6 +91,11 @@ def doUpdate(hostRecords):
     # keepRecords = mainRecords(getHosts())
     setURL = makeSetHostURL(keepRecords + hostRecords)
     return execCommand(setURL)
+    
+def updateAndPrint(hostRecords):
+    doUpdate(hostRecords)
+    printString = "(" + "), (", join([rec.toString() for rec in hostRecords]) + ")"
+    print "Updated DNS Server with: " + printString
 
 def updateAll():
     doUpdate(hostsFromDB())

@@ -8,13 +8,13 @@ if __name__ == '__main__':
     while True:
         newHosts = hostsFromDB()
         if (len(newHosts) != len(lastHosts)):
-            doUpdate(newHosts)
+            updateAndPrint(newHosts)
             count = 0
         elif (listsChanged(newHosts, lastHosts)):
-            doUpdate(newHosts)
+            updateAndPrint(newHosts)
             count = 0
         elif (count == 10):
-            doUpdate(newHosts)
+            updateAndPrint(newHosts)
             count = 0
         else: count += 1
         lastHosts = newHosts
