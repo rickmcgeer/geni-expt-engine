@@ -1,10 +1,10 @@
 extends layout
 block pageHeader
-	div.pageHeader User #{user} Not Registered For GEE Beta
+	div.pageHeader User #{user} Not Registered For PlanetIgnite Beta
 block content
-	div Sorry, #{user}, during the beta period only registered users may use the GEE.
-	div If you would like to use the GEE for the beta period, please use this form to contact us.
-	- var subject="Please add " + user + " to the GEE Beta program";
+	div Sorry, #{user}, during the beta period only registered users may use PlanetIgnite.
+	div If you would like to use PlanetIgnite for during beta period, please use this form to contact us.
+	- var subject="Please add " + user + " to the PlanetIgnite Beta program";
 	form(method="post", action="/admin/users/add")
 		table
 			tr
