@@ -90,10 +90,10 @@ def makeDNSName(aName):
     checkName(aName, 'DNSName')
     return (aName + domainName).lower()
 
-requestHeader = 'http://www.gee-project.org:9999/rest/add_node'
+requestHeader = 'http://planet-ignite.org/rest/add_node'
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Add myself to the GEE')
+    parser = argparse.ArgumentParser(description='Add myself to PlanetIgnite')
     parser.add_argument('-dnsName', type=str, nargs=1, required=True, help='DNSName for the new node.  Should be a single name or, if fully-qualified, end in <domainName>')
     parser.add_argument('-nickname', type=str, nargs=1, required=False, help='SSH Nickname for the new node.  Should be shell-friendly as it will be used in command lines')
     parser.add_argument('-siteName', type=str, nargs=1, required=False, help='Site name for the new node.  For documentation purposes only')
