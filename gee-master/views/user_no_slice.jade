@@ -7,7 +7,7 @@ block userPageOptions
                 select(name='image')
                   each image in images
                      option(value=image)  #{image}
-                &nbsp;
+                | &nbsp;
                 button(type="submit") Get a Slicelet!
           td
               a.pageOptions(href='/slice/get_custom') Get Custom Slicelet
