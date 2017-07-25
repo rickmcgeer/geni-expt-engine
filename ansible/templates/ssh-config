@@ -6,5 +6,10 @@ Host {{ hostvars[host]['sshNickname'] }}
   Hostname {{ host }}
   User {{ slice }}
   IdentityFile ./id_rsa
+
+ Host {{ hostvars[host]['sshNickname'] }}.planet-ignite.net
+  Hostname {{ host }}
+  User {{ slice }}
+  IdentityFile ./id_rsa
   {% endif %}
 {% endfor %}
