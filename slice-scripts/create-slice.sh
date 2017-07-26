@@ -19,6 +19,8 @@ echo Run: `date` >> $LOGFILE
 ansible-playbook -f 20 -i $ANSIBLEDIR/dynInventory.py $ANSIBLEDIR/create-slice.yml --extra-vars "slice=$SLICE tarball=$TARBALL docker_image=$IMAGE ports=$PORTS expose=$EXPOSE" >> $LOGFILE
 
 # Tolerate dark hosts (exit code 3 from Ansible)
+# In 2.2.0.0, exit code 4
 RESULT=$?
+[ $RESULT -eq 4 ] && { exit 0; }
 [ $RESULT -eq 3 ] && { exit 0; }
 exit $RESULT
