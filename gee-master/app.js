@@ -306,6 +306,7 @@ var slice_renew_schema = mongoose.Schema({
 //              note that users will use this on an ssh line, $ ssh -F ./ssh-config <sshNickname>,
 //              so it shouldn't cause heartburn for bash.
 // permanent: true for permanent nodes (e.g., www.planet-ignite.net), false for others.  All added nodes have this as false
+// status: is the node up (True) or Down (False), and what is the date that this was checked?
 var node_record_schema =  mongoose.Schema({
     date: {
         type: "Date"
@@ -314,7 +315,13 @@ var node_record_schema =  mongoose.Schema({
     siteName: "String",
     dnsName: "String",
     sshNickname: "String",
-    permanent: "Boolean"
+    permanent: "Boolean",
+    "status": {
+        "up": "Boolean",
+        "date": {
+          "type": "Date"
+        }
+    }
 });
 
 // A global structure to hold all the database tables.  Used primarily so we won't

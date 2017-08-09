@@ -161,6 +161,13 @@
     "siteName": "String",  // name of the site, e.g. 'washington'
     "dnsName": "String",   // something.planet-ignite.net (e.g., 'washington.gee-project.net')
     "sshNickname": "String", // for ansible and ssh -- e.g., 'ig-washington'
-    "permanent": "Boolean"  // only true for nodes which should persist -- all added nodes have this as False
+    "permanent": "Boolean",  // only true for nodes which should persist -- all added nodes have this as False
+    "status": {
+        "up": "Boolean", // Is the node up or down?  Will be replaced by a more  sophisticated interface
+        "date": {
+          "type": "Date"
+        }
+    }
+
 },
 }

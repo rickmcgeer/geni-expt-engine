@@ -27,7 +27,9 @@ block content
             th IP Address
             th SSH Nickname
             th created
-            th 
+            th Up
+            th Status Date
+            th
         each node, i in nodes
             tr
                 td #{node.siteName}
@@ -35,6 +37,8 @@ block content
                 td #{node.ipAddress}
                 td #{node.sshNickname}
                 td #{node.date}
+                td #{node.status.up}
+                td #{node.status.date}
                 td 
                     unless node.permanent
                         button(type='submit' onclick="confirmDelete('#{node.ipAddress}')") Delete
