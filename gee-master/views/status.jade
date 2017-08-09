@@ -1,0 +1,24 @@
+extends layout
+block custHead
+block pageHeader
+    div.pageHeader PlanetIgnite Status
+block content
+    table(border=1)
+        tr
+            th Site
+            th Node Name
+            th IP Address
+            th SSH Nickname
+            th created
+            th Up
+            th Status Date
+        each node, i in nodes
+            tr
+                td #{node.siteName}
+                td #{node.dnsName}
+                td #{node.ipAddress}
+                td #{node.sshNickname}
+                td #{node.date}
+                td #{node.status.up}
+                td #{node.status.date}
+    a(href='/') Back to Dashboard

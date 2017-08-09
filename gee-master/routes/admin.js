@@ -214,14 +214,14 @@ module.exports = function (app, utils, DB, url, script_dir) {
         }
     });
 
-    var showNodes = function(req, res) {
+    var showNodes = function(req, res, template) {
         console.log("Getting all nodes")
         get_nodes(req, res, function (req, res, error, nodes) {
             if (error) {
                 utils.render_error_page(req, res, "Error in getting node data", error);
             } else {
                 // console.log(nodes);
-                res.render('admin_nodes', {
+                res.render(template, {
                     nodes: nodes,
                     title: 'Node List'
                 });
@@ -230,9 +230,26 @@ module.exports = function (app, utils, DB, url, script_dir) {
 
     }
 
+    var showNodesAdmin = function(req, res) {
+        showNodes(req, res, 'admin_nodes')
+    }
+
+     var showNodesUser = function(req, res) {
+        showNodes(req, res, 'status')
+    }
+
+
     app.get('/admin/nodes', function (req, res) {
        adminCheckOrDo(req, res, showNodes)
     });
+
+    app.get('/status', function (req, res) {
+       showNodesUser(req, res)
+    });
+
+    // not really an admin function, but simple code is that it belongs here, since it is very similar
+    // to /admin/nodes
+
 
     var deleteNode = function(req, res) {
         DB.nodes.remove({ipAddress: req.body.ipAddress}, function(err) {
