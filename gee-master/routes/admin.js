@@ -240,7 +240,7 @@ module.exports = function (app, utils, DB, url, script_dir) {
 
 
     app.get('/admin/nodes', function (req, res) {
-       adminCheckOrDo(req, res, showNodes)
+       adminCheckOrDo(req, res, showNodesAdmin)
     });
 
     app.get('/status', function (req, res) {
